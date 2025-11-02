@@ -19,11 +19,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/<your-us/rag-ollama-js.git"
+    "url": "https://github.com/emredeveloper/rag-js-local.git"
   },
-  "homepage": "https://github.com/<your-username>/rag-ollama-js#readme",
+  "homepage": "https://github.com/emredeveloper/rag-js-local#readme",
   "bugs": {
-    "url": "https://github.com/<your-username>/rag-ollama-js/issues"
+    "url": "https://github.com/emredeveloper/rag-js-local/issues"
   },
   "files": [
     "src/",
