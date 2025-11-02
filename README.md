@@ -41,6 +41,3 @@ Notes:
   - main model: `granite4:tiny-h`
   - embedding model: `embeddinggemma`
   To enable real Ollama calls set `OLLAMA_TEST=1` and ensure a local Ollama server is running (API base: `http://localhost:11434/api`).
-
-Publish to npm
-
