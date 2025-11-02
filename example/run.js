@@ -1,8 +1,8 @@
 import { InMemoryVectorStore } from '../src/vectorStore.js';
 import { Retriever } from '../src/retriever.js';
-import dummyEmbedding from '../src/embeddings/dummyEmbedding.js';
 import OllamaClient from '../src/ollamaClient.js';
 import { createOllamaEmbedding } from '../src/embeddings/ollamaEmbedding.js';
+import { createMRL } from '../src/embeddings/mrl.js';
 
 // Short, readable example
 async function runSimple(prompt) {
@@ -12,11 +12,14 @@ async function runSimple(prompt) {
     { id: '3', text: 'RAG uses retrieval to augment model responses.' }
   ];
 
+  // Use Ollama embedding. To enable live Ollama generation set OLLAMA_TEST=1.
+  const baseEmbedding = createOllamaEmbedding({});
   const useOllama = process.env.OLLAMA_TEST === '1';
-  const embeddingFn = useOllama ? createOllamaEmbedding({}) : dummyEmbedding;
+  const mrl = createMRL(baseEmbedding, 768);
 
-  const store = new InMemoryVectorStore(embeddingFn);
-  await store.addDocuments(docs);
+  const store = new InMemoryVectorStore(mrl, { defaultDim: 128 });
+  // Add documents at default dim (128) for speed/storage tradeoff
+  await store.addDocuments(docs, { dim: 128 });
 
   const retriever = new Retriever(store, { k: 2 });
   const results = await retriever.getRelevant(prompt);
@@ -28,7 +31,7 @@ async function runSimple(prompt) {
   const fullPrompt = `${context}\n\nUser: ${prompt}\nAssistant:`;
 
   if (!useOllama) {
-    console.log('\nPrompt (not calling model):');
+    console.log('\nOLLAMA_TEST not set. Prompt (not calling model):');
     console.log(fullPrompt);
     return;
   }

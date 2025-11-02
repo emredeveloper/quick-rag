@@ -15,22 +15,27 @@ function cosine(a, b) {
 }
 
 export class InMemoryVectorStore {
-  constructor(embeddingFn) {
+  constructor(embeddingFn, options = {}) {
     if (!embeddingFn) throw new Error('embeddingFn required');
     this.embeddingFn = embeddingFn;
-    this.items = []; // { id, text, meta, vector }
+    this.items = []; // { id, text, meta, vector, dim }
+    this.defaultDim = options.defaultDim || 768;
   }
 
-  async addDocuments(docs) {
+  // addDocuments(docs, opts = { dim })
+  // If opts.dim provided, request embeddings at that dimension (if embeddingFn supports it).
+  async addDocuments(docs, opts = {}) {
+    const dim = opts.dim || this.defaultDim;
     for (const d of docs) {
-      const vec = await this.embeddingFn(d.text);
-      this.items.push({ id: d.id || String(this.items.length), text: d.text, meta: d.meta || {}, vector: vec });
+      const vec = await this.embeddingFn(d.text, dim);
+      this.items.push({ id: d.id || String(this.items.length), text: d.text, meta: d.meta || {}, vector: vec, dim });
     }
   }
 
-  // Return top-k nearest documents by cosine similarity
-  async similaritySearch(query, k = 3) {
-    const qVec = await this.embeddingFn(query);
+  // Return top-k nearest documents by cosine similarity. Accepts queryDim to control query embedding size.
+  async similaritySearch(query, k = 3, queryDim) {
+    const dim = queryDim || this.defaultDim;
+    const qVec = await this.embeddingFn(query, dim);
     const scored = this.items.map(it => ({ score: cosine(qVec, it.vector), doc: it }));
     scored.sort((a, b) => b.score - a.score);
     return scored.slice(0, k).map(s => ({ ...s.doc, score: s.score }));

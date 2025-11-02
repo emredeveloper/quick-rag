@@ -1,10 +1,20 @@
 import assert from 'assert';
 import { InMemoryVectorStore } from '../src/vectorStore.js';
 import { Retriever } from '../src/retriever.js';
-import dummyEmbedding from '../src/embeddings/dummyEmbedding.js';
+
+// Local deterministic embedding used only for tests (keeps tests independent
+// of external services). This replaces the removed demo "dummyEmbedding".
+async function testEmbedding(text, dim = 128) {
+  const vec = new Array(dim).fill(0);
+  for (let i = 0; i < text.length; i++) {
+    vec[i % dim] += text.charCodeAt(i);
+  }
+  const norm = Math.sqrt(vec.reduce((s, v) => s + v * v, 0)) || 1;
+  return vec.map(v => v / norm);
+}
 
 async function testVectorStore() {
-  const store = new InMemoryVectorStore(dummyEmbedding);
+  const store = new InMemoryVectorStore(testEmbedding);
   await store.addDocuments([
     { id: 'a', text: 'apple fruit' },
     { id: 'b', text: 'banana yellow' },
@@ -22,7 +32,7 @@ async function testVectorStore() {
 }
 
 async function testRetriever() {
-  const store = new InMemoryVectorStore(dummyEmbedding);
+  const store = new InMemoryVectorStore(testEmbedding);
   await store.addDocuments([
     { id: '1', text: 'React builds UIs' },
     { id: '2', text: 'Node.js is server side JS' },

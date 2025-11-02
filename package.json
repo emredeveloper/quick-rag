@@ -1,5 +1,5 @@
 {
-  "name": "rag-ollama-js",
+  "name": "js-rag-local-llm",
   "version": "0.1.0",
   "description": "Minimal RAG library for React + Ollama local models (starter scaffold)",
   "main": "src/index.js",
@@ -15,7 +15,7 @@
     "react",
     "retrieval-augmented-generation"
   ],
-  "author": "",
+  "author": "Cihat Emre Karataş",
   "license": "MIT",
   "repository": {
     "type": "git",

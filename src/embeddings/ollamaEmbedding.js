@@ -5,8 +5,9 @@ import OllamaClient from '../ollamaClient.js';
 export default function createOllamaEmbedding({ baseUrl, model = 'embeddinggemma', headers } = {}) {
   const client = new OllamaClient({ baseUrl, headers });
 
-  return async function ollamaEmbedding(text) {
+  return async function ollamaEmbedding(text, dim) {
     // Ollama embed endpoint accepts `input` as string or array.
+    // We ignore dim here because Ollama returns fixed-size embeddings; MRL will downsample.
     const resp = await client.embed(model, text);
     // The response shape from Ollama embed endpoint may be:
     // { data: [ { embedding: [...] } ] }
