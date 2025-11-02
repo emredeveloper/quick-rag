@@ -1,0 +1,6 @@
+test/
+example/
+.github/
+node_modules/
+*.log
+/.vscode/

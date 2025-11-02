@@ -1,0 +1,39 @@
+{
+  "name": "rag-ollama-js",
+  "version": "0.1.0",
+  "description": "Minimal RAG library for React + Ollama local models (starter scaffold)",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules ./test/run-tests.js",
+    "start": "node ./example/run.js",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "rag",
+    "ollama",
+    "react",
+    "retrieval-augmented-generation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<your-us/rag-ollama-js.git"
+  },
+  "homepage": "https://github.com/<your-username>/rag-ollama-js#readme",
+  "bugs": {
+    "url": "https://github.com/<your-username>/rag-ollama-js/issues"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
