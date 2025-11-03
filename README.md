@@ -56,7 +56,7 @@ app.post('/api/embed', async (req, res) => {
 app.listen(3001, () => console.log('API proxy http://127.0.0.1:3001'));
 ```
 
-# vite.config.js (ensure the proxy below exists)
+vite.config.js (ensure the proxy below exists)
 ```
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -66,12 +66,15 @@ export default defineConfig({
 });
 ```
 
-# 4) Scripts
+4) Scripts
+```bash
 npm pkg set scripts.dev="concurrently \"npm:dev:server\" \"npm:dev:client\""
 npm pkg set scripts.dev:server="node server.js"
 npm pkg set scripts.dev:client="vite"
+```
 
-# 5) Run
+5) Run
+```bash
 npm run dev
 ```
 
