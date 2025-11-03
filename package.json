@@ -1,7 +1,7 @@
 {
-  "name": "js-rag-local-llm",
-  "version": "0.6.4",
-  "description": "Minimal RAG library for React + Ollama local models (starter scaffold)",
+  "name": "quick-rag",
+  "version": "0.7.0",
+  "description": "⚡ Quick RAG - Fast local AI with official Ollama & LM Studio SDK integration",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",
   "type": "module",
@@ -24,9 +24,14 @@
   },
   "keywords": [
     "rag",
+    "quick-rag",
     "ollama",
+    "lm-studio",
     "react",
-    "retrieval-augmented-generation"
+    "local-ai",
+    "vector-search",
+    "retrieval-augmented-generation",
+    "embeddings"
   ],
   "author": "Cihat Emre Karataş",
   "license": "MIT",
@@ -46,7 +51,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ollama": "^0.6.2",
+    "@lmstudio/sdk": "^1.5.0"
+  },
   "optionalDependencies": {
     "node-fetch": "^3.3.2"
   }

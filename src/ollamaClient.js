@@ -73,15 +73,48 @@ export default class OllamaClient {
   }
 
   // Generate text from a model. Default: POST to /api/generate with {model, prompt}
+  // Auto-fallback to chat API if generate is not supported
   async generate(model, prompt, opts = {}) {
     const path = opts.path || 'generate';
-    const body = Object.assign({ model, prompt }, opts.body || {});
+    // Add stream: false for better compatibility
+    const body = Object.assign({ model, prompt, stream: false }, opts.body || {});
+    
+    try {
+      const result = await this.requestFn(path, {
+        method: 'POST',
+        headers: this.headers,
+        body: JSON.stringify(body),
+      });
+      
+      return this._parseResponse(result);
+    } catch (error) {
+      // Auto-fallback to chat API if generate is not supported
+      if (error.message && error.message.includes('does not support generate')) {
+        console.warn(`Model "${model}" doesn't support generate API, trying chat API...`);
+        return this.chat(model, prompt, opts);
+      }
+      throw error;
+    }
+  }
+
+  // Chat API for models that only support chat (like llama3.2)
+  async chat(model, prompt, opts = {}) {
+    const path = opts.path || 'chat';
+    const messages = opts.messages || [{ role: 'user', content: prompt }];
+    // Add stream: false for better compatibility
+    const body = Object.assign({ model, messages, stream: false }, opts.body || {});
+    
     const result = await this.requestFn(path, {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify(body),
     });
     
+    return this._parseResponse(result);
+  }
+
+  // Parse NDJSON or JSON response
+  _parseResponse(result) {
     // Parse NDJSON response (streaming format from Ollama)
     if (typeof result === 'string') {
       let fullResponse = '';
@@ -89,7 +122,9 @@ export default class OllamaClient {
         if (!line.trim()) continue;
         try {
           const obj = JSON.parse(line.trim());
+          // Handle both generate and chat response formats
           if (obj.response) fullResponse += obj.response;
+          if (obj.message?.content) fullResponse += obj.message.content;
         } catch {
           // If not JSON, treat as plain text
           fullResponse += line;
@@ -98,8 +133,8 @@ export default class OllamaClient {
       return fullResponse.trim();
     }
     
-    // If already an object, return response field or whole object
-    return result?.response || result;
+    // If already an object, return response field or message content
+    return result?.response || result?.message?.content || result;
   }
 
   // Generate embeddings via Ollama's /api/embed endpoint. Returns whatever the API returns.

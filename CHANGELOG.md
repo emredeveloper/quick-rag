@@ -1,5 +1,91 @@
 # Changelog
 
+## [0.7.0] - 2025-11-04
+
+### 🎉 Major Update: Rebranding + Official SDK Integration
+
+**Package Name Change:**
+- 🆕 **NEW NAME: `quick-rag`** (was: `js-rag-local-llm`)
+- More memorable, cleaner, and easier to use
+- npm install: `npm install quick-rag`
+
+**Example Organization:**
+- 📁 Cleaned up examples folder (14 → 5 main examples)
+- 📂 Advanced examples moved to `example/advanced/`
+- 📖 New simplified example README
+
+**Breaking Changes:**
+- Added official `ollama` (v0.6.2) and `@lmstudio/sdk` (v1.5.0) as dependencies
+- New recommended clients: `OllamaRAGClient` and `LMStudioRAGClient`
+
+**New Features:**
+- ✨ **Full Official SDK Support**: All features from official SDKs now available
+  - **Streaming responses** - Real-time token-by-token generation
+  - **Tool calling & function execution** - Build autonomous AI agents
+  - **Vision model support** - Process images alongside text
+  - **Image input handling** - Send images in prompts
+  - **Web search & fetch** - Access web content (with Ollama account)
+  - **Model management** - list, pull, push, create, delete, copy models
+  - **Advanced configuration** - All SDK options exposed
+
+- 🎨 **Dual Client System**:
+  - `OllamaRAGClient` - Wraps official `ollama` SDK + RAG features
+  - `LMStudioRAGClient` - Wraps official `@lmstudio/sdk` + RAG features
+  - Legacy clients still available for backward compatibility
+
+- 📚 **Enhanced Examples**:
+  - `official-ollama-example.js` - Showcases official SDK + RAG
+  - `lmstudio-example.js` - Complete LM Studio integration
+
+**Backward Compatibility:**
+- ✅ All existing code continues to work
+- ✅ Legacy clients (`OllamaClient`, `LMStudioClient`) still exported
+- ✅ No breaking changes to vector store or retriever APIs
+- ✅ Existing examples work as before
+
+**Migration Guide:**
+```javascript
+// Old way (still works)
+import { OllamaClient } from 'js-rag-local-llm';
+const client = new OllamaClient();
+
+// New way (recommended - more features!)
+import { OllamaRAGClient } from 'js-rag-local-llm';
+const client = new OllamaRAGClient();
+
+// Now you get: streaming, tool calling, vision, web search, etc.
+```
+
+---
+
+## [0.6.5] - 2025-11-04 (Unreleased)
+
+### 🚀 Major Feature: Universal Model Support
+
+- **Auto-fallback to Chat API**: Automatically detects and uses the correct API (generate or chat)
+- **Support for ALL Ollama models**: Now works with `llama3.2`, `llama3.1`, `mistral`, `granite4`, `qwen2.5`, and any other Ollama model
+- **Seamless experience**: No configuration needed - just use any model name
+
+### ✨ New Features
+
+- `OllamaClient.chat()` method for chat-only models
+- `_parseResponse()` internal method supporting both API formats
+- Automatic warning when falling back to chat API
+
+### 📝 Documentation
+
+- Updated README with universal model support note
+- Added `llama-chat-example.js` demonstrating chat-only models
+- Removed model restrictions from troubleshooting
+
+### 🔧 Technical
+
+- Response parsing now handles both `response` and `message.content` fields
+- Better error handling with helpful messages
+- Zero breaking changes - fully backward compatible
+
+---
+
 ## [0.6.4] - 2025-11-04
 
 ### 📝 Documentation & Examples

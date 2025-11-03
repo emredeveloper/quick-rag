@@ -1,59 +1,118 @@
-# js-rag-local-llm
+# Quick RAG ⚡
 
-[![npm version](https://img.shields.io/npm/v/js-rag-local-llm.svg)](https://www.npmjs.com/package/js-rag-local-llm)
+[![npm version](https://img.shields.io/npm/v/quick-rag.svg)](https://www.npmjs.com/package/quick-rag)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-🚀 **Simple, fast RAG (Retrieval-Augmented Generation) for JavaScript & React**  
-Use local Ollama AI models in your apps with just a few lines of code.
+🚀 **Lightning-fast RAG (Retrieval-Augmented Generation) for JavaScript & React**  
+Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
 ## ✨ Features
 
+- 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
 - ⚡ **5x Faster** - Parallel batch embedding
 - 📚 **CRUD Operations** - Add, update, delete documents on the fly
 - 🎯 **Smart Retrieval** - Dynamic topK parameter
-- 🌊 **Streaming Support** - Real-time AI responses
+- 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
 - 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
-- 💪 **Type Safe** - Full TypeScript support
+- 🎨 **Multiple Providers** - Ollama & LM Studio support
+- �️ **All SDK Features** - Tool calling, vision, agents, and more
+- �💪 **Type Safe** - Full TypeScript support
 
 ## 📦 Installation
 
 ```bash
-npm install js-rag-local-llm
+npm install quick-rag
 ```
 
+**This package includes:**
+- ✅ Official `ollama` SDK (0.6.2+)
+- ✅ Official `@lmstudio/sdk` (1.5.0+)
+- ✅ RAG components (vector store, retrieval, embeddings)
+
 **Prerequisites:**
-- [Ollama](https://ollama.ai) installed and running
+- [Ollama](https://ollama.ai) installed and running, OR
+- [LM Studio](https://lmstudio.ai) installed with server enabled
 - Models pulled: `ollama pull granite4:tiny-h` and `ollama pull embeddinggemma`
+
+> **✨ New in v0.7.0:** Now built on official SDKs! Get streaming, tool calling, vision, and all official features from `ollama` and `@lmstudio/sdk` packages.
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1: React with Vite (Recommended)
+### Option 1: With Official Ollama SDK (Recommended)
+
+```javascript
+import { 
+  OllamaRAGClient, 
+  createOllamaRAGEmbedding,
+  InMemoryVectorStore, 
+  Retriever 
+} from 'quick-rag';
+
+// 1. Initialize client (official SDK)
+const client = new OllamaRAGClient({
+  host: 'http://127.0.0.1:11434'
+});
+
+// 2. Setup embedding
+const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+
+// 3. Create vector store
+const vectorStore = new InMemoryVectorStore(embed);
+const retriever = new Retriever(vectorStore);
+
+// 4. Add documents
+await vectorStore.addDocument({ 
+  text: 'Ollama provides local LLM hosting.' 
+});
+
+// 5. Query with streaming (official SDK feature!)
+const results = await retriever.getRelevant('What is Ollama?', 2);
+const context = results.map(d => d.text).join('\n');
+
+const response = await client.chat({
+  model: 'granite4:tiny-h',
+  messages: [{ 
+    role: 'user', 
+    content: `Context: ${context}\n\nQuestion: What is Ollama?` 
+  }],
+  stream: true, // Official SDK streaming!
+});
+
+// Stream response
+for await (const part of response) {
+  process.stdout.write(part.message?.content || '');
+}
+```
+
+---
+
+### Option 2: React with Vite
 
 **Step 1:** Create your project
 
 ```bash
 npm create vite@latest my-rag-app -- --template react
 cd my-rag-app
-npm install js-rag-local-llm express concurrently
+npm install quick-rag express concurrently
 ```
 
 **Step 2:** Create backend proxy (`server.js` in project root)
 
 ```javascript
 import express from 'express';
-import { OllamaClient } from 'js-rag-local-llm';
+import { OllamaRAGClient } from 'quick-rag';
 
 const app = express();
 app.use(express.json());
 
-const client = new OllamaClient({ baseUrl: 'http://127.0.0.1:11434/api' });
+const client = new OllamaRAGClient({ host: 'http://127.0.0.1:11434' });
 
 app.post('/api/generate', async (req, res) => {
-  const { model = 'granite4:tiny-h', prompt } = req.body;
-  const response = await client.generate(model, prompt);
-  res.json({ response });
+  const { model = 'granite4:tiny-h', messages } = req.body;
+  const response = await client.chat({ model, messages, stream: false });
+  res.json({ response: response.message.content });
 });
 
 app.post('/api/embed', async (req, res) => {
@@ -100,7 +159,7 @@ export default defineConfig({
 
 ```jsx
 import { useState, useEffect } from 'react';
-import { useRAG, initRAG, createBrowserModelClient } from 'js-rag-local-llm';
+import { useRAG, initRAG, createBrowserModelClient } from 'quick-rag';
 
 const docs = [
   { id: '1', text: 'React is a JavaScript library for building user interfaces.' },
@@ -175,7 +234,7 @@ Open `http://localhost:5173` 🎉
 
 ```javascript
 // pages/api/generate.js
-import { OllamaClient } from 'js-rag-local-llm';
+import { OllamaClient } from 'quick-rag';
 
 export default async function handler(req, res) {
   const client = new OllamaClient();
@@ -187,7 +246,7 @@ export default async function handler(req, res) {
 
 ```javascript
 // pages/api/embed.js
-import { OllamaClient } from 'js-rag-local-llm';
+import { OllamaClient } from 'quick-rag';
 
 export default async function handler(req, res) {
   const client = new OllamaClient();
@@ -204,7 +263,7 @@ export default async function handler(req, res) {
 ### Option 3: Vanilla JavaScript (Node.js)
 
 ```javascript
-import { createOllamaEmbedding, createMRL, InMemoryVectorStore, Retriever, generateWithRAG, OllamaClient } from 'js-rag-local-llm';
+import { createOllamaEmbedding, createMRL, InMemoryVectorStore, Retriever, generateWithRAG, OllamaClient } from 'quick-rag';
 
 // Setup
 const embedding = createOllamaEmbedding({ model: 'embeddinggemma' });
@@ -245,12 +304,63 @@ console.log('🤖 Answer:', result.response);
 to write code and implement functionality in web browsers...
 ```
 
-**For React projects:** Import from `'js-rag-local-llm/react'` to use hooks:
+---
+
+### Option 4: LM Studio 🎨
+
+Use LM Studio instead of Ollama with OpenAI-compatible API:
 
 ```javascript
-import { useRAG } from 'js-rag-local-llm/react';
+import { 
+  LMStudioRAGClient, 
+  createLMStudioRAGEmbedding, 
+  InMemoryVectorStore, 
+  Retriever, 
+  generateWithRAG 
+} from 'quick-rag';
+
+// 1. Initialize LM Studio client
+const client = new LMStudioRAGClient();
+
+// 2. Setup embedding (use your embedding model from LM Studio)
+const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+
+// 3. Create vector store and retriever
+const vectorStore = new InMemoryVectorStore(embed);
+const retriever = new Retriever(vectorStore);
+
+// 4. Add documents
+await vectorStore.addDocuments([
+  { text: 'LM Studio is a desktop app for running LLMs locally.' },
+  { text: 'It provides an OpenAI-compatible API.' },
+  { text: 'You can use models like Llama, Mistral, and more.' }
+]);
+
+// 5. Query with RAG
+const results = await retriever.getRelevant('What is LM Studio?', 2);
+const answer = await generateWithRAG(
+  client,
+  'qwen/qwen3-4b-2507', // or your model name
+  'What is LM Studio?',
+  results
+);
+
+console.log('Answer:', answer);
+```
+
+**Prerequisites for LM Studio:**
+
+1. Download and install [LM Studio](https://lmstudio.ai)
+2. Download a language model (e.g., Llama 3.2, Mistral)
+3. Download an embedding model (e.g., nomic-embed-text)
+4. Start the local server: `Developer > Local Server` (default: `http://localhost:1234`)
+
+**For React projects:** Import from `'quick-rag/react'` to use hooks:
+
+```javascript
+import { useRAG } from 'quick-rag/react';
 // or
-import { useRAG } from 'js-rag-local-llm'; // Also works in React projects
+import { useRAG } from 'quick-rag'; // Also works in React projects
 ```
 
 ---
@@ -419,7 +529,9 @@ const rag = await initRAG(docs, {
 | 📦 **Models not found** | Pull models: `ollama pull granite4:tiny-h && ollama pull embeddinggemma` |
 | 🌐 **404 on `/api/embed`** | Check your proxy configuration in `vite.config.js` or API routes |
 | 💻 **Windows IPv6 issues** | Use `127.0.0.1` instead of `localhost` |
-| 📦 **Module not found** | Check imports: use `'js-rag-local-llm'` not `'js-rag-local-llm/...'` |
+| 📦 **Module not found** | Check imports: use `'quick-rag'` not `'quick-rag/...'` |
+
+> **Note:** v0.6.5+ automatically detects and uses the correct API (generate or chat) for any model.
 
 ---
 

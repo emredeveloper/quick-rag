@@ -1,9 +1,20 @@
+// Official SDK Wrappers (Recommended)
+export { OllamaRAGClient } from './ollamaRAGClient.js';
+export { LMStudioRAGClient } from './lmstudioRAGClient.js';
+export { createOllamaEmbedding as createOllamaRAGEmbedding } from './embeddings/ollamaRAGEmbedding.js';
+export { createLMStudioEmbedding as createLMStudioRAGEmbedding } from './embeddings/lmstudioRAGEmbedding.js';
+
+// Legacy clients (for backward compatibility)
 export { default as OllamaClient } from './ollamaClient.js';
+export { LMStudioClient } from './lmstudioClient.js';
+export { createOllamaEmbedding } from './embeddings/ollamaEmbedding.js';
+export { createLMStudioEmbedding } from './embeddings/lmstudioEmbedding.js';
+
+// Core RAG components
 export { InMemoryVectorStore } from './vectorStore.js';
 export { Retriever } from './retriever.js';
 export { generateWithRAG } from './rag.js';
 export { useRAG } from './react/useRag.js';
-export { createOllamaEmbedding } from './embeddings/ollamaEmbedding.js';
 export { createMRL } from './embeddings/mrl.js';
 export { initRAG } from './initRag.js';
 export { createBrowserModelClient } from './browserModelClient.js';
