@@ -60,7 +60,10 @@ export default function App() {
     model: 'granite4:tiny-h'
   });
 
-  useEffect(() => { initRAG(docs).then(setCore); }, []);
+  // Choose a custom embedding model via baseEmbeddingOptions.model (default: 'embeddinggemma')
+  useEffect(() => {
+    initRAG(docs, { baseEmbeddingOptions: { model: 'nomic-embed-text' } }).then(setCore);
+  }, []);
 
   return (
     <div>
@@ -77,3 +80,24 @@ export default function App() {
 Notes:
 - Default model: `granite4:tiny-h`, default embedding model: `embeddinggemma`.
 - Adjust `OllamaClient({ baseUrl: 'http://localhost:11434/api' })` if needed.
+
+## Embeddings
+
+Use Ollama embeddings directly with MRL and the in-memory store:
+
+```javascript
+import { createOllamaEmbedding, createMRL, InMemoryVectorStore } from 'js-rag-local-llm';
+
+// You can pick the embedding model (default is 'embeddinggemma')
+const baseEmbedding = createOllamaEmbedding({ model: 'nomic-embed-text' });
+const mrl = createMRL(baseEmbedding, 768); // base dim of the upstream model
+
+const store = new InMemoryVectorStore(mrl, { defaultDim: 128 });
+await store.addDocuments([
+  { id: '1', text: 'React is a JavaScript library.' },
+  { id: '2', text: 'Ollama runs LLMs locally.' }
+], { dim: 128 });
+
+const results = await store.similaritySearch('What is React?', 2, 128);
+// results -> [{ id, text, score }, ...]
+```
