@@ -1,6 +1,6 @@
 {
   "name": "quick-rag",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "⚡ Quick RAG - Fast local AI with official Ollama & LM Studio SDK integration",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",

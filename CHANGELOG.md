@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.7.2] - 2025-11-04
+
+### 🐛 Critical Fixes
+
+**generateWithRAG() Improvements:**
+- ✅ Added dual API support (new and legacy signatures)
+- ✅ Fixed LMStudioRAGClient compatibility
+- ✅ Fixed OllamaRAGClient compatibility
+- ✅ Smart client detection for proper API usage
+
+**New API (Recommended):**
+```javascript
+const answer = await generateWithRAG(client, model, query, results);
+```
+
+**Legacy API (Still Supported):**
+```javascript
+const result = await generateWithRAG({ retriever, modelClient, model, query });
+```
+
+**What Works Now:**
+- ✅ Both Ollama and LM Studio clients work perfectly
+- ✅ All README examples tested and working
+- ✅ Backward compatibility maintained
+
+---
+
 ## [0.7.1] - 2025-11-04
 
 ### 🐛 Bug Fixes
