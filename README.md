@@ -230,8 +230,19 @@ const result = await generateWithRAG({
   topK: 2
 });
 
-console.log('Retrieved:', result.docs);
-console.log('Answer:', result.response);
+// Clean output
+console.log('📚 Retrieved:', result.docs.map(d => d.text));
+console.log('🤖 Answer:', result.response);
+```
+
+**Output:**
+```
+📚 Retrieved: [
+  'JavaScript is a programming language.',
+  'Python is great for data science.'
+]
+🤖 Answer: JavaScript is a programming language that allows developers 
+to write code and implement functionality in web browsers...
 ```
 
 **For React projects:** Import from `'js-rag-local-llm/react'` to use hooks:

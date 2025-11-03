@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.4] - 2025-11-04
+
+### 📝 Documentation & Examples
+
+- **Clean output examples**: Added `simple-nodejs.js` with beautiful, readable output
+- **Better console logging**: Examples now show clean results without vector arrays
+- **Improved README**: Added output examples to show expected results
+- **Updated example/README.md**: Better organization with new simple example
+
+### 🎨 User Experience
+
+- Output now shows relevance scores as percentages (e.g., "80.2%")
+- Clean separation between retrieved docs and AI answers
+- No more cluttered vector arrays in console output
+
+---
+
 ## [0.6.3] - 2025-11-04
 
 ### 🔴 Critical Fix

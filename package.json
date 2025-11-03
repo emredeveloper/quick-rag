@@ -1,6 +1,6 @@
 {
   "name": "js-rag-local-llm",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Minimal RAG library for React + Ollama local models (starter scaffold)",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",

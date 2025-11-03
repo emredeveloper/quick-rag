@@ -1,22 +1,58 @@
-# Example Demos - RAG Local LLM v0.6.0
+# Example Demos - RAG Local LLM v0.6.3
 
-This folder contains examples demonstrating all the new features in v0.6.0.
+This folder contains examples demonstrating all features.
 
 ## 🚀 Quick Start
 
-All examples work without a running Ollama server by default (they'll show you what would happen). To run with real Ollama generation:
+### Simple Example (Recommended)
 
 ```bash
-# Set environment variable to enable Ollama
-export OLLAMA_TEST=1  # Linux/Mac
-set OLLAMA_TEST=1     # Windows CMD
-$env:OLLAMA_TEST=1    # Windows PowerShell
+node example/simple-nodejs.js
+```
 
-# Then run any example
-node example/all-features-demo.js
+**Output:**
+```
+📚 Retrieved Documents:
+
+1. JavaScript is a programming language.
+   ID: 1 | Relevance: 80.2%
+
+2. Python is great for data science.
+   ID: 2 | Relevance: 38.8%
+
+🤖 AI Answer:
+JavaScript is a programming language...
+```
+
+### All Examples
+
+All examples work with a running Ollama server. Make sure you have:
+```bash
+ollama pull granite4:tiny-h
+ollama pull embeddinggemma
+ollama serve
 ```
 
 ## 📁 Examples
+
+### 🌟 **simple-nodejs.js** - Clean & Simple (NEW!)
+Perfect starting point with clean output:
+- ✅ Minimal setup
+- ✅ Clean console output
+- ✅ Easy to understand
+
+```bash
+node example/simple-nodejs.js
+```
+
+### 🔧 **pure-nodejs-example.js** - Detailed Output
+Same as simple but with more details:
+- 📊 Step-by-step process
+- 🔍 Detailed logging
+
+```bash
+node example/pure-nodejs-example.js
+```
 
 ### 1. **all-features-demo.js** - Complete Feature Showcase
 Demonstrates ALL new features in one comprehensive demo:
