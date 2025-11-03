@@ -8,6 +8,73 @@ Minimal RAG utilities for React apps using local Ollama models.
 npm install js-rag-local-llm
 ```
 
+Quick setup (Vite + Express)
+
+```bash
+# 1) Create a Vite React app
+npm create vite@latest my-rag-app -- --template react
+cd my-rag-app
+
+# 2) Install deps
+npm install js-rag-local-llm express
+npm install -D concurrently @vitejs/plugin-react
+
+# 3) Add server.js (Express proxy) and Vite proxy
+
+# server.js (create this file at project root)
+```
+import express from 'express';
+import { OllamaClient } from 'js-rag-local-llm';
+
+const app = express();
+app.use(express.json());
+
+// text generation
+app.post('/api/rag-generate', async (req, res) => {
+  try {
+    const { model, prompt } = req.body || {};
+    const client = new OllamaClient({ baseUrl: 'http://127.0.0.1:11434/api' });
+    const raw = await client.generate(model || 'granite4:tiny-h', prompt);
+    let text = '';
+    if (typeof raw === 'string') {
+      for (const line of raw.split(/\r?\n/)) { try { const obj = JSON.parse(line.trim()); text += obj.response || ''; } catch {} }
+    } else if (raw?.response) text = String(raw.response); else text = String(raw);
+    res.json({ response: text.trim() });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+// embeddings
+app.post('/api/embed', async (req, res) => {
+  try {
+    const { model = 'embeddinggemma', input } = req.body || {};
+    const client = new OllamaClient({ baseUrl: 'http://127.0.0.1:11434/api' });
+    const resp = await client.embed(model, input);
+    res.json(resp);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+app.listen(3001, () => console.log('API proxy http://127.0.0.1:3001'));
+```
+
+# vite.config.js (ensure the proxy below exists)
+```
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+export default defineConfig({
+  plugins: [react()],
+  server: { proxy: { '/api': { target: 'http://127.0.0.1:3001', changeOrigin: true } } }
+});
+```
+
+# 4) Scripts
+npm pkg set scripts.dev="concurrently \"npm:dev:server\" \"npm:dev:client\""
+npm pkg set scripts.dev:server="node server.js"
+npm pkg set scripts.dev:client="vite"
+
+# 5) Run
+npm run dev
+```
+
 ## Quick Start (React + API proxy)
 
 Add a minimal API route to proxy your local Ollama server (browsers cannot call it directly due to CORS):
@@ -197,6 +264,10 @@ export default async function handler(req, res) {
 ```
 
 - App.jsx usage aynı: `initRAG(..., { baseEmbeddingOptions: { useBrowser: true, baseUrl: '/api/embed' } })`.
+
+Note on dependencies
+
+- This library intentionally does not depend on `express` or `concurrently`. Those are app‑level choices handled by the starter (`npm create rag-local-app`) or by your project setup. 
 
 ## Streaming
 
