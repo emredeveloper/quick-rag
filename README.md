@@ -22,7 +22,7 @@ npm install -D concurrently @vitejs/plugin-react
 # 3) Add server.js (Express proxy) and Vite proxy
 
 # server.js (create this file at project root)
-```
+```javascript
 import express from 'express';
 import { OllamaClient } from 'js-rag-local-llm';
 
