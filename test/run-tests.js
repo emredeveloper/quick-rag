@@ -28,6 +28,12 @@ async function testVectorStore() {
     assert('score' in r, 'result should have score');
     assert(typeof r.score === 'number' && !isNaN(r.score));
   });
+  
+  // Test addDocument (singular) - v0.6.1
+  await store.addDocument({ id: 'd', text: 'dragon fruit exotic' });
+  const allDocs = store.getAllDocuments();
+  assert(allDocs.length === 4, 'should have 4 docs after addDocument');
+  
   console.log('vectorStore tests passed');
 }
 

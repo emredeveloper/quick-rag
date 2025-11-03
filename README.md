@@ -199,6 +199,15 @@ Manage your document store dynamically:
 ```javascript
 const store = new InMemoryVectorStore(mrl, { defaultDim: 128 });
 
+// Add single document (v0.6.1+)
+await store.addDocument({ id: 'new-id', text: 'New document text' });
+
+// Add multiple documents (batch, faster)
+await store.addDocuments([
+  { id: '1', text: 'Document 1' },
+  { id: '2', text: 'Document 2' }
+], { dim: 128 });
+
 // Get all documents
 const allDocs = store.getAllDocuments();
 

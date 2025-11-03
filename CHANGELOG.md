@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.6.1] - 2025-11-04
+
+### ✨ New Features
+
+- **Single document add**: Added `addDocument(doc, opts)` convenience method to `InMemoryVectorStore` for adding single documents without array wrapping
+
+### 🔧 Improvements
+
+- Simplified API: No need to wrap single documents in arrays anymore
+- Better DX: `await store.addDocument({id: 'x', text: '...'})` instead of `await store.addDocuments([{...}])`
+
+### 📝 Documentation
+
+- Updated README with `addDocument()` usage examples
+- Added test coverage for single document addition
+
+---
+
 ## [0.6.0] - 2025-11-03
 
 ### 🔴 Critical Fixes

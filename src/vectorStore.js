@@ -42,6 +42,11 @@ export class InMemoryVectorStore {
     });
   }
 
+  // Add a single document (convenience method)
+  async addDocument(doc, opts = {}) {
+    return this.addDocuments([doc], opts);
+  }
+
   // Return top-k nearest documents by cosine similarity. Accepts queryDim to control query embedding size.
   async similaritySearch(query, k = 3, queryDim) {
     const dim = queryDim || this.defaultDim;
