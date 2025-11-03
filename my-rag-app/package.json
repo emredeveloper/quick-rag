@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
-    "js-rag-local-llm": "^0.6.0",
+    "js-rag-local-llm": "^0.6.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

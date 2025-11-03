@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.6.2] - 2025-11-04
+
+### 📝 Documentation
+
+- **Major README overhaul**: Complete rewrite for clarity and user-friendliness
+- **Step-by-step guides**: Added detailed setup instructions for React (Vite), Next.js, and vanilla JavaScript
+- **Better examples**: Clear, focused code examples for each use case
+- **Troubleshooting table**: Quick reference for common issues
+- **Cleaner structure**: Organized documentation by framework and use case
+
+### 🎯 Improvements
+
+- Simplified Quick Start section with 6 clear steps
+- Added comparison table for different framework setups
+- Enhanced API reference with real-world examples
+- Better error messages and solutions
+
+---
+
 ## [0.6.1] - 2025-11-04
 
 ### ✨ New Features
