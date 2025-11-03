@@ -148,7 +148,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
-  server: { proxy: { '/api': { target: 'http://localhost:3001', changeOrigin: true } } }
+  server: { proxy: { '/api': { target: 'http://127.0.0.1:3001', changeOrigin: true } } }
 });
 ```
 
@@ -197,6 +197,49 @@ export default async function handler(req, res) {
 ```
 
 - App.jsx usage aynı: `initRAG(..., { baseEmbeddingOptions: { useBrowser: true, baseUrl: '/api/embed' } })`.
+
+## Streaming
+
+Server (Express) streaming route (NDJSON lines with `{ response: "..." }`):
+
+```javascript
+// /api/rag-generate-stream
+import express from 'express';
+import { OllamaClient } from 'js-rag-local-llm';
+const app = express(); app.use(express.json());
+
+app.post('/api/rag-generate-stream', async (req, res) => {
+  res.setHeader('Content-Type', 'application/x-ndjson');
+  res.setHeader('Transfer-Encoding', 'chunked');
+  const { model, prompt } = req.body || {};
+  const client = new OllamaClient({ baseUrl: process.env.OLLAMA_HOST || 'http://localhost:11434/api' });
+  const raw = await client.generate(model || 'granite4:tiny-h', prompt);
+  const writeChunk = (text) => res.write(JSON.stringify({ response: text }) + '\n');
+  if (typeof raw === 'string') {
+    for (const line of raw.split(/\r?\n/)) {
+      try { const obj = JSON.parse(line.trim()); if (obj.response) writeChunk(obj.response); } catch { writeChunk(line); }
+    }
+    return res.end();
+  }
+  writeChunk(String(raw?.response || raw));
+  res.end();
+});
+```
+
+Client usage:
+
+```jsx
+const { run, response } = useRAG({ retriever, modelClient: createBrowserModelClient({ endpoint: '/api/rag-generate-stream' }), model });
+// Stream by passing { stream: true }
+await run(query, { stream: true, onDelta: (delta, full) => {/* optional */} });
+```
+
+## Troubleshooting (Quick)
+
+- Blank page or `node:fs` error in browser: use the package root import and ensure browser entry is selected automatically (update to latest). Do not import `OllamaClient` in the browser.
+- 404 `/api/embed`: add the endpoint in your proxy (Express/Next) or fix the Vite proxy path.
+- 500 from `/api/*`: check proxy logs; ensure Ollama is running and models are pulled (`granite4:tiny-h`, `embeddinggemma`).
+- ECONNREFUSED to `::1:3001`: pin Vite proxy target to `http://127.0.0.1:3001` and run the proxy server.
 
 ## Embeddings
 
