@@ -16,31 +16,6 @@ See `example/` for a minimal usage demo.
 npm install js-rag-local-llm
 ```
 
-Assumptions:
-- Ollama local server is reachable at a configurable base URL (default: `http://localhost:11434`). Endpoint paths can vary by Ollama version; the client supports configuration.
-
-Try it (quick):
-
-1. Install dependencies:
-
-```bash
-cd C:\Users\emreq\Desktop\javascript-ai
-npm install
-```
-
-2. Run tests (smoke tests for vector store & retriever):
-
-```bash
-npm test
-```
-
-3. Run the example (prints retrieved docs and the prompt). To enable a real Ollama call set `OLLAMA_TEST=1` and run a local Ollama server:
-
-```bash
-set OLLAMA_TEST=1
-npm start
-```
-
 Notes:
 - The `OllamaClient` is a small adapter that posts to a configurable local endpoint; adjust `baseUrl` or use the official `ollama-js` client if you prefer.
 - You can use Ollama for embeddings and generation. Defaults in the example:
@@ -116,30 +91,7 @@ export default function App() {
 }
 ```
 
-### Basic RAG Example
 
-Run the local example with a question:
-
-```bash
-npm start -- "What is React?"
-```
-
-Enable real model calls on Windows Command Prompt (cmd):
-
-```bash
-set OLLAMA_TEST=1
-npm start -- "What is React?"
-```
-
-If `OLLAMA_TEST` is NOT set, the script prints the retrieved documents and the constructed prompt only. If set, it will also call the local Ollama server and print the model's answer. Default model is `granite4:tiny-h`, and the embedding model is `embeddinggemma`.
-
-### MRL (Mixed-Resolution Layers) Example
-
-Compare similarity at 128- and 256-dim embeddings:
-
-```bash
-node ./example/mrl-example.js
-```
 
 This script prints similarity scores for both dimensions and a brief comparison per document.
 
