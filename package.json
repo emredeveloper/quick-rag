@@ -4,6 +4,12 @@
   "description": "Minimal RAG library for React + Ollama local models (starter scaffold)",
   "main": "src/index.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "browser": "./src/index.browser.js",
+      "import": "./src/index.js"
+    }
+  },
   "scripts": {
     "test": "node --experimental-vm-modules ./test/run-tests.js",
     "start": "node ./example/run.js",

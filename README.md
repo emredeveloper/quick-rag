@@ -81,6 +81,123 @@ Notes:
 - Default model: `granite4:tiny-h`, default embedding model: `embeddinggemma`.
 - Adjust `OllamaClient({ baseUrl: 'http://localhost:11434/api' })` if needed.
 
+## Browser & CORS
+
+Direct calls from the browser to Ollama (e.g., `http://localhost:11434/api`) are blocked by CORS. You must use a proxy:
+
+- Preferred: App server proxy (Next.js API routes or Express):
+  - Text generation: `POST /api/rag-generate`
+  - Embeddings: `POST /api/embed`
+- Alternative: Reverse proxy (Nginx/Caddy) adding permissive CORS headers in front of Ollama.
+- SSR option: Run the whole RAG pipeline on the server and send only the answer to the client.
+
+Client setup with proxy for embeddings as well:
+
+```jsx
+useEffect(() => {
+  initRAG(docs, {
+    baseEmbeddingOptions: {
+      useBrowser: true,      // use browser-friendly embedding via fetch
+      baseUrl: '/api/embed', // your proxy endpoint
+      model: 'nomic-embed-text'
+    }
+  }).then(setCore);
+}, []);
+```
+
+## Framework Guides
+
+### Vite (React)
+
+- Backend proxy (project root): create `server.js` and add:
+
+```javascript
+import express from 'express';
+import { OllamaClient } from 'js-rag-local-llm';
+const app = express(); app.use(express.json());
+
+app.post('/api/rag-generate', async (req, res) => {
+  try {
+    const { model, prompt } = req.body || {};
+    const client = new OllamaClient({ baseUrl: process.env.OLLAMA_HOST || 'http://localhost:11434/api' });
+    const raw = await client.generate(model || 'granite4:tiny-h', prompt);
+    let text = '';
+    if (typeof raw === 'string') {
+      for (const line of raw.split(/\r?\n/)) { try { const obj = JSON.parse(line.trim()); text += obj.response || ''; } catch {} }
+    } else if (raw?.response) text = String(raw.response); else text = String(raw);
+    res.json({ response: text.trim() });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+app.post('/api/embed', async (req, res) => {
+  try {
+    const { model = 'embeddinggemma', input } = req.body || {};
+    const client = new OllamaClient({ baseUrl: process.env.OLLAMA_HOST || 'http://localhost:11434/api' });
+    const resp = await client.embed(model, input);
+    res.json(resp);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+});
+
+app.listen(process.env.PORT || 3001, () => console.log('API proxy http://localhost:3001'));
+```
+
+- Vite proxy (`vite.config.js`):
+
+```javascript
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+export default defineConfig({
+  plugins: [react()],
+  server: { proxy: { '/api': { target: 'http://localhost:3001', changeOrigin: true } } }
+});
+```
+
+- App setup (client):
+
+```jsx
+useEffect(() => {
+  initRAG(docs, {
+    baseEmbeddingOptions: { useBrowser: true, baseUrl: '/api/embed', model: 'nomic-embed-text' }
+  }).then(setCore);
+}, []);
+```
+
+### Next.js
+
+- Pages Router: create `pages/api/rag-generate.js` and `pages/api/embed.js`.
+
+```javascript
+// pages/api/rag-generate.js
+import { OllamaClient } from 'js-rag-local-llm';
+export default async function handler(req, res) {
+  try {
+    const { model, prompt } = req.body || {};
+    const client = new OllamaClient({ baseUrl: process.env.OLLAMA_HOST || 'http://localhost:11434/api' });
+    const raw = await client.generate(model || 'granite4:tiny-h', prompt);
+    let text = '';
+    if (typeof raw === 'string') {
+      for (const line of raw.split(/\r?\n/)) { try { const obj = JSON.parse(line.trim()); text += obj.response || ''; } catch {} }
+    } else if (raw?.response) text = String(raw.response); else text = String(raw);
+    res.status(200).json({ response: text.trim() });
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+}
+```
+
+```javascript
+// pages/api/embed.js
+import { OllamaClient } from 'js-rag-local-llm';
+export default async function handler(req, res) {
+  try {
+    const { model = 'embeddinggemma', input } = req.body || {};
+    const client = new OllamaClient({ baseUrl: process.env.OLLAMA_HOST || 'http://localhost:11434/api' });
+    const resp = await client.embed(model, input);
+    res.status(200).json(resp);
+  } catch (e) { res.status(500).json({ error: String(e) }); }
+}
+```
+
+- App.jsx usage aynı: `initRAG(..., { baseEmbeddingOptions: { useBrowser: true, baseUrl: '/api/embed' } })`.
+
 ## Embeddings
 
 Use Ollama embeddings directly with MRL and the in-memory store:
