@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.6.3] - 2025-11-04
+
+### 🔴 Critical Fix
+
+- **Pure Node.js support**: Fixed React dependency issue in pure Node.js projects
+- **Separate entry points**: 
+  - Node.js: `src/index.node.js` (no React dependencies)
+  - Browser/React: `src/index.js` or `js-rag-local-llm/react`
+  - Browser: `src/index.browser.js`
+
+### ✨ New Features
+
+- **Automatic response parsing**: `OllamaClient.generate()` now automatically parses NDJSON streaming responses
+- **Better package.json exports**: Conditional exports for Node.js vs Browser vs React
+
+### 📝 Documentation
+
+- Added pure Node.js example (`example/pure-nodejs-example.js`)
+- Updated README with React import instructions
+- Clarified usage for different environments
+
+### 🔧 Technical
+
+- `generate()` method now returns clean text instead of raw NDJSON
+- Package correctly resolves entry points based on environment
+- No breaking changes for existing users
+
+---
+
 ## [0.6.2] - 2025-11-04
 
 ### 📝 Documentation

@@ -76,11 +76,30 @@ export default class OllamaClient {
   async generate(model, prompt, opts = {}) {
     const path = opts.path || 'generate';
     const body = Object.assign({ model, prompt }, opts.body || {});
-    return this.requestFn(path, {
+    const result = await this.requestFn(path, {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify(body),
     });
+    
+    // Parse NDJSON response (streaming format from Ollama)
+    if (typeof result === 'string') {
+      let fullResponse = '';
+      for (const line of result.split(/\r?\n/)) {
+        if (!line.trim()) continue;
+        try {
+          const obj = JSON.parse(line.trim());
+          if (obj.response) fullResponse += obj.response;
+        } catch {
+          // If not JSON, treat as plain text
+          fullResponse += line;
+        }
+      }
+      return fullResponse.trim();
+    }
+    
+    // If already an object, return response field or whole object
+    return result?.response || result;
   }
 
   // Generate embeddings via Ollama's /api/embed endpoint. Returns whatever the API returns.

@@ -234,6 +234,14 @@ console.log('Retrieved:', result.docs);
 console.log('Answer:', result.response);
 ```
 
+**For React projects:** Import from `'js-rag-local-llm/react'` to use hooks:
+
+```javascript
+import { useRAG } from 'js-rag-local-llm/react';
+// or
+import { useRAG } from 'js-rag-local-llm'; // Also works in React projects
+```
+
 ---
 
 ## 📖 API Reference
