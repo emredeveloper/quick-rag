@@ -262,36 +262,50 @@ export default async function handler(req, res) {
 
 ### Option 3: Vanilla JavaScript (Node.js)
 
+**Simple approach with official Ollama SDK:**
+
 ```javascript
-import { createOllamaEmbedding, createMRL, InMemoryVectorStore, Retriever, generateWithRAG, OllamaClient } from 'quick-rag';
+import { 
+  OllamaRAGClient, 
+  createOllamaRAGEmbedding, 
+  InMemoryVectorStore, 
+  Retriever 
+} from 'quick-rag';
 
-// Setup
-const embedding = createOllamaEmbedding({ model: 'embeddinggemma' });
-const mrl = createMRL(embedding, 768);
-const store = new InMemoryVectorStore(mrl, { defaultDim: 128 });
+// 1. Initialize client
+const client = new OllamaRAGClient();
 
-// Add documents
-await store.addDocuments([
-  { id: '1', text: 'JavaScript is a programming language.' },
-  { id: '2', text: 'Python is great for data science.' },
-  { id: '3', text: 'Rust is a systems programming language.' }
-], { dim: 128 });
+// 2. Setup embedding
+const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
 
-// Create retriever
-const retriever = new Retriever(store, { k: 2 });
+// 3. Create vector store and retriever
+const vectorStore = new InMemoryVectorStore(embed);
+const retriever = new Retriever(vectorStore);
 
-// Ask a question
-const result = await generateWithRAG({
-  retriever,
-  modelClient: new OllamaClient(),
+// 4. Add documents
+await vectorStore.addDocuments([
+  { text: 'JavaScript is a programming language.' },
+  { text: 'Python is great for data science.' },
+  { text: 'Rust is a systems programming language.' }
+]);
+
+// 5. Query
+const query = 'What is JavaScript?';
+const results = await retriever.getRelevant(query, 2);
+
+// 6. Generate answer
+const context = results.map(d => d.text).join('\n');
+const response = await client.chat({
   model: 'granite4:tiny-h',
-  query: 'What is JavaScript?',
-  topK: 2
+  messages: [{ 
+    role: 'user', 
+    content: `Context:\n${context}\n\nQuestion: ${query}\n\nAnswer:` 
+  }]
 });
 
 // Clean output
-console.log('📚 Retrieved:', result.docs.map(d => d.text));
-console.log('🤖 Answer:', result.response);
+console.log('📚 Retrieved:', results.map(d => d.text));
+console.log('🤖 Answer:', response.message.content);
 ```
 
 **Output:**

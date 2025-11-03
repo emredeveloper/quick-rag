@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.7.1] - 2025-11-04
+
+### 🐛 Bug Fixes
+
+**Critical README Corrections:**
+- ✅ Fixed all code examples to use correct API
+- ✅ Updated Option 3 (Node.js) to use official SDK
+- ✅ Updated Option 4 (LM Studio) with proper usage
+- ✅ Corrected API calls:
+  - `vectorStore.addDocuments()` (not `retriever.addDocuments()`)
+  - `retriever.getRelevant()` (not `retriever.retrieve()`)
+  - `LMStudioRAGClient` (not `LMStudioClient`)
+  - `createOllamaRAGEmbedding` (recommended over legacy)
+
+**What Changed:**
+- All examples now work out-of-the-box
+- Consistent API usage throughout documentation
+- Clear distinction between official SDK clients and legacy clients
+
+---
+
 ## [0.7.0] - 2025-11-04
 
 ### 🎉 Major Update: Rebranding + Official SDK Integration
