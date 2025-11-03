@@ -3,11 +3,14 @@
   "version": "0.1.7",
   "description": "Minimal RAG library for React + Ollama local models (starter scaffold)",
   "main": "src/index.js",
+  "module": "src/index.js",
+  "browser": "src/index.browser.js",
   "type": "module",
   "exports": {
     ".": {
       "browser": "./src/index.browser.js",
-      "import": "./src/index.js"
+      "import": "./src/index.js",
+      "default": "./src/index.js"
     }
   },
   "scripts": {
