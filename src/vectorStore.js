@@ -26,10 +26,20 @@ export class InMemoryVectorStore {
   // If opts.dim provided, request embeddings at that dimension (if embeddingFn supports it).
   async addDocuments(docs, opts = {}) {
     const dim = opts.dim || this.defaultDim;
-    for (const d of docs) {
-      const vec = await this.embeddingFn(d.text, dim);
-      this.items.push({ id: d.id || String(this.items.length), text: d.text, meta: d.meta || {}, vector: vec, dim });
-    }
+    
+    // Batch embedding for better performance
+    const embedPromises = docs.map(d => this.embeddingFn(d.text, dim));
+    const vectors = await Promise.all(embedPromises);
+    
+    docs.forEach((d, idx) => {
+      this.items.push({ 
+        id: d.id || String(this.items.length), 
+        text: d.text, 
+        meta: d.meta || {}, 
+        vector: vectors[idx], 
+        dim 
+      });
+    });
   }
 
   // Return top-k nearest documents by cosine similarity. Accepts queryDim to control query embedding size.
@@ -39,5 +49,48 @@ export class InMemoryVectorStore {
     const scored = this.items.map(it => ({ score: cosine(qVec, it.vector), doc: it }));
     scored.sort((a, b) => b.score - a.score);
     return scored.slice(0, k).map(s => ({ ...s.doc, score: s.score }));
+  }
+
+  // Delete a document by id
+  deleteDocument(id) {
+    const index = this.items.findIndex(item => item.id === id);
+    if (index !== -1) {
+      this.items.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  // Update a document by id (re-embeds the text)
+  async updateDocument(id, newText, newMeta) {
+    const index = this.items.findIndex(item => item.id === id);
+    if (index === -1) return false;
+    
+    const item = this.items[index];
+    const dim = item.dim || this.defaultDim;
+    const vec = await this.embeddingFn(newText, dim);
+    
+    this.items[index] = {
+      ...item,
+      text: newText,
+      meta: newMeta !== undefined ? newMeta : item.meta,
+      vector: vec
+    };
+    return true;
+  }
+
+  // Get document by id
+  getDocument(id) {
+    return this.items.find(item => item.id === id);
+  }
+
+  // Get all documents
+  getAllDocuments() {
+    return [...this.items];
+  }
+
+  // Clear all documents
+  clear() {
+    this.items = [];
   }
 }

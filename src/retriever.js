@@ -4,7 +4,9 @@ export class Retriever {
     this.k = options.k || 3;
   }
 
-  async getRelevant(query) {
-    return this.store.similaritySearch(query, this.k);
+  async getRelevant(query, topK) {
+    // Use provided topK or fall back to instance default
+    const k = topK !== undefined ? topK : this.k;
+    return this.store.similaritySearch(query, k);
   }
 }

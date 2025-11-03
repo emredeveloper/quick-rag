@@ -3,7 +3,9 @@ import OllamaClient from '../ollamaClient.js';
 // Embedding adapter that uses a local Ollama server.
 // Defaults to model 'embeddinggemma' (per your instruction).
 export default function createOllamaEmbedding({ baseUrl, model = 'embeddinggemma', headers } = {}) {
-  const client = new OllamaClient({ baseUrl, headers });
+  // Use 127.0.0.1 instead of localhost for better Windows compatibility
+  const url = baseUrl || 'http://127.0.0.1:11434/api';
+  const client = new OllamaClient({ baseUrl: url, headers });
 
   return async function ollamaEmbedding(text, dim) {
     // Ollama embed endpoint accepts `input` as string or array.

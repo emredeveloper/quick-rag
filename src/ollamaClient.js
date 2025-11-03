@@ -2,14 +2,34 @@
 // Assumptions: local Ollama server available at baseUrl (default http://localhost:11434).
 // If the official `ollama` JS client is installed, you can pass a custom `requestFn`.
 
-import fetch from 'node-fetch';
+// Use native fetch in Node.js 18+ or browsers, fallback to node-fetch if needed
+const fetchFn = (() => {
+  try {
+    // Try to use global fetch (Node 18+, browsers)
+    if (typeof fetch !== 'undefined') {
+      return fetch;
+    }
+  } catch {}
+  
+  // Fallback to node-fetch for older Node versions
+  try {
+    // Dynamic import to avoid bundler issues
+    return (async (...args) => {
+      const nodeFetch = await import('node-fetch');
+      return nodeFetch.default(...args);
+    });
+  } catch {
+    throw new Error('No fetch implementation available. Use Node.js 18+ or install node-fetch.');
+  }
+})();
 
 // Minimal Ollama client adapter using the documented base API path (/api).
 // Docs: https://docs.ollama.com/api
 export default class OllamaClient {
   constructor(options = {}) {
     // Ollama's API base (documented): http://localhost:11434/api
-    this.baseUrl = options.baseUrl || process.env.OLLAMA_HOST || 'http://localhost:11434/api';
+    // Use 127.0.0.1 instead of localhost for better Windows compatibility
+    this.baseUrl = options.baseUrl || process.env.OLLAMA_HOST || 'http://127.0.0.1:11434/api';
     this.requestFn = options.requestFn || this._defaultRequest.bind(this);
     this.headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
   }
@@ -18,7 +38,7 @@ export default class OllamaClient {
     const buildUrl = host => `${host.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 
     const tryFetch = async url => {
-      const res = await fetch(url, opts);
+      const res = await fetchFn(url, opts);
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Ollama request failed ${res.status}: ${text}`);

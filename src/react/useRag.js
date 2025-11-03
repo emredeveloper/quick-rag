@@ -21,7 +21,8 @@ export function useRAG({ retriever, modelClient, model, promptTemplate }) {
 				const out = await generateWithRAG({ retriever, modelClient, model, query, promptTemplate, ...options, topK: options.topK });
 				setDocs(out.docs || []);
 				let acc = '';
-				for await (const chunk of modelClient.generateStream(model, out.response?.prompt || out.prompt || out.fullPrompt || out)) {
+				// Use the prompt returned by generateWithRAG
+				for await (const chunk of modelClient.generateStream(model, out.prompt)) {
 					acc += String(chunk);
 					setResponse(acc);
 					if (typeof options.onDelta === 'function') options.onDelta(String(chunk), acc);
@@ -55,7 +56,7 @@ export function useRAG({ retriever, modelClient, model, promptTemplate }) {
 		}
 	}, [retriever, modelClient, model, promptTemplate]);
 
-	return { run, loading, error, response, docs };
+	return { run, loading, error, response, docs, streaming };
 }
 
 export default useRAG;
