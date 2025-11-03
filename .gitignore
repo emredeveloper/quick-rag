@@ -1,43 +1,84 @@
+# Dependencies
 node_modules/
-dist/
-.env
-.DS_Store
-# Node modules
-node_modules/
+.pnp
+.pnp.js
 
 # Build outputs
 dist/
+build/
 coverage/
+*.tgz
 
 # Environment files
 .env
 .env.*
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-*.log
+pnpm-debug.log*
+lerna-debug.log*
 
 # OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# IDEs
+# IDEs and Editors
 .vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
 .idea/
+*.iml
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
 
-# npm pack
-*.tgz
+# Testing
+coverage/
+.nyc_output/
+*.lcov
 
 # Misc
 *.pem
 *.key
+*.cert
+.cache/
+.temp/
+.tmp/
 
-# Local editor/temp
-*.swp
-*.swo
-
-# Optional: local Ollama models / caches (if present)
+# Optional: local Ollama models / caches
 .ollama/
+
+# Mac specific
+.AppleDouble
+.LSOverride
+
+# Windows specific
+[Tt]humbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux specific
+*~
+.directory
+.Trash-*
