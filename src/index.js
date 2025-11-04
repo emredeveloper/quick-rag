@@ -19,3 +19,30 @@ export { createMRL } from './embeddings/mrl.js';
 export { initRAG } from './initRag.js';
 export { createBrowserModelClient } from './browserModelClient.js';
 export { createBrowserEmbedding } from './embeddings/browserEmbedding.js';
+
+// Utilities
+export { 
+  chunkText, 
+  chunkBySentences, 
+  chunkDocuments, 
+  chunkMarkdown 
+} from './utils/chunking.js';
+
+// Document Loaders (Node.js only)
+export { 
+  loadPDF,
+  loadWord,
+  loadExcel,
+  loadText,
+  loadJSON,
+  loadMarkdown,
+  loadDocument,
+  loadDirectory
+} from './loaders/documents.js';
+
+// Web Loaders
+export { 
+  loadURL,
+  loadURLs,
+  loadSitemap
+} from './loaders/web.js';

@@ -3,20 +3,24 @@
 [![npm version](https://img.shields.io/npm/v/quick-rag.svg)](https://www.npmjs.com/package/quick-rag)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-🚀 **Lightning-fast RAG (Retrieval-Augmented Generation) for JavaScript & React**  
+🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
 ## ✨ Features
 
 - 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
 - ⚡ **5x Faster** - Parallel batch embedding
-- 📚 **CRUD Operations** - Add, update, delete documents on the fly
+- 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
+- 🔪 **Smart Chunking** - Intelligent text splitting with overlap
+- 🏷️ **Metadata Filtering** - Filter by document properties
+-  **CRUD Operations** - Add, update, delete documents on the fly
 - 🎯 **Smart Retrieval** - Dynamic topK parameter
 - 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
 - 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
 - 🎨 **Multiple Providers** - Ollama & LM Studio support
-- �️ **All SDK Features** - Tool calling, vision, agents, and more
-- �💪 **Type Safe** - Full TypeScript support
+- 🛠️ **All SDK Features** - Tool calling, vision, agents, and more
+- 💪 **Type Safe** - Full TypeScript support
+- ✅ **Production Ready** - Thoroughly tested and documented
 
 ## 📦 Installation
 
@@ -32,9 +36,9 @@ npm install quick-rag
 **Prerequisites:**
 - [Ollama](https://ollama.ai) installed and running, OR
 - [LM Studio](https://lmstudio.ai) installed with server enabled
-- Models pulled: `ollama pull granite4:tiny-h` and `ollama pull embeddinggemma`
+- Models: `ollama pull granite4:tiny-h` and `ollama pull embeddinggemma`
 
-> **✨ New in v0.7.0:** Now built on official SDKs! Get streaming, tool calling, vision, and all official features from `ollama` and `@lmstudio/sdk` packages.
+> **🎉 v1.0.0 Released!** Production-ready with comprehensive testing, 10 clean examples (Ollama + LM Studio), and full documentation. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ---
 
@@ -531,6 +535,141 @@ const rag = await initRAG(docs, {
 ```
 
 **More examples:** Check the [`example/`](./example) folder for complete demos.
+
+---
+
+## 📄 Document Loaders (v0.7.4+)
+
+Load documents from various formats and use them with RAG!
+
+### Supported Formats
+
+| Format | Function | Requires |
+|--------|----------|----------|
+| PDF | `loadPDF()` | `npm install pdf-parse` |
+| Word (.docx) | `loadWord()` | `npm install mammoth` |
+| Excel (.xlsx) | `loadExcel()` | `npm install xlsx` |
+| Text (.txt) | `loadText()` | Built-in ✅ |
+| JSON | `loadJSON()` | Built-in ✅ |
+| Markdown | `loadMarkdown()` | Built-in ✅ |
+| Web URLs | `loadURL()` | Built-in ✅ |
+
+### Quick Start
+
+**Load PDF:**
+```javascript
+import { loadPDF, chunkDocuments } from 'quick-rag';
+
+// Load PDF
+const pdf = await loadPDF('./document.pdf');
+console.log(`Loaded ${pdf.meta.pages} pages`);
+
+// Chunk and add to RAG
+const chunks = chunkDocuments([pdf], { 
+  chunkSize: 500, 
+  overlap: 50 
+});
+await store.addDocuments(chunks);
+```
+
+**Load from URL:**
+```javascript
+import { loadURL } from 'quick-rag';
+
+const doc = await loadURL('https://example.com', {
+  extractText: true  // Convert HTML to plain text
+});
+await store.addDocuments([doc]);
+```
+
+**Load Directory:**
+```javascript
+import { loadDirectory } from 'quick-rag';
+
+// Load all supported documents from a folder
+const docs = await loadDirectory('./documents', {
+  extensions: ['.pdf', '.docx', '.txt', '.md'],
+  recursive: true
+});
+
+console.log(`Loaded ${docs.length} documents`);
+
+// Chunk and add to vector store
+const chunks = chunkDocuments(docs, { chunkSize: 500 });
+await store.addDocuments(chunks);
+```
+
+**Auto-Detect Format:**
+```javascript
+import { loadDocument } from 'quick-rag';
+
+// Automatically detects file type
+const doc = await loadDocument('./file.pdf');
+// Works with: .pdf, .docx, .xlsx, .txt, .md, .json
+```
+
+### Installation
+
+```bash
+# Core package (includes text, JSON, markdown, URL loaders)
+npm install quick-rag
+
+# Optional: PDF support
+npm install pdf-parse
+
+# Optional: Word support
+npm install mammoth
+
+# Optional: Excel support
+npm install xlsx
+
+# Or install all at once:
+npm install quick-rag pdf-parse mammoth xlsx
+```
+
+### Complete Example
+
+```javascript
+import {
+  loadPDF,
+  loadDirectory,
+  chunkDocuments,
+  InMemoryVectorStore,
+  Retriever,
+  OllamaRAGClient,
+  createOllamaRAGEmbedding,
+  generateWithRAG
+} from 'quick-rag';
+
+// Load documents
+const pdf = await loadPDF('./research.pdf');
+const docs = await loadDirectory('./articles');
+
+// Combine and chunk
+const allDocs = [pdf, ...docs];
+const chunks = chunkDocuments(allDocs, { 
+  chunkSize: 500,
+  overlap: 50 
+});
+
+// Setup RAG
+const client = new OllamaRAGClient();
+const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const store = new InMemoryVectorStore(embed);
+const retriever = new Retriever(store);
+
+// Add to vector store
+await store.addDocuments(chunks);
+
+// Query
+const results = await retriever.getRelevant('What is the main topic?', 3);
+const answer = await generateWithRAG(client, 'granite4:tiny-h', 
+  'What is the main topic?', results);
+
+console.log(answer);
+```
+
+**See full example:** [`example/advanced/document-loading-example.js`](./example/advanced/document-loading-example.js)
 
 ---
 

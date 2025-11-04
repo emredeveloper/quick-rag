@@ -51,12 +51,39 @@ async function testRetriever() {
 }
 
 async function run() {
+  console.log('🧪 Running Quick RAG Test Suite...\n');
+  
+  // Core tests (always run)
   await testVectorStore();
   await testRetriever();
-  console.log('ALL TESTS OK');
+  
+  // New feature tests
+  const { runChunkingTests } = await import('./chunking.test.js');
+  const { runRetrieverFilteringTests } = await import('./retriever-filtering.test.js');
+  const { runDocumentLoaderTests } = await import('./document-loaders.test.js');
+  await runChunkingTests();
+  await runRetrieverFilteringTests();
+  await runDocumentLoaderTests();
+  
+  // Optional integration tests (require Ollama running)
+  if (process.env.RUN_INTEGRATION_TESTS === 'true') {
+    console.log('🔌 Running Integration Tests (requires Ollama)...\n');
+    try {
+      const { runOllamaRAGClientTests } = await import('./ollamaRAGClient.test.js');
+      const { runGenerateWithRAGTests } = await import('./generateWithRAG.test.js');
+      await runOllamaRAGClientTests();
+      await runGenerateWithRAGTests();
+    } catch (err) {
+      console.warn('\n⚠️  Integration tests failed:', err.message);
+      console.warn('   Make sure Ollama is installed and running\n');
+    }
+  }
+  
+  console.log('\n✅ ALL TESTS PASSED!');
+  console.log('\n💡 Tip: Run integration tests with: RUN_INTEGRATION_TESTS=true npm test');
 }
 
 run().catch(err => {
-  console.error('Tests failed', err);
+  console.error('\n❌ Tests failed:', err);
   process.exit(1);
 });

@@ -1,87 +1,270 @@
-# Quick RAG Examples ⚡# Example Demos - RAG Local LLM v0.6.3
+# Quick RAG Examples# Quick RAG Examples# Quick RAG Examples
 
 
 
-Simple, focused examples to get you started quickly.This folder contains examples demonstrating all features.
+Clear examples showing how to use quick-rag with both **Ollama** and **LM Studio**.
 
 
 
-## 🚀 Quick Start## 🚀 Quick Start
+## 📚 ExamplesSimple, focused examples to get started with quick-rag.Simple, focused examples to get started with quick-rag.
 
 
 
-### 1️⃣ Ollama Example (Recommended)### Simple Example (Recommended)
+Each feature has **two versions** - one for Ollama, one for LM Studio:
 
 
 
-Official Ollama SDK with streaming support:```bash
+### 1️⃣ Basic Usage## 📚 Examples## 📚 Examples
 
-node example/simple-nodejs.js
+- **`01-basic-usage.js`** - Ollama 🦙
 
-```bash```
+- **`01-basic-usage-lmstudio.js`** - LM Studio 🎨
 
-node example/official-ollama-example.js
 
-```**Output:**
 
-```
+Learn the basics: setup client, add documents, query, and generate answers.### Basic Examples### Basic Examples
 
-**Features:**📚 Retrieved Documents:
 
-- ✅ Official SDK integration
 
-- ✅ Real-time streaming1. JavaScript is a programming language.
+### 2️⃣ Document Loading
 
-- ✅ Vector search with RAG   ID: 1 | Relevance: 80.2%
+- **`02-document-loading.js`** - Ollama 🦙
 
-- ✅ Model management
+- **`02-document-loading-lmstudio.js`** - LM Studio 🎨1. **`01-basic-usage.js`** - Getting started with RAG1. **`01-basic-usage.js`** - Getting started with RAG
 
-- ✅ Clean, readable output2. Python is great for data science.
 
-   ID: 2 | Relevance: 38.8%
 
-### 2️⃣ LM Studio Example
+Load PDFs, Word, Excel files. Chunk documents and query them.   - Setup client and embedding   - Setup client and embedding
 
-🤖 AI Answer:
 
-Test multiple models at once:JavaScript is a programming language...
 
-```
+### 3️⃣ Metadata Filtering   - Add documents to vector store   - Add documents to vector store
+
+- **`03-metadata-filtering.js`** - Ollama 🦙
+
+- **`03-metadata-filtering-lmstudio.js`** - LM Studio 🎨   - Query and generate answers   - Query and generate answers
+
+
+
+Filter documents by category, language, difficulty, or custom metadata.
+
+
+
+### 4️⃣ Streaming2. **`02-document-loading.js`** - Load PDFs, Word, Excel files2. **`02-document-loading.js`** - Load PDFs, Word, Excel files
+
+- **`05-streaming.js`** - Ollama 🦙
+
+- **`05-streaming-lmstudio.js`** - LM Studio 🎨   - Load single PDF or entire directory   - Load single PDF or entire directory
+
+
+
+Stream responses in real-time for better UX.   - Chunk documents intelligently   - Chunk documents intelligently
+
+
+
+### 5️⃣ Test Both Providers   - Query with RAG pipeline   - Query with RAG pipeline
+
+- **`04-test-both-providers.js`** - Test both Ollama & LM Studio
+
+   - Bonus: Load from URLs   - Bonus: Load from URLs
+
+Automatically detect and test both providers.
+
+
+
+## 🚀 Quick Start
+
+3. **`03-metadata-filtering.js`** - Filter by metadata3. **`03-metadata-filtering.js`** - Filter by metadata
+
+### With Ollama
+
+   - Add documents with metadata   - Add documents with metadata
 
 ```bash
 
-node example/official-lmstudio-example.js### All Examples
+# Make sure Ollama is running   - Filter by category, language, etc.   - Filter by category, language, etc.
+
+ollama serve
+
+   - Use minimum score threshold   - Use minimum score threshold
+
+# Install models
+
+ollama pull embeddinggemma
+
+ollama pull granite4:tiny-h
+
+4. **`04-lmstudio.js`** - Use LM Studio instead of Ollama4. **`04-lmstudio.js`** - Use LM Studio instead of Ollama
+
+# Run examples
+
+node 01-basic-usage.js   - Setup LM Studio client   - Setup LM Studio client
+
+node 02-document-loading.js
+
+node 03-metadata-filtering.js   - Check loaded models   - Check loaded models
+
+node 05-streaming.js
+
+```   - Query and generate answers   - Query and generate answers
+
+
+
+### With LM Studio
+
+
+
+```bash5. **`05-streaming.js`** - Stream responses in real-time5. **`05-streaming.js`** - Stream responses in real-time
+
+# 1. Open LM Studio
+
+# 2. Load a model (e.g., qwen3-4b, gemma-3-4b)   - Real-time token streaming   - Real-time token streaming
+
+# 3. Make sure nomic-embed-text-v1.5 is available
+
+# 4. Enable local server: Settings → Local Server → Start   - Better user experience   - Better user experience
+
+
+
+# Run examples
+
+node 01-basic-usage-lmstudio.js
+
+node 02-document-loading-lmstudio.js6. **`06-test-both-providers.js`** - Test both Ollama & LM Studio6. **`06-test-both-providers.js`** - Test both Ollama & LM Studio
+
+node 03-metadata-filtering-lmstudio.js
+
+node 05-streaming-lmstudio.js   - Detect available providers   - Detect available providers
 
 ```
 
-All examples work with a running Ollama server. Make sure you have:
+   - Test each provider   - Test each provider
 
-**Features:**```bash
+### Test Both
 
-- ✅ Tests all downloaded modelsollama pull granite4:tiny-h
+   - Show summary   - Show summary
 
-- ✅ Official LM Studio SDKollama pull embeddinggemma
+```bash
+
+# Automatically detect and test available providers
+
+node 04-test-both-providers.js
+
+```## 🚀 Quick Start## 🚀 Quick Start
+
+
+
+## 📄 Document Loading Examples
+
+
+
+To test PDF loading (examples 02):```bash```
+
+
+
+```bash# Run any example
+
+# Create PDF folder
+
+mkdir PDFnode 01-basic-usage.js```bash
+
+
+
+# Add some PDF files to the foldernode 02-document-loading.js
+
+# Then run
+
+node 02-document-loading.jsnode 06-test-both-providers.jsnode example/official-lmstudio-example.js### All Examples
+
+# or
+
+node 02-document-loading-lmstudio.js```
+
+```
+
+```
+
+## 💡 Tips
+
+## 📋 Requirements
+
+- **Start here**: `01-basic-usage.js` (Ollama) or `01-basic-usage-lmstudio.js` (LM Studio)
+
+- **Test setup**: `04-test-both-providers.js`All examples work with a running Ollama server. Make sure you have:
+
+- **Check errors**: All examples have helpful error messages
+
+- **Streaming**: Try `05-streaming.js` for better user experience- **Node.js** 18+ (for native fetch support)
+
+
+
+## 🔧 Requirements- **Ollama** or **LM Studio** running locally**Features:**```bash
+
+
+
+### Ollama- **Models installed**:
+
+- Ollama running: `ollama serve`
+
+- Models: `embeddinggemma`, `granite4:tiny-h`  - Ollama: `ollama pull embeddinggemma` and `ollama pull granite4:tiny-h`- ✅ Tests all downloaded modelsollama pull granite4:tiny-h
+
+
+
+### LM Studio  - LM Studio: Load any model + nomic-embed-text-v1.5
+
+- LM Studio app running
+
+- Local server enabled- ✅ Official LM Studio SDKollama pull embeddinggemma
+
+- Models loaded: any LLM + `nomic-embed-text-v1.5` embedding
+
+## 📄 Document Loading
+
+## 📖 Full Documentation
 
 - ✅ Automatic model loadingollama serve
 
+See main [README.md](../README.md) for complete API reference.
+
+To test document loading (example 02):
+
 - ✅ Comparison output```
 
+```bash
 
+# Create PDF folder
+
+mkdir PDF
 
 ### 3️⃣ Simple Node.js## 📁 Examples
 
+# Add some PDF files
+
+# Then run
+
+node 02-document-loading.js
+
+```Basic example without streaming:### 🌟 **simple-nodejs.js** - Clean & Simple (NEW!)
 
 
-Basic example without streaming:### 🌟 **simple-nodejs.js** - Clean & Simple (NEW!)
 
-Perfect starting point with clean output:
+## 💡 TipsPerfect starting point with clean output:
 
-```bash- ✅ Minimal setup
 
-node example/simple-nodejs.js- ✅ Clean console output
 
-```- ✅ Easy to understand
+- Start with `01-basic-usage.js` to understand the basics```bash- ✅ Minimal setup
 
+- Use `06-test-both-providers.js` to test your setup
+
+- Check console output for helpful error messagesnode example/simple-nodejs.js- ✅ Clean console output
+
+
+
+## 📖 Full Documentation```- ✅ Easy to understand
+
+
+
+See main [README.md](../README.md) for complete API reference.
 
 
 **Features:**```bash

@@ -1,5 +1,310 @@
 # Changelog
 
+## [1.0.0] - 2025-11-04 🎉
+
+### 🎊 Production Release
+
+**Quick RAG is now production-ready!** This major release marks the stability and maturity of the library with comprehensive features, thorough testing, and excellent developer experience.
+
+### ✨ What's Included in v1.0.0
+
+**Core Features:**
+- ✅ **Dual Provider Support** - Both Ollama and LM Studio fully tested and working
+- ✅ **Document Loaders** - PDF, Word, Excel, Text, JSON, Markdown support
+- ✅ **Web Loaders** - Load content from URLs and sitemaps
+- ✅ **Smart Chunking** - 4 different chunking strategies
+- ✅ **Metadata Filtering** - Filter by any metadata field + minimum score
+- ✅ **Streaming Support** - Real-time response streaming
+- ✅ **TypeScript Definitions** - Complete type safety
+- ✅ **React Hook** - `useRAG` hook for React applications
+
+**Quality Assurance:**
+- ✅ **Comprehensive Testing** - All features tested with both providers
+- ✅ **Clean Examples** - 10 focused examples (5 for Ollama, 5 for LM Studio)
+- ✅ **Error Handling** - Helpful error messages and graceful degradation
+- ✅ **Documentation** - Complete API documentation and examples
+
+### 🔧 Breaking Changes from 0.7.x
+
+**None!** This is a stability release. All 0.7.x code will work without changes.
+
+### 🆕 New in v1.0.0
+
+**Example Organization:**
+- 📁 **Reorganized Examples** - Clear separation between Ollama and LM Studio
+- 📝 **Better Documentation** - Each example is self-contained and well-documented
+- 🧪 **Test Both Providers** - New dual-provider test script
+
+**Example Files:**
+1. `01-basic-usage.js` / `01-basic-usage-lmstudio.js` - Get started
+2. `02-document-loading.js` / `02-document-loading-lmstudio.js` - Load PDFs
+3. `03-metadata-filtering.js` / `03-metadata-filtering-lmstudio.js` - Filter documents
+4. `04-test-both-providers.js` - Test your setup
+5. `05-streaming.js` / `05-streaming-lmstudio.js` - Stream responses
+
+**Bug Fixes:**
+- ✅ Fixed LM Studio `listLoaded()` API call (was using wrong method)
+- ✅ Fixed embedding model caching in LM Studio (no more "model already exists" error)
+- ✅ Removed unused imports from example files
+- ✅ Cleaned up example directory structure
+
+### 📦 Installation
+
+```bash
+npm install quick-rag
+```
+
+**Optional Dependencies (install as needed):**
+```bash
+# PDF support
+npm install pdf-parse
+
+# Word support
+npm install mammoth
+
+# Excel support
+npm install xlsx
+```
+
+### 🚀 Quick Start
+
+**Ollama:**
+```javascript
+import { 
+  OllamaRAGClient, 
+  createOllamaRAGEmbedding, 
+  InMemoryVectorStore 
+} from 'quick-rag';
+
+const client = new OllamaRAGClient();
+const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const store = new InMemoryVectorStore(embed);
+
+await store.addDocuments([
+  { text: 'Your knowledge here' }
+]);
+```
+
+**LM Studio:**
+```javascript
+import { 
+  LMStudioRAGClient, 
+  createLMStudioRAGEmbedding, 
+  InMemoryVectorStore 
+} from 'quick-rag';
+
+const client = new LMStudioRAGClient();
+const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+const store = new InMemoryVectorStore(embed);
+
+await store.addDocuments([
+  { text: 'Your knowledge here' }
+]);
+```
+
+### 📊 Testing
+
+All features thoroughly tested:
+- ✅ Ollama integration (embeddinggemma + granite4:tiny-h)
+- ✅ LM Studio integration (nomic-embed-text-v1.5 + qwen3-vl-4b)
+- ✅ Document loading (PDF, Word, Excel)
+- ✅ Web loading (URLs, sitemaps)
+- ✅ Chunking strategies (text, sentences, documents, markdown)
+- ✅ Metadata filtering
+- ✅ Streaming responses
+- ✅ Vector store operations
+- ✅ RAG pipeline
+
+### 🙏 Acknowledgments
+
+Thank you to the community for feedback and testing!
+
+---
+
+## [0.7.4] - 2025-11-04
+
+### 🚀 Major Feature: Document Loaders
+
+**Load Various Document Formats:**
+- ✅ **PDF Support** - `loadPDF()` (requires: `npm install pdf-parse`)
+- ✅ **Word Support** - `loadWord()` for .docx files (requires: `npm install mammoth`)
+- ✅ **Excel Support** - `loadExcel()` for .xlsx files (requires: `npm install xlsx`)
+- ✅ **Text Files** - `loadText()` for .txt files
+- ✅ **JSON Files** - `loadJSON()` with field extraction
+- ✅ **Markdown Files** - `loadMarkdown()` with optional syntax stripping
+- ✅ **Auto-Detection** - `loadDocument()` automatically detects file type
+- ✅ **Directory Loading** - `loadDirectory()` loads entire folders recursively
+
+**Web Content Loading:**
+- ✅ `loadURL()` - Load content from any URL
+- ✅ `loadURLs()` - Batch load multiple URLs
+- ✅ `loadSitemap()` - Extract URLs from sitemap.xml
+- ✅ Automatic HTML to text conversion
+
+### 📦 New Dependencies
+
+**Optional Dependencies (install only what you need):**
+```bash
+# PDF support
+npm install pdf-parse
+
+# Word support
+npm install mammoth
+
+# Excel support
+npm install xlsx
+```
+
+### 🔧 Usage Examples
+
+**Load PDF and Query:**
+```javascript
+import { loadPDF, chunkDocuments, InMemoryVectorStore } from 'quick-rag';
+
+// Load PDF
+const pdf = await loadPDF('./document.pdf');
+console.log(`Loaded ${pdf.meta.pages} pages`);
+
+// Chunk and add to RAG
+const chunks = chunkDocuments([pdf], { chunkSize: 500 });
+await store.addDocuments(chunks);
+```
+
+**Load from URL:**
+```javascript
+import { loadURL } from 'quick-rag';
+
+const doc = await loadURL('https://example.com', {
+  extractText: true  // Convert HTML to plain text
+});
+```
+
+**Load Entire Directory:**
+```javascript
+import { loadDirectory } from 'quick-rag';
+
+const docs = await loadDirectory('./documents', {
+  extensions: ['.pdf', '.docx', '.txt', '.md'],
+  recursive: true
+});
+console.log(`Loaded ${docs.length} documents`);
+```
+
+### 📚 New Examples
+
+- `example/advanced/document-loading-example.js` - Complete guide for document loading
+
+### 🧪 Testing
+
+```bash
+npm test
+# ✅ Text loader tests passed
+# ✅ JSON loader tests passed
+# ✅ Markdown loader tests passed
+# ✅ Auto-detect tests passed
+# ✅ Web loader tests passed
+```
+
+### 📊 What's Supported
+
+| Format | Function | Requires |
+|--------|----------|----------|
+| PDF | `loadPDF()` | `pdf-parse` |
+| Word (.docx) | `loadWord()` | `mammoth` |
+| Excel (.xlsx) | `loadExcel()` | `xlsx` |
+| Text (.txt) | `loadText()` | Built-in |
+| JSON | `loadJSON()` | Built-in |
+| Markdown | `loadMarkdown()` | Built-in |
+| Web URLs | `loadURL()` | Built-in |
+
+### 🎯 Benefits
+
+- 📄 **No manual text extraction** - Load documents directly
+- 🔄 **Automatic chunking** - Split large documents intelligently
+- 🏷️ **Metadata preservation** - Keep document metadata through pipeline
+- 🌐 **Web scraping** - Load content from URLs
+- 📁 **Batch processing** - Load entire directories at once
+- 🎨 **TypeScript support** - Full type definitions included
+
+---
+
+## [0.7.3] - 2025-11-04
+
+### ✨ New Features
+
+**Text Chunking Utilities:**
+- ✅ `chunkText()` - Split text by character limit with overlap
+- ✅ `chunkBySentences()` - Split by sentences with smart overlap
+- ✅ `chunkDocuments()` - Chunk documents with metadata preservation
+- ✅ `chunkMarkdown()` - Markdown-aware chunking (preserves code blocks)
+
+**Metadata Filtering:**
+- ✅ Filter retrieval results by metadata fields
+- ✅ Support for exact match, array contains, and regex patterns
+- ✅ Minimum similarity score filtering
+- ✅ Multiple filters can be combined
+
+**TypeScript Support:**
+- ✅ Full TypeScript definitions (`src/index.d.ts`)
+- ✅ Complete type coverage for all exports
+- ✅ IntelliSense and autocomplete in VS Code
+- ✅ Type-safe API calls
+
+**Enhanced Testing:**
+- ✅ Comprehensive chunking tests
+- ✅ Metadata filtering tests
+- ✅ Integration tests (optional, requires Ollama)
+- ✅ Test coverage for all new features
+
+**useRAG Hook Improvements:**
+- ✅ Fixed streaming support for OllamaRAGClient
+- ✅ Fixed streaming support for LMStudioRAGClient
+- ✅ Smart client detection for proper API usage
+- ✅ Better error handling
+
+### 📚 Examples
+
+**New Advanced Examples:**
+- `example/advanced/chunking-example.js` - Comprehensive chunking guide
+- `example/advanced/metadata-filtering-example.js` - Advanced filtering patterns
+
+### 🔧 API Changes
+
+**Retriever.getRelevant()** now accepts options parameter:
+```javascript
+// Before
+const results = await retriever.getRelevant(query, k);
+
+// Now (backward compatible)
+const results = await retriever.getRelevant(query, k, {
+  filters: { source: 'web', year: 2024 },
+  minScore: 0.5
+});
+```
+
+**New Exports:**
+```javascript
+import { 
+  chunkText, 
+  chunkBySentences, 
+  chunkDocuments, 
+  chunkMarkdown 
+} from 'quick-rag';
+```
+
+### 📊 Test Results
+
+```bash
+npm test
+# ✅ vectorStore tests passed
+# ✅ retriever tests passed
+# ✅ chunking tests passed (4 test suites)
+# ✅ metadata filtering tests passed (2 test suites)
+# ✅ ALL TESTS PASSED!
+```
+
+---
+
 ## [0.7.2] - 2025-11-04
 
 ### 🐛 Critical Fixes

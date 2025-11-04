@@ -1,9 +1,10 @@
 {
   "name": "quick-rag",
-  "version": "0.7.2",
-  "description": "⚡ Quick RAG - Fast local AI with official Ollama & LM Studio SDK integration",
+  "version": "1.0.0",
+  "description": "⚡ Quick RAG - Production-ready local AI with Ollama & LM Studio SDK integration + Document Loaders (PDF, Word, Excel)",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",
+  "types": "src/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
@@ -31,17 +32,22 @@
     "local-ai",
     "vector-search",
     "retrieval-augmented-generation",
-    "embeddings"
+    "embeddings",
+    "pdf",
+    "document-loader",
+    "pdf-parser",
+    "word",
+    "excel"
   ],
   "author": "Cihat Emre Karataş",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/emredeveloper/rag-js-local.git"
+    "url": "https://github.com/emredeveloper/quick-rag.git"
   },
-  "homepage": "https://github.com/emredeveloper/rag-js-local#readme",
+  "homepage": "https://github.com/emredeveloper/quick-rag#readme",
   "bugs": {
-    "url": "https://github.com/emredeveloper/rag-js-local/issues"
+    "url": "https://github.com/emredeveloper/quick-rag/issues"
   },
   "files": [
     "src/",
@@ -52,10 +58,13 @@
     "access": "public"
   },
   "dependencies": {
-    "ollama": "^0.6.2",
-    "@lmstudio/sdk": "^1.5.0"
+    "@lmstudio/sdk": "^1.5.0",
+    "ollama": "^0.6.2"
   },
   "optionalDependencies": {
-    "node-fetch": "^3.3.2"
+    "mammoth": "^1.8.0",
+    "node-fetch": "^3.3.2",
+    "pdf-parse": "^1.1.4",
+    "xlsx": "^0.18.5"
   }
 }

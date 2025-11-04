@@ -19,4 +19,31 @@ export { generateWithRAG } from './rag.js';
 export { createMRL } from './embeddings/mrl.js';
 export { initRAG } from './initRag.js';
 
+// Utilities
+export { 
+  chunkText, 
+  chunkBySentences, 
+  chunkDocuments, 
+  chunkMarkdown 
+} from './utils/chunking.js';
+
+// Document Loaders (Node.js only)
+export { 
+  loadPDF,
+  loadWord,
+  loadExcel,
+  loadText,
+  loadJSON,
+  loadMarkdown,
+  loadDocument,
+  loadDirectory
+} from './loaders/documents.js';
+
+// Web Loaders
+export { 
+  loadURL,
+  loadURLs,
+  loadSitemap
+} from './loaders/web.js';
+
 // React hook is NOT exported here (use index.js for React projects)

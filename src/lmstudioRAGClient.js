@@ -82,11 +82,20 @@ export class LMStudioRAGClient {
     const isArray = Array.isArray(input);
     const texts = isArray ? input : [input];
     
-    // Get embedding model with verbose disabled by default
-    const model = await this.lmstudio.embedding.model(modelPath, {
-      verbose: false,
-      ...options
-    });
+    // Use cache for embedding models too
+    const cacheKey = `embedding:${modelPath}`;
+    let model;
+    
+    if (this._modelCache.has(cacheKey)) {
+      model = this._modelCache.get(cacheKey);
+    } else {
+      // Get embedding model with verbose disabled by default
+      model = await this.lmstudio.embedding.model(modelPath, {
+        verbose: false,
+        ...options
+      });
+      this._modelCache.set(cacheKey, model);
+    }
     
     // Generate embeddings
     const embeddings = [];
@@ -112,7 +121,12 @@ export class LMStudioRAGClient {
    * @returns {Promise<Array>} List of downloaded models
    */
   async listDownloaded() {
-    return this.lmstudio.system.listDownloadedModels();
+    try {
+      return await this.lmstudio.llm.listDownloaded();
+    } catch (err) {
+      console.warn('listDownloaded not available:', err.message);
+      return [];
+    }
   }
 
   /**
@@ -120,7 +134,12 @@ export class LMStudioRAGClient {
    * @returns {Promise<Array>} List of loaded models
    */
   async listLoaded() {
-    return this.lmstudio.system.listLoadedModels();
+    try {
+      return await this.lmstudio.llm.listLoaded();
+    } catch (err) {
+      console.warn('listLoaded not available:', err.message);
+      return [];
+    }
   }
 
   /**
