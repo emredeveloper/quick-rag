@@ -6,6 +6,9 @@
 
 import { LMStudioClient as LMStudioSDK } from '@lmstudio/sdk';
 
+// Global cache for embedding models to avoid "already exists" errors
+const globalEmbeddingCache = new Map();
+
 export class LMStudioRAGClient {
   constructor(config = {}) {
     // Initialize official LM Studio client
@@ -82,19 +85,46 @@ export class LMStudioRAGClient {
     const isArray = Array.isArray(input);
     const texts = isArray ? input : [input];
     
-    // Use cache for embedding models too
-    const cacheKey = `embedding:${modelPath}`;
+    // Use global cache to avoid "already exists" errors across instances
+    const cacheKey = `${modelPath}`;
     let model;
     
-    if (this._modelCache.has(cacheKey)) {
-      model = this._modelCache.get(cacheKey);
+    if (globalEmbeddingCache.has(cacheKey)) {
+      model = globalEmbeddingCache.get(cacheKey);
     } else {
-      // Get embedding model with verbose disabled by default
-      model = await this.lmstudio.embedding.model(modelPath, {
-        verbose: false,
-        ...options
-      });
-      this._modelCache.set(cacheKey, model);
+      try {
+        // Get embedding model with verbose disabled by default
+        model = await this.lmstudio.embedding.model(modelPath, {
+          verbose: false,
+          ...options
+        });
+        globalEmbeddingCache.set(cacheKey, model);
+      } catch (err) {
+        // If model already exists but not in our cache, it means another process created it
+        // We can't load it, so give helpful error message
+        if (err.message.includes('already exists')) {
+          console.warn(`⚠️  Embedding model conflict detected. Attempting recovery...`);
+          // Try one more time after a small delay
+          await new Promise(resolve => setTimeout(resolve, 500));
+          try {
+            // Try to load it with a different approach - just call model() again
+            // LM Studio SDK might have internal handling for this
+            model = await this.lmstudio.embedding.model(modelPath, {
+              verbose: false,
+              ...options
+            });
+            globalEmbeddingCache.set(cacheKey, model);
+          } catch (retryErr) {
+            throw new Error(
+              `LM Studio embedding model conflict. ` +
+              `The model "${modelPath}" is already loaded. ` +
+              `Please restart LM Studio or use a different embedding model.`
+            );
+          }
+        } else {
+          throw err;
+        }
+      }
     }
     
     // Generate embeddings
