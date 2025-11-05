@@ -1,5 +1,189 @@
 # Changelog
 
+## [1.1.0] - 2025-11-05 ✨
+
+### 🎯 Major Feature Release
+
+Two powerful new features that make Quick RAG even more unique!
+
+### ✨ New Features
+
+#### 🔍 Query Explainability
+**Industry-first feature!** Now you can see WHY documents were retrieved and understand the retrieval process.
+
+```javascript
+const results = await retriever.getRelevant(query, 3, {
+  explain: true  // Enable explanations
+});
+
+// Each result now includes:
+{
+  text: "...",
+  score: 0.856,
+  explanation: {
+    queryTerms: ["ollama", "local", "ai"],        // Extracted from query
+    matchedTerms: ["ollama", "local"],            // Found in document
+    matchCount: 2,                                // Number of matches
+    matchRatio: 0.67,                             // Match percentage
+    cosineSimilarity: 0.856,                      // Semantic similarity
+    relevanceFactors: {
+      termMatches: 2,
+      semanticSimilarity: 0.856,
+      coverage: "67%"
+    }
+  }
+}
+```
+
+**Benefits:**
+- 🐛 Debug unexpected search results
+- 📊 Understand semantic vs keyword matching
+- ✅ Validate retrieval accuracy
+- 📈 Optimize query quality
+- 💡 Explain results to end users
+
+**No other RAG library offers this level of explainability!**
+
+#### 🎨 Dynamic Prompt Management
+Intelligent, flexible prompt system with 10 built-in templates and full customization.
+
+**Built-in Templates:**
+- `default` - Standard RAG format
+- `conversational` - Chat-style responses
+- `technical` - Technical documentation format
+- `academic` - Research/scholarly style
+- `code` - Code-focused responses
+- `concise` - Brief answers
+- `detailed` - Comprehensive responses
+- `qa` - Question-Answer format
+- `instructional` - Step-by-step guides
+- `creative` - Creative writing style
+
+**Usage Examples:**
+
+```javascript
+// 1. Quick template selection
+await generateWithRAG(client, model, query, docs, {
+  template: 'conversational'
+});
+
+// 2. System prompt for role definition
+await generateWithRAG(client, model, query, docs, {
+  systemPrompt: 'You are a helpful programming tutor',
+  template: 'instructional'
+});
+
+// 3. Context formatting options
+await generateWithRAG(client, model, query, docs, {
+  context: {
+    includeScores: true,      // Show similarity scores
+    includeMetadata: true,    // Show document metadata
+    maxLength: 500           // Limit context length
+  }
+});
+
+// 4. Advanced: PromptManager for reusable configs
+const promptMgr = createPromptManager({
+  systemPrompt: 'You are an expert engineer',
+  template: 'technical',
+  variables: { company: 'TechCorp' }
+});
+
+await generateWithRAG(client, model, query, docs, {
+  promptManager: promptMgr
+});
+
+// 5. Custom template function
+const customTemplate = (query, context) => `
+  Custom format here
+  Query: ${query}
+  Context: ${context}
+`;
+
+await generateWithRAG(client, model, query, docs, {
+  template: customTemplate
+});
+```
+
+**Benefits:**
+- 🎭 Different response styles per use case
+- 👤 Role-based assistants (tutor, expert, analyst)
+- 🏢 Multi-tenant applications with different prompts
+- 🧪 A/B test prompt effectiveness
+- 🎯 Domain-specific formatting
+
+### 📝 New Files
+
+- `src/promptManager.js` - Complete prompt management system
+- `example/08-explain-scores.js` - Query explainability demo (Ollama + LM Studio)
+- `example/09-prompt-management.js` - Dynamic prompt system demo
+
+### 🔧 Improvements
+
+- Enhanced `generateWithRAG()` to support options parameter
+- Added `explain` option to `retriever.getRelevant()`
+- Fixed React import to be optional (no longer requires React dependency)
+- Better context formatting in RAG generation
+- Improved error messages
+
+### 📚 API Additions
+
+**New Exports:**
+```javascript
+import {
+  PromptManager,          // Advanced prompt management class
+  PromptTemplates,        // Built-in template collection
+  createPromptManager,    // Factory function
+  getTemplate            // Get template by name
+} from 'quick-rag';
+```
+
+**Enhanced Functions:**
+```javascript
+// Retriever now supports explain option
+retriever.getRelevant(query, topK, { 
+  explain: true,
+  filters: {...},
+  minScore: 0.5 
+});
+
+// generateWithRAG now accepts options
+generateWithRAG(client, model, query, docs, {
+  template: 'conversational',
+  systemPrompt: '...',
+  promptManager: manager,
+  context: {
+    includeScores: true,
+    includeMetadata: true,
+    maxLength: 1000
+  }
+});
+```
+
+### 🎯 Why v1.1.0?
+
+These features represent significant functionality additions that:
+1. ✅ Provide unique capabilities not found in competing libraries
+2. ✅ Maintain backward compatibility (all v1.0.0 code works unchanged)
+3. ✅ Follow semantic versioning (minor version bump for new features)
+4. ✅ Are production-ready and fully tested
+
+### 🔄 Migration from v1.0.0
+
+**No breaking changes!** All existing code works as-is. New features are opt-in:
+
+```javascript
+// v1.0.0 code - still works!
+const results = await retriever.getRelevant(query, 3);
+await generateWithRAG(client, model, query, docs);
+
+// v1.1.0 enhancements - optional
+const results = await retriever.getRelevant(query, 3, { explain: true });
+await generateWithRAG(client, model, query, docs, { template: 'technical' });
+```
+
+---
+
 ## [1.0.0] - 2025-11-04 🎉
 
 ### 🎊 Production Release

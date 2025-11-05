@@ -13,6 +13,8 @@ Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](ht
 - 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
 - 🔪 **Smart Chunking** - Intelligent text splitting with overlap
 - 🏷️ **Metadata Filtering** - Filter by document properties
+- 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
+- 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
 -  **CRUD Operations** - Add, update, delete documents on the fly
 - 🎯 **Smart Retrieval** - Dynamic topK parameter
 - 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
@@ -36,9 +38,69 @@ npm install quick-rag
 **Prerequisites:**
 - [Ollama](https://ollama.ai) installed and running, OR
 - [LM Studio](https://lmstudio.ai) installed with server enabled
-- Models: `ollama pull granite4:tiny-h` and `ollama pull embeddinggemma`
+- Models: `ollama pull granite4:3b` and `ollama pull nomic-embed-text`
 
-> **🎉 v1.0.0 Released!** Production-ready with comprehensive testing, 10 clean examples (Ollama + LM Studio), and full documentation. See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v1.1.0 Released!** New features: Query Explainability & Dynamic Prompt Management - capabilities not found in any other RAG library! See [CHANGELOG.md](CHANGELOG.md) for details.
+
+---
+
+## 🆕 What's New in v1.1.0
+
+### 🔍 Query Explainability
+**Understand WHY documents were retrieved** - A first-of-its-kind feature!
+
+```javascript
+const results = await retriever.getRelevant('What is Ollama?', 3, {
+  explain: true
+});
+
+// Each result includes detailed explanation:
+console.log(results[0].explanation);
+// {
+//   queryTerms: ["ollama", "local", "ai"],
+//   matchedTerms: ["ollama", "local"],
+//   matchCount: 2,
+//   matchRatio: 0.67,
+//   cosineSimilarity: 0.856,
+//   relevanceFactors: {
+//     termMatches: 2,
+//     semanticSimilarity: 0.856,
+//     coverage: "67%"
+//   }
+// }
+```
+
+**Use cases:** Debug searches, optimize queries, validate accuracy, explain to users
+
+### 🎨 Dynamic Prompt Management
+**10 built-in templates + full customization**
+
+```javascript
+// Quick template selection
+await generateWithRAG(client, model, query, docs, {
+  template: 'conversational'  // or: technical, academic, code, etc.
+});
+
+// System prompts for role definition
+await generateWithRAG(client, model, query, docs, {
+  systemPrompt: 'You are a helpful programming tutor',
+  template: 'instructional'
+});
+
+// Advanced: Reusable PromptManager
+import { createPromptManager } from 'quick-rag';
+
+const promptMgr = createPromptManager({
+  systemPrompt: 'You are an expert engineer',
+  template: 'technical'
+});
+
+await generateWithRAG(client, model, query, docs, {
+  promptManager: promptMgr
+});
+```
+
+**Templates:** `default`, `conversational`, `technical`, `academic`, `code`, `concise`, `detailed`, `qa`, `instructional`, `creative`
 
 ---
 

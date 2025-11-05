@@ -1,7 +1,7 @@
 {
   "name": "quick-rag",
-  "version": "1.0.0",
-  "description": "⚡ Quick RAG - Production-ready local AI with Ollama & LM Studio SDK integration + Document Loaders (PDF, Word, Excel)",
+  "version": "1.1.0",
+  "description": "⚡ Quick RAG - Production-ready local AI with Ollama & LM Studio SDK integration + Document Loaders (PDF, Word, Excel) + Query Explainability + Dynamic Prompts",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",
   "types": "src/index.d.ts",
