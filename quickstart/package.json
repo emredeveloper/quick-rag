@@ -8,7 +8,9 @@
     "02": "node 02-document-loading.js",
     "03": "node 03-streaming.js",
     "04": "node 04-metadata-filtering.js",
-    "05": "node 05-decision-engine.js"
+    "05": "node 05-decision-engine.js",
+    "06": "node 06-pdf-real-world.js",
+    "07": "node 07-pdf-with-decision-engine.js"
   },
   "keywords": [
     "rag",
@@ -18,6 +20,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "quick-rag": "^1.1.6"
+    "quick-rag": "^1.1.7"
   }
 }

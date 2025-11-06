@@ -52,6 +52,31 @@ npm run 05
 ```
 Shows the advanced Decision Engine with multi-criteria scoring.
 
+### 6. Real-World PDF Loading
+```bash
+npm run 06
+# or: node 06-pdf-real-world.js
+```
+**Requires: `npm install pdf-parse`**
+
+Demonstrates loading and querying real PDF documents with:
+- Automatic PDF text extraction
+- Multiple queries on same documents
+- Different prompt templates (technical, academic, detailed)
+
+### 7. PDF with Decision Engine
+```bash
+npm run 07
+# or: node 07-pdf-with-decision-engine.js
+```
+**Requires: `npm install pdf-parse`**
+
+Advanced example combining PDFs with Decision Engine:
+- Multi-criteria scoring on PDF content
+- Comparison: normal vs smart retrieval
+- Quality metrics and decision transparency
+- Academic-focused retrieval optimization
+
 ## What's Inside?
 
 All examples use the published `quick-rag` package from NPM:
