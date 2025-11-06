@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.1.7] - 2025-11-06 🐛
+
+### 🐛 Critical Bug Fix
+
+#### Fixed Missing Exports in index.node.js
+- **Decision Engine exports missing** - Added SmartRetriever, WeightedDecisionEngine, HeuristicEngine, and DEFAULT_WEIGHTS to `src/index.node.js`
+- **Prompt Management exports missing** - Added PromptManager and related exports to `src/index.node.js`
+
+**Issue:** Users installing from NPM couldn't use Decision Engine or Prompt Management features because these exports were only in `src/index.js` but not in the main entry point `src/index.node.js`.
+
+**Fixed:**
+```javascript
+// Now properly exported from index.node.js:
+export { 
+  SmartRetriever,
+  WeightedDecisionEngine,
+  HeuristicEngine,
+  createSmartRetriever,
+  DEFAULT_WEIGHTS
+} from './decisionEngine.js';
+
+export { 
+  PromptManager, 
+  PromptTemplates, 
+  createPromptManager, 
+  getTemplate 
+} from './promptManager.js';
+```
+
+This fix ensures all v1.1.x features are accessible when installing from NPM.
+
+---
+
 ## [1.1.6] - 2025-11-06 📚
 
 ### 📖 Documentation Update

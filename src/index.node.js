@@ -19,6 +19,18 @@ export { generateWithRAG } from './rag.js';
 export { createMRL } from './embeddings/mrl.js';
 export { initRAG } from './initRag.js';
 
+// Prompt Management
+export { PromptManager, PromptTemplates, createPromptManager, getTemplate } from './promptManager.js';
+
+// Decision Engine (Advanced RAG)
+export { 
+  WeightedDecisionEngine,
+  HeuristicEngine,
+  SmartRetriever,
+  createSmartRetriever,
+  DEFAULT_WEIGHTS
+} from './decisionEngine.js';
+
 // Utilities
 export { 
   chunkText, 

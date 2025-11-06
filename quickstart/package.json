@@ -1,0 +1,23 @@
+{
+  "name": "quick-rag-quickstart",
+  "version": "1.0.0",
+  "description": "Quick start examples for quick-rag library",
+  "type": "module",
+  "scripts": {
+    "01": "node 01-basic-usage.js",
+    "02": "node 02-document-loading.js",
+    "03": "node 03-streaming.js",
+    "04": "node 04-metadata-filtering.js",
+    "05": "node 05-decision-engine.js"
+  },
+  "keywords": [
+    "rag",
+    "quick-rag",
+    "examples"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "quick-rag": "^1.1.6"
+  }
+}

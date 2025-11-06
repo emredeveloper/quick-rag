@@ -1,0 +1,93 @@
+# Quick RAG - Quick Start Examples
+
+Ready-to-run examples that use `quick-rag` from NPM.
+
+## Setup
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Make sure Ollama is running with required models:
+```bash
+ollama pull granite4:3b
+ollama pull nomic-embed-text
+```
+
+## Examples
+
+### 1. Basic Usage
+```bash
+npm run 01
+# or: node 01-basic-usage.js
+```
+Shows basic RAG setup with document storage and querying.
+
+### 2. Document Loading
+```bash
+npm run 02
+# or: node 02-document-loading.js
+```
+Demonstrates loading multiple documents and querying different topics.
+
+### 3. Streaming
+```bash
+npm run 03
+# or: node 03-streaming.js
+```
+Shows how to use streaming responses from Ollama.
+
+### 4. Metadata Filtering
+```bash
+npm run 04
+# or: node 04-metadata-filtering.js
+```
+Demonstrates filtering documents by metadata properties.
+
+### 5. Decision Engine
+```bash
+npm run 05
+# or: node 05-decision-engine.js
+```
+Shows the advanced Decision Engine with multi-criteria scoring.
+
+## What's Inside?
+
+All examples use the published `quick-rag` package from NPM:
+
+```javascript
+import { 
+  OllamaRAGClient, 
+  createOllamaRAGEmbedding,
+  InMemoryVectorStore, 
+  Retriever,
+  SmartRetriever,
+  generateWithRAG
+} from 'quick-rag';
+```
+
+## Requirements
+
+- Node.js 18+
+- Ollama running locally (http://127.0.0.1:11434)
+- Models: `granite4:3b` and `nomic-embed-text`
+
+## Troubleshooting
+
+**Ollama not running:**
+```bash
+# Start Ollama
+ollama serve
+```
+
+**Models not found:**
+```bash
+ollama pull granite4:3b
+ollama pull nomic-embed-text
+```
+
+**Module not found:**
+```bash
+npm install
+```
