@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.1.5] - 2025-11-06 📝
+
+### 🌍 Internationalization Update
+
+#### 📝 Updated Examples
+- **Example 10 (Simple)**: Translated all Turkish comments and console outputs to English
+- **Example 11 (PDF Real-World)**: Translated all Turkish comments and console outputs to English
+- Improved code readability for international developers
+- Maintained all functionality while making examples globally accessible
+
+**Files Updated:**
+- `example/10-decision-engine-simple.js` - Smart Document Selection example now fully in English
+- `example/11-decision-engine-pdf-real-world.js` - Real-world PDF scenario example now fully in English
+
+**Benefits:**
+- ✅ Better accessibility for international developers
+- ✅ Consistent documentation language
+- ✅ Easier to understand and follow examples
+- ✅ Professional, production-ready code samples
+
+---
+
 ## [1.1.0] - 2025-11-05 ✨
 
 ### 🎯 Major Feature Release

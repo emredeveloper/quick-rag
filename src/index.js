@@ -21,6 +21,15 @@ export { createBrowserModelClient } from './browserModelClient.js';
 // Prompt Management
 export { PromptManager, PromptTemplates, createPromptManager, getTemplate } from './promptManager.js';
 
+// Decision Engine (Advanced RAG)
+export { 
+  WeightedDecisionEngine,
+  HeuristicEngine,
+  SmartRetriever,
+  createSmartRetriever,
+  DEFAULT_WEIGHTS
+} from './decisionEngine.js';
+
 // React hook (optional - only import if using React)
 // To use: import { useRAG } from 'quick-rag/react'
 // export { useRAG } from './react/useRag.js';

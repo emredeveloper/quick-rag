@@ -15,6 +15,8 @@ Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](ht
 - 🏷️ **Metadata Filtering** - Filter by document properties
 - 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
 - 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
+- 🧠 **Weighted Decision Making** - Multi-criteria document scoring (NEW!)
+- 🎯 **Heuristic Reasoning** - Pattern learning and query optimization (NEW!)
 -  **CRUD Operations** - Add, update, delete documents on the fly
 - 🎯 **Smart Retrieval** - Dynamic topK parameter
 - 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
@@ -101,6 +103,71 @@ await generateWithRAG(client, model, query, docs, {
 ```
 
 **Templates:** `default`, `conversational`, `technical`, `academic`, `code`, `concise`, `detailed`, `qa`, `instructional`, `creative`
+
+### 🧠 Weighted Decision Making & Heuristic Reasoning
+
+**Industry-first AI-powered retrieval** - Go beyond simple cosine similarity!
+
+```javascript
+import { SmartRetriever } from 'quick-rag';
+
+// Create smart retriever with multi-criteria scoring
+const smartRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.5,  // Cosine similarity
+    keywordMatch: 0.2,         // Term matching
+    recency: 0.15,             // Document freshness
+    sourceQuality: 0.1,        // Source reliability
+    contextRelevance: 0.05     // Contextual fit
+  },
+  enableLearning: true         // Learn from feedback
+});
+
+// Get results with decision transparency
+const response = await smartRetriever.getRelevant('latest Python features', 3);
+
+// See WHY each document was selected
+console.log(response.decisions);
+// {
+//   weights: {...},
+//   appliedRules: ["boost-recent-for-news"],
+//   suggestions: ["Time-sensitive query detected. Prioritizing recent documents."]
+// }
+
+// Each result includes detailed scoring breakdown
+console.log(response.results[0].scoreBreakdown);
+// {
+//   semanticSimilarity: { score: 0.85, weight: 0.5, contribution: 0.425 },
+//   keywordMatch: { score: 0.67, weight: 0.2, contribution: 0.134 },
+//   recency: { score: 0.95, weight: 0.15, contribution: 0.143 },
+//   ...
+// }
+
+// Provide feedback to enable learning
+smartRetriever.provideFeedback('latest Python features', response.results, {
+  rating: 5,
+  hasFilters: true
+});
+
+// See learned patterns
+const insights = smartRetriever.getInsights();
+console.log(insights.heuristics.successfulPatterns);
+// ["latest", "features", "Python documentation"]
+```
+
+**Key Features:**
+- 🎯 **Multi-Criteria Scoring** - 5 weighted factors beyond similarity
+- 🧠 **Heuristic Rules** - Pattern-based query optimization
+- 📈 **Adaptive Learning** - Learns from user feedback
+- 🔍 **Decision Transparency** - See exact scoring breakdown
+- 🎨 **Scenario Customization** - Different weights for news vs. docs
+- 💾 **Knowledge Transfer** - Export/import learned patterns
+
+**Use Cases:**
+- 📰 News sites → prioritize recency
+- 📚 Documentation → prioritize quality
+- 🔬 Research → balanced multi-criteria
+- 🎓 E-learning → adaptive to user patterns
 
 ---
 
