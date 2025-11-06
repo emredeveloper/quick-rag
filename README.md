@@ -42,13 +42,175 @@ npm install quick-rag
 - [LM Studio](https://lmstudio.ai) installed with server enabled
 - Models: `ollama pull granite4:3b` and `ollama pull nomic-embed-text`
 
-> **🎉 v1.1.0 Released!** New features: Query Explainability & Dynamic Prompt Management - capabilities not found in any other RAG library! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v1.1.5 Released!** New features: Query Explainability, Dynamic Prompt Management, and Decision Engine (Weighted Scoring + Heuristic Reasoning) - capabilities not found in any other RAG library! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ---
 
-## 🆕 What's New in v1.1.0
+## 🆕 What's New in v1.1.5
 
-### 🔍 Query Explainability
+### 📝 Internationalization Update
+- Translated all example files to English for better international accessibility
+- `example/10-decision-engine-simple.js` - Smart Document Selection example
+- `example/11-decision-engine-pdf-real-world.js` - Real-world PDF scenario example
+
+### 🧠 Decision Engine (v1.1.0)
+
+**Revolutionary AI-powered retrieval system** - The most advanced RAG retrieval available!
+
+Quick RAG now includes a **Decision Engine** that goes far beyond simple cosine similarity. It combines:
+- 🎯 **Multi-Criteria Weighted Scoring** - 5 factors evaluated together
+- 🧠 **Heuristic Reasoning** - Pattern-based query optimization  
+- � **Adaptive Learning** - Learns from user feedback
+- �🔍 **Full Transparency** - See exactly why each document was selected
+
+#### Multi-Criteria Scoring
+
+**5 weighted factors beyond similarity:**
+
+1. **📊 Semantic Similarity** (50%) - Cosine similarity score
+2. **🔤 Keyword Match** (20%) - Term matching in document
+3. **📅 Recency** (15%) - Document freshness with exponential decay
+4. **⭐ Source Quality** (10%) - Source reliability (official=1.0, research=0.9, blog=0.7, forum=0.6)
+5. **🎯 Context Relevance** (5%) - Contextual fit
+
+```javascript
+import { SmartRetriever, DEFAULT_WEIGHTS } from 'quick-rag';
+
+// Create smart retriever with default weights
+const smartRetriever = new SmartRetriever(basicRetriever);
+
+// Or customize weights for your use case
+const smartRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.35,
+    keywordMatch: 0.20,
+    recency: 0.30,         // Higher for news sites
+    sourceQuality: 0.10,
+    contextRelevance: 0.05
+  }
+});
+
+// Get results with decision transparency
+const response = await smartRetriever.getRelevant('latest AI news', 3);
+
+// See scoring breakdown for each document
+console.log(response.results[0]);
+// {
+//   text: "...",
+//   weightedScore: 0.742,
+//   scoreBreakdown: {
+//     semanticSimilarity: { score: 0.85, weight: 0.35, contribution: 0.298 },
+//     keywordMatch: { score: 0.67, weight: 0.20, contribution: 0.134 },
+//     recency: { score: 0.95, weight: 0.30, contribution: 0.285 },
+//     sourceQuality: { score: 0.90, weight: 0.10, contribution: 0.090 },
+//     contextRelevance: { score: 1.00, weight: 0.05, contribution: 0.050 }
+//   }
+// }
+
+// Decision context shows WHY these results
+console.log(response.decisions);
+// {
+//   weights: { ... },
+//   appliedRules: ["boost-recent-for-news"],
+//   suggestions: [
+//     "Time-sensitive query detected. Prioritizing recent documents.",
+//     "Consider using filters if you need older historical content."
+//   ]
+// }
+```
+
+#### Heuristic Reasoning
+
+**Pattern-based optimization that learns:**
+
+```javascript
+// Enable learning mode
+const smartRetriever = new SmartRetriever(basicRetriever, {
+  enableLearning: true,
+  enableHeuristics: true
+});
+
+// Add custom rules
+smartRetriever.heuristicEngine.addRule(
+  'boost-documentation',
+  (query, context) => query.includes('documentation'),
+  (query, context) => {
+    context.adjustWeight('sourceQuality', 0.15);  // Increase quality weight
+    return { adjusted: true, reason: 'Documentation query prioritizes quality' };
+  },
+  5  // Priority
+);
+
+// Provide feedback to enable learning
+smartRetriever.provideFeedback(query, results, {
+  rating: 5,           // 1-5 rating
+  hasFilters: true,    // User applied filters
+  comment: 'Perfect results!'
+});
+
+// System learns successful patterns
+const insights = smartRetriever.getInsights();
+console.log(insights.heuristics.successfulPatterns);
+// ["latest", "documentation", "official release"]
+
+// Export learned knowledge
+const knowledge = smartRetriever.exportKnowledge();
+
+// Import to another instance
+newRetriever.importKnowledge(knowledge);
+```
+
+#### Scenario Customization
+
+**Different weights for different use cases:**
+
+```javascript
+// News Platform - Recency Priority
+const newsRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.30,
+    keywordMatch: 0.20,
+    recency: 0.40,         // 🔥 High recency
+    sourceQuality: 0.05,
+    contextRelevance: 0.05
+  }
+});
+
+// Documentation Site - Quality Priority  
+const docsRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.35,
+    keywordMatch: 0.20,
+    recency: 0.10,
+    sourceQuality: 0.30,   // 🔥 High quality
+    contextRelevance: 0.05
+  }
+});
+
+// Research Platform - Balanced
+const researchRetriever = new SmartRetriever(basicRetriever, {
+  weights: DEFAULT_WEIGHTS  // Balanced approach
+});
+```
+
+#### Real-World Example
+
+See `example/11-decision-engine-pdf-real-world.js` for a complete example with:
+- PDF document loading
+- Multiple source types (official, blog, research, forum)
+- 3 different scenarios (news, documentation, research)
+- RAG generation with quality metrics
+- Decision transparency and explanations
+
+**Benefits:**
+- ✅ More accurate retrieval than pure similarity
+- ✅ Adapts to different content types automatically
+- ✅ Learns from user interactions
+- ✅ Fully explainable decisions
+- ✅ Customizable for any use case
+- ✅ Production-ready with proven patterns
+
+### 🔍 Query Explainability (v1.1.0)
 **Understand WHY documents were retrieved** - A first-of-its-kind feature!
 
 ```javascript
@@ -74,7 +236,7 @@ console.log(results[0].explanation);
 
 **Use cases:** Debug searches, optimize queries, validate accuracy, explain to users
 
-### 🎨 Dynamic Prompt Management
+### 🎨 Dynamic Prompt Management (v1.1.0)
 **10 built-in templates + full customization**
 
 ```javascript
@@ -103,71 +265,6 @@ await generateWithRAG(client, model, query, docs, {
 ```
 
 **Templates:** `default`, `conversational`, `technical`, `academic`, `code`, `concise`, `detailed`, `qa`, `instructional`, `creative`
-
-### 🧠 Weighted Decision Making & Heuristic Reasoning
-
-**Industry-first AI-powered retrieval** - Go beyond simple cosine similarity!
-
-```javascript
-import { SmartRetriever } from 'quick-rag';
-
-// Create smart retriever with multi-criteria scoring
-const smartRetriever = new SmartRetriever(basicRetriever, {
-  weights: {
-    semanticSimilarity: 0.5,  // Cosine similarity
-    keywordMatch: 0.2,         // Term matching
-    recency: 0.15,             // Document freshness
-    sourceQuality: 0.1,        // Source reliability
-    contextRelevance: 0.05     // Contextual fit
-  },
-  enableLearning: true         // Learn from feedback
-});
-
-// Get results with decision transparency
-const response = await smartRetriever.getRelevant('latest Python features', 3);
-
-// See WHY each document was selected
-console.log(response.decisions);
-// {
-//   weights: {...},
-//   appliedRules: ["boost-recent-for-news"],
-//   suggestions: ["Time-sensitive query detected. Prioritizing recent documents."]
-// }
-
-// Each result includes detailed scoring breakdown
-console.log(response.results[0].scoreBreakdown);
-// {
-//   semanticSimilarity: { score: 0.85, weight: 0.5, contribution: 0.425 },
-//   keywordMatch: { score: 0.67, weight: 0.2, contribution: 0.134 },
-//   recency: { score: 0.95, weight: 0.15, contribution: 0.143 },
-//   ...
-// }
-
-// Provide feedback to enable learning
-smartRetriever.provideFeedback('latest Python features', response.results, {
-  rating: 5,
-  hasFilters: true
-});
-
-// See learned patterns
-const insights = smartRetriever.getInsights();
-console.log(insights.heuristics.successfulPatterns);
-// ["latest", "features", "Python documentation"]
-```
-
-**Key Features:**
-- 🎯 **Multi-Criteria Scoring** - 5 weighted factors beyond similarity
-- 🧠 **Heuristic Rules** - Pattern-based query optimization
-- 📈 **Adaptive Learning** - Learns from user feedback
-- 🔍 **Decision Transparency** - See exact scoring breakdown
-- 🎨 **Scenario Customization** - Different weights for news vs. docs
-- 💾 **Knowledge Transfer** - Export/import learned patterns
-
-**Use Cases:**
-- 📰 News sites → prioritize recency
-- 📚 Documentation → prioritize quality
-- 🔬 Research → balanced multi-criteria
-- 🎓 E-learning → adaptive to user patterns
 
 ---
 
