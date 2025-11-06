@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.1.6] - 2025-11-06 📚
+
+### 📖 Documentation Update
+
+#### 📝 README.md Update
+- **Comprehensive Decision Engine Documentation** - Added complete documentation for the Decision Engine feature
+- **Multi-Criteria Scoring** - Detailed explanation of 5-factor weighted scoring system
+- **Heuristic Reasoning** - Pattern learning and query optimization documentation
+- **Code Examples** - Production-ready examples for all Decision Engine features
+- **Use Cases** - Real-world scenarios (news sites, documentation, research platforms)
+- **Updated package description** - Now includes "Decision Engine" in description
+
+**What's Documented:**
+- ✅ SmartRetriever API and usage
+- ✅ Multi-criteria weighted scoring (5 factors)
+- ✅ Heuristic rules and learning system
+- ✅ Adaptive learning from user feedback
+- ✅ Scenario customization (news, docs, research)
+- ✅ Decision transparency and explanations
+- ✅ Knowledge transfer (export/import)
+- ✅ Real-world example reference (Example 11)
+
+This ensures NPM package page displays complete feature documentation!
+
+---
+
 ## [1.1.5] - 2025-11-06 📝
 
 ### 🌍 Internationalization Update
