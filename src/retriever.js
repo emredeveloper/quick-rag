@@ -9,7 +9,8 @@ export class Retriever {
    * @param {string} query - Search query
    * @param {number} topK - Number of results to return (optional)
    * @param {Object} options - Additional options
-   * @param {Object} options.filters - Metadata filters (e.g., { source: 'web', date: '2025-01-01' })
+   * @param {Object} options.filters - Object-based metadata filters (e.g., { source: 'web', date: '2025-01-01' })
+   * @param {Function} options.filter - Function-based filter (e.g., (meta) => meta.topic === 'science')
    * @param {number} options.minScore - Minimum similarity score (0-1)
    * @param {boolean} options.explain - Add explanation for why each document was retrieved
    * @returns {Promise<Array>} Relevant documents
@@ -17,13 +18,27 @@ export class Retriever {
   async getRelevant(query, topK, options = {}) {
     // Use provided topK or fall back to instance default
     const k = topK !== undefined ? topK : this.k;
-    const { filters, minScore, explain } = options;
+    const { filters, filter, minScore, explain } = options;
     
     // Get more results if filtering, to ensure we have enough after filtering
-    const fetchK = filters ? k * 3 : k;
+    const hasFiltering = filters || filter;
+    const fetchK = hasFiltering ? k * 3 : k;
     let results = await this.store.similaritySearch(query, fetchK);
     
-    // Apply metadata filters
+    // Apply function-based filter first (if provided)
+    if (filter && typeof filter === 'function') {
+      results = results.filter(doc => {
+        if (!doc.meta) return false;
+        try {
+          return filter(doc.meta);
+        } catch (error) {
+          console.warn('Filter function error:', error);
+          return false;
+        }
+      });
+    }
+    
+    // Apply object-based metadata filters
     if (filters && Object.keys(filters).length > 0) {
       results = results.filter(doc => {
         if (!doc.meta) return false;

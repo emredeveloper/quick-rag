@@ -4,15 +4,18 @@
   "description": "Quick start examples for quick-rag library",
   "type": "module",
   "scripts": {
-    "01": "node 01-basic-usage.js",
-    "02": "node 02-document-loading.js",
-    "03": "node 03-streaming.js",
-    "04": "node 04-metadata-filtering.js",
-    "05": "node 05-decision-engine.js",
-    "06": "node 06-pdf-real-world.js",
-    "07": "node 07-pdf-with-decision-engine.js",
-    "08": "node 08-multiple-document-types.js",
-    "09": "node 09-multiformat-decision-engine.js"
+    "ollama:01": "node ollama/01-basic-usage.js",
+    "ollama:02": "node ollama/02-document-loading.js",
+    "ollama:03": "node ollama/03-streaming.js",
+    "ollama:04": "node ollama/04-metadata-filtering.js",
+    "ollama:05": "node ollama/05-decision-engine.js",
+    "ollama:06": "node ollama/06-pdf-real-world.js",
+    "ollama:07": "node ollama/07-pdf-with-decision-engine.js",
+    "ollama:08": "node ollama/08-multiple-document-types.js",
+    "ollama:09": "node ollama/09-multiformat-decision-engine.js",
+    "lmstudio:01": "node lmstudio/01-basic.js",
+    "lmstudio:02": "node lmstudio/02-streaming.js",
+    "lmstudio:03": "node lmstudio/03-documents.js"
   },
   "keywords": [
     "rag",
