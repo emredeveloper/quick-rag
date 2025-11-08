@@ -1,697 +1,417 @@
-# Quick RAG ⚡# Quick RAG ⚡
+# Quick RAG ⚡
 
+[![npm version](https://img.shields.io/npm/v/quick-rag.svg)](https://www.npmjs.com/package/quick-rag)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
+Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-[![npm version](https://img.shields.io/npm/v/quick-rag.svg)](https://www.npmjs.com/package/quick-rag)[![npm version](https://img.shields.io/npm/v/quick-rag.svg)](https://www.npmjs.com/package/quick-rag)
+## ✨ Features
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+- 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
+- ⚡ **5x Faster** - Parallel batch embedding
+- 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
+- 🔪 **Smart Chunking** - Intelligent text splitting with overlap
+- 🏷️ **Metadata Filtering** - Filter by document properties
+- 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
+- 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
+- 🧠 **Weighted Decision Making** - Multi-criteria document scoring (NEW!)
+- 🎯 **Heuristic Reasoning** - Pattern learning and query optimization (NEW!)
+-  **CRUD Operations** - Add, update, delete documents on the fly
+- 🎯 **Smart Retrieval** - Dynamic topK parameter
+- 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
+- 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
+- 🎨 **Multiple Providers** - Ollama & LM Studio support
+- 🛠️ **All SDK Features** - Tool calling, vision, agents, and more
+- 💪 **Type Safe** - Full TypeScript support
+- ✅ **Production Ready** - Thoroughly tested and documented
 
+## 📦 Installation
 
+```bash
+npm install quick-rag
+```
 
-**Production-ready RAG (Retrieval-Augmented Generation) for JavaScript****Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**
+**This package includes:**
+- ✅ Official `ollama` SDK (0.6.2+)
+- ✅ Official `@lmstudio/sdk` (1.5.0+)
+- ✅ RAG components (vector store, retrieval, embeddings)
 
+**Prerequisites:**
+- [Ollama](https://ollama.ai) installed and running, OR
+- [LM Studio](https://lmstudio.ai) installed with server enabled
+- Models: `ollama pull granite4:3b` and `ollama pull nomic-embed-text`
 
-
-Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
-
-
-
-## ✨ Features## ✨ Key Features
-
-
-
-- 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk`- 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk`
-
-- ⚡ **Fast** - Parallel batch embedding (5x faster)- ⚡ **Fast** - Parallel batch embedding (5x faster)
-
-- 📄 **Document Loaders** - PDF, Word, Excel, PowerPoint, Text, Markdown, URLs- 📄 **Document Loaders** - PDF, Word, Excel, PowerPoint, Text, Markdown, URLs
-
-- 🏷️ **Smart Filtering** - Object and function-based filters- 🏷️ **Smart Filtering** - Object-based and function-based metadata filters
-
-- 🔍 **Query Explainability** - See WHY documents were retrieved- 🔍 **Query Explainability** - See WHY documents were retrieved
-
-- 🎨 **Dynamic Prompts** - 10 built-in templates + customization- 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
-
-- 🧠 **Decision Engine** - Multi-criteria scoring- 🧠 **Decision Engine** - Multi-criteria scoring with weighted factors
-
-- 🌊 **Streaming** - Real-time responses- 🌊 **Streaming Support** - Real-time AI responses
-
-- 💪 **TypeScript** - Full type safety- 💪 **TypeScript** - Full type safety
-
-- 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js- 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
-
-
-
-## 📦 Installation## 📦 Installation
-
-
-
-```bash```bash
-
-npm install quick-ragnpm install quick-rag
-
-``````
-
-
-
-**Prerequisites:****Prerequisites:**
-
-- [Ollama](https://ollama.ai) OR [LM Studio](https://lmstudio.ai)- [Ollama](https://ollama.ai) OR [LM Studio](https://lmstudio.ai) installed
-
-- Models: `ollama pull granite4:3b nomic-embed-text`- Models: `ollama pull granite4:3b` and `ollama pull nomic-embed-text`
-
-
-
-## 🆕 What's New in v1.1.8## � What's New in v1.1.8
-
-
-
-- ✅ **Function-based Filters** - `filter: (meta) => meta.year === 2024`- ✅ **Function-based Filters** - Advanced filtering with custom logic: `filter: (meta) => meta.year === 2024`
-
-- ✅ **PowerPoint Support** - Load .pptx files- ✅ **PowerPoint Support** - Load .pptx and .ppt files with `officeparser`
-
-- ✅ **Organized Examples** - Separated Ollama/LM Studio folders- ✅ **Organized Examples** - Separated Ollama and LM Studio examples into folders
-
-- ✅ **Advanced Filtering** - 6 new filtering scenarios- ✅ **LM Studio Examples** - 3 new examples showing LM Studio integration
-
-- ✅ **Advanced Filtering Example** - 6 different filtering scenarios demonstrated
+> **🎉 v1.1.8 Released!** New features: Function-based Filters, PowerPoint Support, Organized Examples, and Advanced Filtering scenarios! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ---
+
+## 🆕 What's New in v1.1.8
+
+### ✅ Function-based Filters
+Advanced filtering with custom logic - filter documents using JavaScript functions:
+```javascript
+const results = await retriever.getRelevant('latest AI news', 5, {
+  filter: (meta) => {
+    return meta.year === 2024 && 
+           meta.tags.includes('AI') &&
+           meta.difficulty !== 'beginner';
+  }
+});
+```
+
+### 📽️ PowerPoint Support
+Load .pptx and .ppt files with `officeparser`:
+```javascript
+import { loadDocument } from 'quick-rag';
+const pptDoc = await loadDocument('./presentation.pptx');
+```
+
+### 📁 Organized Examples
+Separated examples by provider for better clarity:
+- `quickstart/ollama/` - 9 Ollama examples (01-09)
+- `quickstart/lmstudio/` - 3 LM Studio examples (01-03)
+- Run with: `npm run ollama:01` or `npm run lmstudio:01`
+
+### 🔍 Advanced Filtering Example
+New `example/06-advanced-filtering.js` with 6 filtering scenarios:
+- Object-based filtering
+- Function-based filtering
+- Array operations
+- Combined filters
+- Advanced logic
+- minScore integration
+
+---
+
+## 🆕 What's New in v1.1.5
+
+### 📝 Internationalization Update
+- Translated all example files to English for better international accessibility
+- `example/10-decision-engine-simple.js` - Smart Document Selection example
+- `example/11-decision-engine-pdf-real-world.js` - Real-world PDF scenario example
+
+### 🧠 Decision Engine (v1.1.0)
+
+**Revolutionary AI-powered retrieval system** - The most advanced RAG retrieval available!
+
+Quick RAG now includes a **Decision Engine** that goes far beyond simple cosine similarity. It combines:
+- 🎯 **Multi-Criteria Weighted Scoring** - 5 factors evaluated together
+- 🧠 **Heuristic Reasoning** - Pattern-based query optimization  
+- � **Adaptive Learning** - Learns from user feedback
+- �🔍 **Full Transparency** - See exactly why each document was selected
+
+#### Multi-Criteria Scoring
+
+**5 weighted factors beyond similarity:**
+
+1. **📊 Semantic Similarity** (50%) - Cosine similarity score
+2. **🔤 Keyword Match** (20%) - Term matching in document
+3. **📅 Recency** (15%) - Document freshness with exponential decay
+4. **⭐ Source Quality** (10%) - Source reliability (official=1.0, research=0.9, blog=0.7, forum=0.6)
+5. **🎯 Context Relevance** (5%) - Contextual fit
+
+```javascript
+import { SmartRetriever, DEFAULT_WEIGHTS } from 'quick-rag';
+
+// Create smart retriever with default weights
+const smartRetriever = new SmartRetriever(basicRetriever);
+
+// Or customize weights for your use case
+const smartRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.35,
+    keywordMatch: 0.20,
+    recency: 0.30,         // Higher for news sites
+    sourceQuality: 0.10,
+    contextRelevance: 0.05
+  }
+});
+
+// Get results with decision transparency
+const response = await smartRetriever.getRelevant('latest AI news', 3);
+
+// See scoring breakdown for each document
+console.log(response.results[0]);
+// {
+//   text: "...",
+//   weightedScore: 0.742,
+//   scoreBreakdown: {
+//     semanticSimilarity: { score: 0.85, weight: 0.35, contribution: 0.298 },
+//     keywordMatch: { score: 0.67, weight: 0.20, contribution: 0.134 },
+//     recency: { score: 0.95, weight: 0.30, contribution: 0.285 },
+//     sourceQuality: { score: 0.90, weight: 0.10, contribution: 0.090 },
+//     contextRelevance: { score: 1.00, weight: 0.05, contribution: 0.050 }
+//   }
+// }
+
+// Decision context shows WHY these results
+console.log(response.decisions);
+// {
+//   weights: { ... },
+//   appliedRules: ["boost-recent-for-news"],
+//   suggestions: [
+//     "Time-sensitive query detected. Prioritizing recent documents.",
+//     "Consider using filters if you need older historical content."
+//   ]
+// }
+```
+
+#### Heuristic Reasoning
+
+**Pattern-based optimization that learns:**
+
+```javascript
+// Enable learning mode
+const smartRetriever = new SmartRetriever(basicRetriever, {
+  enableLearning: true,
+  enableHeuristics: true
+});
+
+// Add custom rules
+smartRetriever.heuristicEngine.addRule(
+  'boost-documentation',
+  (query, context) => query.includes('documentation'),
+  (query, context) => {
+    context.adjustWeight('sourceQuality', 0.15);  // Increase quality weight
+    return { adjusted: true, reason: 'Documentation query prioritizes quality' };
+  },
+  5  // Priority
+);
+
+// Provide feedback to enable learning
+smartRetriever.provideFeedback(query, results, {
+  rating: 5,           // 1-5 rating
+  hasFilters: true,    // User applied filters
+  comment: 'Perfect results!'
+});
+
+// System learns successful patterns
+const insights = smartRetriever.getInsights();
+console.log(insights.heuristics.successfulPatterns);
+// ["latest", "documentation", "official release"]
+
+// Export learned knowledge
+const knowledge = smartRetriever.exportKnowledge();
+
+// Import to another instance
+newRetriever.importKnowledge(knowledge);
+```
+
+#### Scenario Customization
+
+**Different weights for different use cases:**
+
+```javascript
+// News Platform - Recency Priority
+const newsRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.30,
+    keywordMatch: 0.20,
+    recency: 0.40,         // 🔥 High recency
+    sourceQuality: 0.05,
+    contextRelevance: 0.05
+  }
+});
+
+// Documentation Site - Quality Priority  
+const docsRetriever = new SmartRetriever(basicRetriever, {
+  weights: {
+    semanticSimilarity: 0.35,
+    keywordMatch: 0.20,
+    recency: 0.10,
+    sourceQuality: 0.30,   // 🔥 High quality
+    contextRelevance: 0.05
+  }
+});
+
+// Research Platform - Balanced
+const researchRetriever = new SmartRetriever(basicRetriever, {
+  weights: DEFAULT_WEIGHTS  // Balanced approach
+});
+```
+
+#### Real-World Example
+
+See `example/11-decision-engine-pdf-real-world.js` for a complete example with:
+- PDF document loading
+- Multiple source types (official, blog, research, forum)
+- 3 different scenarios (news, documentation, research)
+- RAG generation with quality metrics
+- Decision transparency and explanations
+
+**Benefits:**
+- ✅ More accurate retrieval than pure similarity
+- ✅ Adapts to different content types automatically
+- ✅ Learns from user interactions
+- ✅ Fully explainable decisions
+- ✅ Customizable for any use case
+- ✅ Production-ready with proven patterns
+
+### 🔍 Query Explainability (v1.1.0)
+**Understand WHY documents were retrieved** - A first-of-its-kind feature!
+
+```javascript
+const results = await retriever.getRelevant('What is Ollama?', 3, {
+  explain: true
+});
+
+// Each result includes detailed explanation:
+console.log(results[0].explanation);
+// {
+//   queryTerms: ["ollama", "local", "ai"],
+//   matchedTerms: ["ollama", "local"],
+//   matchCount: 2,
+//   matchRatio: 0.67,
+//   cosineSimilarity: 0.856,
+//   relevanceFactors: {
+//     termMatches: 2,
+//     semanticSimilarity: 0.856,
+//     coverage: "67%"
+//   }
+// }
+```
+
+**Use cases:** Debug searches, optimize queries, validate accuracy, explain to users
+
+### 🎨 Dynamic Prompt Management (v1.1.0)
+**10 built-in templates + full customization**
+
+```javascript
+// Quick template selection
+await generateWithRAG(client, model, query, docs, {
+  template: 'conversational'  // or: technical, academic, code, etc.
+});
+
+// System prompts for role definition
+await generateWithRAG(client, model, query, docs, {
+  systemPrompt: 'You are a helpful programming tutor',
+  template: 'instructional'
+});
+
+// Advanced: Reusable PromptManager
+import { createPromptManager } from 'quick-rag';
+
+const promptMgr = createPromptManager({
+  systemPrompt: 'You are an expert engineer',
+  template: 'technical'
+});
+
+await generateWithRAG(client, model, query, docs, {
+  promptManager: promptMgr
+});
+```
+
+**Templates:** `default`, `conversational`, `technical`, `academic`, `code`, `concise`, `detailed`, `qa`, `instructional`, `creative`
 
 ---
 
 ## 🚀 Quick Start
 
-## � Quick Start
-
-### Ollama Example
-
-### Basic Usage (Ollama)
+### Option 1: With Official Ollama SDK (Recommended)
 
 ```javascript
-
-import { ```javascript
-
-  OllamaRAGClient,import { SmartRetriever, DEFAULT_WEIGHTS } from 'quick-rag';
-
+import { 
+  OllamaRAGClient, 
   createOllamaRAGEmbedding,
-
-  InMemoryVectorStore,// Create smart retriever with default weights
-
-  Retriever,const smartRetriever = new SmartRetriever(basicRetriever);
-
-  generateWithRAG
-
-} from 'quick-rag';// Or customize weights for your use case
-
-const smartRetriever = new SmartRetriever(basicRetriever, {
-
-// Initialize  weights: {
-
-const client = new OllamaRAGClient();    semanticSimilarity: 0.35,
-
-const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');    keywordMatch: 0.20,
-
-const store = new InMemoryVectorStore(embed);    recency: 0.30,         // Higher for news sites
-
-const retriever = new Retriever(store);    sourceQuality: 0.10,
-
-    contextRelevance: 0.05
-
-// Add documents  }
-
-await store.addDocuments([});
-
-  { text: 'The sky appears blue due to Rayleigh scattering.' },
-
-  { text: 'JavaScript is the language of the web.' }// Get results with decision transparency
-
-]);const response = await smartRetriever.getRelevant('latest AI news', 3);
-
-
-
-// Query// See scoring breakdown for each document
-
-const docs = await retriever.getRelevant('Why is the sky blue?', 2);console.log(response.results[0]);
-
-// {
-
-// Generate answer//   text: "...",
-
-const result = await generateWithRAG(//   weightedScore: 0.742,
-
-  client,//   scoreBreakdown: {
-
-  'granite4:3b',//     semanticSimilarity: { score: 0.85, weight: 0.35, contribution: 0.298 },
-
-  'Why is the sky blue?',//     keywordMatch: { score: 0.67, weight: 0.20, contribution: 0.134 },
-
-  docs.map(d => d.text)//     recency: { score: 0.95, weight: 0.30, contribution: 0.285 },
-
-);//     sourceQuality: { score: 0.90, weight: 0.10, contribution: 0.090 },
-
-//     contextRelevance: { score: 1.00, weight: 0.05, contribution: 0.050 }
-
-console.log(result.response);//   }
-
-```// }
-
-
-
-### LM Studio Example// Decision context shows WHY these results
-
-console.log(response.decisions);
-
-```javascript// {
-
-import { //   weights: { ... },
-
-  LMStudioRAGClient,//   appliedRules: ["boost-recent-for-news"],
-
-  createLMStudioRAGEmbedding,//   suggestions: [
-
-  // ... same as above//     "Time-sensitive query detected. Prioritizing recent documents.",
-
-} from 'quick-rag';//     "Consider using filters if you need older historical content."
-
-//   ]
-
-const client = new LMStudioRAGClient();// }
-
-const embed = createLMStudioRAGEmbedding(client, 'text-embedding-nomic-embed-text-v1.5');```
-
-// ... rest is the same!
-
-```#### Heuristic Reasoning
-
-
-
-**Switching providers is just 2 lines!****Pattern-based optimization that learns:**
-
-
-
----```javascript
-
-// Enable learning mode
-
-## 📚 Examplesconst smartRetriever = new SmartRetriever(basicRetriever, {
-
-  enableLearning: true,
-
-Check out [`quickstart/`](quickstart/) folder:  enableHeuristics: true
-
-});
-
-### Ollama Examples (quickstart/ollama/)
-
-1. **01-basic-usage.js** - Get started in 5 minutes// Add custom rules
-
-2. **02-document-loading.js** - Load multiple documentssmartRetriever.heuristicEngine.addRule(
-
-3. **03-streaming.js** - Real-time responses  'boost-documentation',
-
-4. **04-metadata-filtering.js** - Filter by metadata  (query, context) => query.includes('documentation'),
-
-5. **05-decision-engine.js** - Multi-criteria scoring  (query, context) => {
-
-6. **06-pdf-real-world.js** - Real PDF documents    context.adjustWeight('sourceQuality', 0.15);  // Increase quality weight
-
-7. **07-pdf-with-decision-engine.js** - Advanced PDF retrieval    return { adjusted: true, reason: 'Documentation query prioritizes quality' };
-
-8. **08-multiple-document-types.js** - PDF, Word, Excel, PowerPoint  },
-
-9. **09-multiformat-decision-engine.js** - All features combined  5  // Priority
-
-);
-
-### LM Studio Examples (quickstart/lmstudio/)
-
-1. **01-basic.js** - LM Studio basics// Provide feedback to enable learning
-
-2. **02-streaming.js** - Streaming with LM StudiosmartRetriever.provideFeedback(query, results, {
-
-3. **03-documents.js** - Multi-format documents  rating: 5,           // 1-5 rating
-
-  hasFilters: true,    // User applied filters
-
-**Run examples:**  comment: 'Perfect results!'
-
-```bash});
-
-cd quickstart
-
-npm install// System learns successful patterns
-
-npm run ollama:01    # Run Ollama example 1const insights = smartRetriever.getInsights();
-
-npm run lmstudio:01  # Run LM Studio example 1console.log(insights.heuristics.successfulPatterns);
-
-```// ["latest", "documentation", "official release"]
-
-
-
----// Export learned knowledge
-
-const knowledge = smartRetriever.exportKnowledge();
-
-## 🏷️ Advanced Filtering
-
-// Import to another instance
-
-### Object-based (Simple)newRetriever.importKnowledge(knowledge);
-
-```
-
-```javascript
-
-const results = await retriever.getRelevant('programming', 5, {#### Scenario Customization
-
-  filters: { 
-
-    category: 'tech',**Different weights for different use cases:**
-
-    difficulty: 'beginner'
-
-  }```javascript
-
-});// News Platform - Recency Priority
-
-```const newsRetriever = new SmartRetriever(basicRetriever, {
-
-  weights: {
-
-### Function-based (Advanced)    semanticSimilarity: 0.30,
-
-    keywordMatch: 0.20,
-
-```javascript    recency: 0.40,         // 🔥 High recency
-
-const results = await retriever.getRelevant('latest news', 5, {    sourceQuality: 0.05,
-
-  filter: (meta) => {    contextRelevance: 0.05
-
-    return meta.year === 2024 &&   }
-
-           meta.tags.includes('AI') &&});
-
-           meta.difficulty !== 'beginner';
-
-  }// Documentation Site - Quality Priority  
-
-});const docsRetriever = new SmartRetriever(basicRetriever, {
-
-```  weights: {
-
-    semanticSimilarity: 0.35,
-
-### Combined    keywordMatch: 0.20,
-
-    recency: 0.10,
-
-```javascript    sourceQuality: 0.30,   // 🔥 High quality
-
-const results = await retriever.getRelevant('recent articles', 5, {    contextRelevance: 0.05
-
-  filters: { category: 'tech' },  // Object filter  }
-
-  filter: (meta) => meta.year >= 2024,  // Function filter});
-
-  minScore: 0.5  // Minimum similarity
-
-});// Research Platform - Balanced
-
-```const researchRetriever = new SmartRetriever(basicRetriever, {
-
-  weights: DEFAULT_WEIGHTS  // Balanced approach
-
-See [`example/06-advanced-filtering.js`](example/06-advanced-filtering.js) for more scenarios.});
-
-```
-
----
-
-#### Real-World Example
-
-## 📄 Document Loading
-
-See `example/11-decision-engine-pdf-real-world.js` for a complete example with:
-
-```javascript- PDF document loading
-
-import { loadDocument, loadDirectory } from 'quick-rag';- Multiple source types (official, blog, research, forum)
-
-- 3 different scenarios (news, documentation, research)
-
-// Single file (auto-detects type)- RAG generation with quality metrics
-
-const doc = await loadDocument('./file.pdf');- Decision transparency and explanations
-
-
-
-// Directory (filters by extension)**Benefits:**
-
-const docs = await loadDirectory('./docs', {- ✅ More accurate retrieval than pure similarity
-
-  extensions: ['.pdf', '.docx', '.xlsx', '.pptx']- ✅ Adapts to different content types automatically
-
-});- ✅ Learns from user interactions
-
-- ✅ Fully explainable decisions
-
-// Add to vector store- ✅ Customizable for any use case
-
-await store.addDocuments(docs);- ✅ Production-ready with proven patterns
-
-```
-
-### 🔍 Query Explainability (v1.1.0)
-
-**Supported formats:****Understand WHY documents were retrieved** - A first-of-its-kind feature!
-
-- 📕 PDF (`.pdf`) - requires `pdf-parse`
-
-- 📘 Word (`.docx`) - requires `mammoth````javascript
-
-- 📊 Excel (`.xlsx`, `.xls`) - requires `xlsx`const results = await retriever.getRelevant('What is Ollama?', 3, {
-
-- 📽️ PowerPoint (`.pptx`, `.ppt`) - requires `officeparser`  explain: true
-
-- 📝 Text (`.txt`)});
-
-- 📋 Markdown (`.md`)
-
-- 🌐 URLs (with `loadFromWeb`)// Each result includes detailed explanation:
-
-console.log(results[0].explanation);
-
-**Install optional loaders:**// {
-
-```bash//   queryTerms: ["ollama", "local", "ai"],
-
-npm install pdf-parse mammoth xlsx officeparser//   matchedTerms: ["ollama", "local"],
-
-```//   matchCount: 2,
-
-//   matchRatio: 0.67,
-
----//   cosineSimilarity: 0.856,
-
-//   relevanceFactors: {
-
-## 🧠 Decision Engine//     termMatches: 2,
-
-//     semanticSimilarity: 0.856,
-
-Multi-criteria scoring beyond simple similarity://     coverage: "67%"
-
-//   }
-
-```javascript// }
-
-import { SmartRetriever } from 'quick-rag';```
-
-
-
-const smartRetriever = new SmartRetriever(retriever, {**Use cases:** Debug searches, optimize queries, validate accuracy, explain to users
-
-  weights: {
-
-    semanticSimilarity: 0.40,  // 40%### 🎨 Dynamic Prompt Management (v1.1.0)
-
-    keywordMatch: 0.25,        // 25%**10 built-in templates + full customization**
-
-    recency: 0.20,             // 20%
-
-    sourceQuality: 0.10,       // 10%```javascript
-
-    contextRelevance: 0.05     // 5%// Quick template selection
-
-  }await generateWithRAG(client, model, query, docs, {
-
-});  template: 'conversational'  // or: technical, academic, code, etc.
-
-});
-
-const response = await smartRetriever.getRelevant('latest AI news', 3);
-
-// System prompts for role definition
-
-// See scoring breakdownawait generateWithRAG(client, model, query, docs, {
-
-console.log(response.results[0].scoreBreakdown);  systemPrompt: 'You are a helpful programming tutor',
-
-// {  template: 'instructional'
-
-//   semanticSimilarity: { score: 0.85, contribution: 0.34 },});
-
-//   keywordMatch: { score: 0.70, contribution: 0.175 },
-
-//   recency: { score: 0.95, contribution: 0.19 },// Advanced: Reusable PromptManager
-
-//   ...import { createPromptManager } from 'quick-rag';
-
-// }
-
-```const promptMgr = createPromptManager({
-
-  systemPrompt: 'You are an expert engineer',
-
-**Benefits:**  template: 'technical'
-
-- ✅ More accurate than pure similarity});
-
-- ✅ Prioritize recent content
-
-- ✅ Boost trusted sourcesawait generateWithRAG(client, model, query, docs, {
-
-- ✅ Full transparency  promptManager: promptMgr
-
-});
-
-See [`example/10-decision-engine-simple.js`](example/10-decision-engine-simple.js)```
-
-
-
----**Templates:** `default`, `conversational`, `technical`, `academic`, `code`, `concise`, `detailed`, `qa`, `instructional`, `creative`
-
-
-
-## 🎨 Prompt Templates---
-
-
-
-```javascript## 🚀 Quick Start
-
-await generateWithRAG(client, model, query, docs, {
-
-  template: 'technical'  // technical, academic, conversational, etc.### Option 1: With Official Ollama SDK (Recommended)
-
-});
-
-```javascript
-
-// Custom system promptimport { 
-
-await generateWithRAG(client, model, query, docs, {  OllamaRAGClient, 
-
-  systemPrompt: 'You are a coding tutor',  createOllamaRAGEmbedding,
-
-  template: 'instructional'  InMemoryVectorStore, 
-
-});  Retriever 
-
-```} from 'quick-rag';
-
-
-
-**Available templates:**// 1. Initialize client (official SDK)
-
-`default`, `conversational`, `technical`, `academic`, `code`, `concise`, `detailed`, `qa`, `instructional`, `creative`const client = new OllamaRAGClient({
-
+  InMemoryVectorStore, 
+  Retriever 
+} from 'quick-rag';
+
+// 1. Initialize client (official SDK)
+const client = new OllamaRAGClient({
   host: 'http://127.0.0.1:11434'
+});
 
----});
-
-
-
-## 🔍 Query Explainability// 2. Setup embedding
-
+// 2. Setup embedding
 const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
 
-```javascript
+// 3. Create vector store
+const vectorStore = new InMemoryVectorStore(embed);
+const retriever = new Retriever(vectorStore);
 
-const results = await retriever.getRelevant('machine learning', 3, {// 3. Create vector store
-
-  explain: trueconst vectorStore = new InMemoryVectorStore(embed);
-
-});const retriever = new Retriever(vectorStore);
-
-
-
-console.log(results[0].explanation);// 4. Add documents
-
-// {await vectorStore.addDocument({ 
-
-//   whyRetrieved: "Contains key terms: 'machine', 'learning', 'model'",  text: 'Ollama provides local LLM hosting.' 
-
-//   confidence: "high",});
-
-//   relevanceFactors: {
-
-//     termMatches: 3,// 5. Query with streaming (official SDK feature!)
-
-//     semanticSimilarity: 0.87const results = await retriever.getRelevant('What is Ollama?', 2);
-
-//   }const context = results.map(d => d.text).join('\n');
-
-// }
-
-```const response = await client.chat({
-
-  model: 'granite4:tiny-h',
-
----  messages: [{ 
-
-    role: 'user', 
-
-## 🌐 React Hook    content: `Context: ${context}\n\nQuestion: What is Ollama?` 
-
-  }],
-
-```jsx  stream: true, // Official SDK streaming!
-
-import { useRag } from 'quick-rag/react';});
-
-
-
-function ChatBot() {// Stream response
-
-  const { query, response, loading } = useRag({for await (const part of response) {
-
-    clientType: 'ollama',  process.stdout.write(part.message?.content || '');
-
-    model: 'granite4:3b',}
-
-    embeddingModel: 'nomic-embed-text'```
-
-  });
-
----
-
-  const handleSubmit = async (e) => {
-
-    e.preventDefault();### Option 2: React with Vite
-
-    await query(userInput);
-
-  };**Step 1:** Create your project
-
-
-
-  return (```bash
-
-    <div>npm create vite@latest my-rag-app -- --template react
-
-      {loading ? 'Thinking...' : response}cd my-rag-app
-
-    </div>npm install quick-rag express concurrently
-
-  );```
-
-}
-
-```**Step 2:** Create backend proxy (`server.js` in project root)
-
-
-
----```javascript
-
-import express from 'express';
-
-## 📖 API Referenceimport { OllamaRAGClient } from 'quick-rag';
-
-
-
-### Core Classesconst app = express();
-
-app.use(express.json());
-
-- `OllamaRAGClient` - Ollama client with RAG features
-
-- `LMStudioRAGClient` - LM Studio client with RAG featuresconst client = new OllamaRAGClient({ host: 'http://127.0.0.1:11434' });
-
-- `InMemoryVectorStore` - Vector storage
-
-- `Retriever` - Document retrievalapp.post('/api/generate', async (req, res) => {
-
-- `SmartRetriever` - Advanced retrieval with Decision Engine  const { model = 'granite4:tiny-h', messages } = req.body;
-
-  const response = await client.chat({ model, messages, stream: false });
-
-### Functions  res.json({ response: response.message.content });
-
+// 4. Add documents
+await vectorStore.addDocument({ 
+  text: 'Ollama provides local LLM hosting.' 
 });
 
-- `createOllamaRAGEmbedding(client, model)` - Create Ollama embedding
+// 5. Query with streaming (official SDK feature!)
+const results = await retriever.getRelevant('What is Ollama?', 2);
+const context = results.map(d => d.text).join('\n');
 
-- `createLMStudioRAGEmbedding(client, model)` - Create LM Studio embeddingapp.post('/api/embed', async (req, res) => {
+const response = await client.chat({
+  model: 'granite4:tiny-h',
+  messages: [{ 
+    role: 'user', 
+    content: `Context: ${context}\n\nQuestion: What is Ollama?` 
+  }],
+  stream: true, // Official SDK streaming!
+});
 
-- `generateWithRAG(client, model, query, docs, options)` - Generate answer  const { model = 'embeddinggemma', input } = req.body;
-
-- `loadDocument(path)` - Load single document  const response = await client.embed(model, input);
-
-- `loadDirectory(path, options)` - Load multiple documents  res.json(response);
-
-- `loadFromWeb(url)` - Load from URL});
-
-
-
-[Full API documentation →](https://github.com/emredeveloper/quick-rag/wiki)app.listen(3001, () => console.log('🚀 Server: http://127.0.0.1:3001'));
-
+// Stream response
+for await (const part of response) {
+  process.stdout.write(part.message?.content || '');
+}
 ```
 
 ---
+
+### Option 2: React with Vite
+
+**Step 1:** Create your project
+
+```bash
+npm create vite@latest my-rag-app -- --template react
+cd my-rag-app
+npm install quick-rag express concurrently
+```
+
+**Step 2:** Create backend proxy (`server.js` in project root)
+
+```javascript
+import express from 'express';
+import { OllamaRAGClient } from 'quick-rag';
+
+const app = express();
+app.use(express.json());
+
+const client = new OllamaRAGClient({ host: 'http://127.0.0.1:11434' });
+
+app.post('/api/generate', async (req, res) => {
+  const { model = 'granite4:tiny-h', messages } = req.body;
+  const response = await client.chat({ model, messages, stream: false });
+  res.json({ response: response.message.content });
+});
+
+app.post('/api/embed', async (req, res) => {
+  const { model = 'embeddinggemma', input } = req.body;
+  const response = await client.embed(model, input);
+  res.json(response);
+});
+
+app.listen(3001, () => console.log('🚀 Server: http://127.0.0.1:3001'));
+```
 
 **Step 3:** Configure Vite proxy (`vite.config.js`)
 
-## 🤝 Contributing
-
 ```javascript
-
-Contributions welcome! Please read our [Contributing Guide](CONTRIBUTING.md).import { defineConfig } from 'vite';
-
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-## 📄 License
-
 export default defineConfig({
-
-MIT © [emredeveloper](https://github.com/emredeveloper)  plugins: [react()],
-
+  plugins: [react()],
   server: {
-
-## 🔗 Links    proxy: {
-
+    proxy: {
       '/api': {
-
-- [NPM Package](https://www.npmjs.com/package/quick-rag)        target: 'http://127.0.0.1:3001',
-
-- [GitHub Repository](https://github.com/emredeveloper/quick-rag)        changeOrigin: true
-
-- [Examples](quickstart/)      }
-
-- [Changelog](CHANGELOG.md)    }
-
-- [Issues](https://github.com/emredeveloper/quick-rag/issues)  }
-
+        target: 'http://127.0.0.1:3001',
+        changeOrigin: true
+      }
+    }
+  }
 });
+```
 
----```
-
-
-
-**Made with ❤️ for the JavaScript & AI community****Step 4:** Update `package.json` scripts
-
+**Step 4:** Update `package.json` scripts
 
 ```json
 {
