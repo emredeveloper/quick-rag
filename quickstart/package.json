@@ -10,7 +10,9 @@
     "04": "node 04-metadata-filtering.js",
     "05": "node 05-decision-engine.js",
     "06": "node 06-pdf-real-world.js",
-    "07": "node 07-pdf-with-decision-engine.js"
+    "07": "node 07-pdf-with-decision-engine.js",
+    "08": "node 08-multiple-document-types.js",
+    "09": "node 09-multiformat-decision-engine.js"
   },
   "keywords": [
     "rag",
@@ -20,6 +22,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "quick-rag": "^1.1.7"
+    "mammoth": "^1.11.0",
+    "officeparser": "^5.2.1",
+    "quick-rag": "^1.1.7",
+    "xlsx": "^0.18.5"
   }
 }

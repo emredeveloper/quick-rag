@@ -77,6 +77,32 @@ Advanced example combining PDFs with Decision Engine:
 - Quality metrics and decision transparency
 - Academic-focused retrieval optimization
 
+### 8. Multiple Document Types
+```bash
+npm run 08
+# or: node 08-multiple-document-types.js
+```
+**Requires: `npm install pdf-parse mammoth xlsx`**
+
+Load and query multiple document formats:
+- PDF, Word (.docx), Excel (.xlsx)
+- Text (.txt), Markdown (.md), JSON
+- Cross-document semantic search
+- Type-specific filtering
+
+### 9. Multi-Format with Decision Engine
+```bash
+npm run 09
+# or: node 09-multiformat-decision-engine.js
+```
+**Requires: `npm install pdf-parse mammoth xlsx`**
+
+Most advanced example - combines everything:
+- Multiple document formats (PDF, Word, Excel, etc.)
+- Decision Engine with type-aware quality scoring
+- Intelligent prioritization by format and content
+- Comprehensive cross-document analysis
+
 ## What's Inside?
 
 All examples use the published `quick-rag` package from NPM:
