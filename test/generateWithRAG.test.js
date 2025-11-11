@@ -49,7 +49,11 @@ async function testGenerateWithRAGNewAPI() {
       results
     );
 
-    assert(typeof response === 'string' && response.length > 0, 'should return string response');
+    assert.ok(response, 'should return response');
+    assert.ok(typeof response === 'object', 'should return object');
+    assert.ok(response.response || typeof response === 'string', 'should have response property or be string');
+    assert.ok(response.docs !== undefined, 'should have docs property');
+    assert.ok(response.prompt !== undefined, 'should have prompt property');
     console.log('✅ generateWithRAG (new API) works');
   } catch (err) {
     console.warn('⚠️  generateWithRAG test skipped:', err.message);

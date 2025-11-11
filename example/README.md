@@ -1,449 +1,277 @@
-# Quick RAG Examples# Quick RAG Examples# Quick RAG Examples
-
-
+# Quick RAG Examples
 
 Clear examples showing how to use quick-rag with both **Ollama** and **LM Studio**.
 
+**Using quick-rag v2.0.3+** with batch processing and rate limiting for optimal performance.
 
+## 📚 Examples
 
-## 📚 ExamplesSimple, focused examples to get started with quick-rag.Simple, focused examples to get started with quick-rag.
-
-
+Simple, focused examples to get started with quick-rag.
 
 Each feature has **two versions** - one for Ollama, one for LM Studio:
 
-
-
-### 1️⃣ Basic Usage## 📚 Examples## 📚 Examples
+### 1️⃣ Basic Usage
 
 - **`01-basic-usage.js`** - Ollama 🦙
-
 - **`01-basic-usage-lmstudio.js`** - LM Studio 🎨
 
-
-
-Learn the basics: setup client, add documents, query, and generate answers.### Basic Examples### Basic Examples
-
-
+Learn the basics: setup client, add documents, query, and generate answers.
 
 ### 2️⃣ Document Loading
 
 - **`02-document-loading.js`** - Ollama 🦙
+- **`02-document-loading-lmstudio.js`** - LM Studio 🎨
 
-- **`02-document-loading-lmstudio.js`** - LM Studio 🎨1. **`01-basic-usage.js`** - Getting started with RAG1. **`01-basic-usage.js`** - Getting started with RAG
+Load PDFs, Word, Excel files. Chunk documents and query them.
 
-
-
-Load PDFs, Word, Excel files. Chunk documents and query them.   - Setup client and embedding   - Setup client and embedding
-
-
-
-### 3️⃣ Metadata Filtering   - Add documents to vector store   - Add documents to vector store
+### 3️⃣ Metadata Filtering
 
 - **`03-metadata-filtering.js`** - Ollama 🦙
-
-- **`03-metadata-filtering-lmstudio.js`** - LM Studio 🎨   - Query and generate answers   - Query and generate answers
-
-
+- **`03-metadata-filtering-lmstudio.js`** - LM Studio 🎨
 
 Filter documents by category, language, difficulty, or custom metadata.
 
-
-
-### 4️⃣ Streaming2. **`02-document-loading.js`** - Load PDFs, Word, Excel files2. **`02-document-loading.js`** - Load PDFs, Word, Excel files
+### 4️⃣ Streaming
 
 - **`05-streaming.js`** - Ollama 🦙
+- **`05-streaming-lmstudio.js`** - LM Studio 🎨
 
-- **`05-streaming-lmstudio.js`** - LM Studio 🎨   - Load single PDF or entire directory   - Load single PDF or entire directory
+Stream responses in real-time for better UX.
 
-
-
-Stream responses in real-time for better UX.   - Chunk documents intelligently   - Chunk documents intelligently
-
-
-
-### 5️⃣ Test Both Providers   - Query with RAG pipeline   - Query with RAG pipeline
+### 5️⃣ Test Both Providers
 
 - **`04-test-both-providers.js`** - Test both Ollama & LM Studio
 
-   - Bonus: Load from URLs   - Bonus: Load from URLs
+   - Bonus: Load from URLs
 
 Automatically detect and test both providers.
 
+### 6️⃣ Advanced Filtering
 
+- **`06-advanced-filtering.js`** - Advanced filtering scenarios
+
+   - Function-based filters
+   - Complex filtering logic
+   - Multiple filter types
+
+### 7️⃣ Query Explainability
+
+- **`08-explain-scores.js`** - Understand WHY documents were retrieved
+
+   - See query terms and matches
+   - Understand similarity scores
+   - Debug retrieval results
+
+### 8️⃣ Prompt Management
+
+- **`09-prompt-management.js`** - Dynamic prompt templates
+
+   - 10 built-in templates
+   - Custom prompt functions
+   - System prompts and roles
+
+### 9️⃣ Decision Engine (Simple)
+
+- **`10-decision-engine-simple.js`** - Smart document selection
+
+   - Multi-criteria weighted scoring
+   - 5-factor evaluation system
+   - Customizable weights
+
+### 🔟 Decision Engine (PDF Real-World)
+
+- **`11-decision-engine-pdf-real-world.js`** - Real-world PDF scenario
+
+   - PDF document loading
+   - Multiple source types
+   - Scenario customization
+
+### 1️⃣1️⃣ Conversation History & Export (NEW!)
+
+- **`12-conversation-history-and-export.js`** - Conversation management
+
+   - 💬 Track multiple query-response pairs
+   - 💾 Export conversations to JSON
+   - 📚 Document CRUD operations
+   - ⚙️ Settings management
+   - 🔄 Multi-query sessions
+   - 📊 Conversation statistics
+   - 🎨 Multi-Provider Support (Ollama 🦙 & LM Studio 🎨)
+   - 🔍 Auto-detection (automatically detects available provider)
+   - 🔧 Manual provider selection via USE_LMSTUDIO flag or environment variable
+   
+   **Provider Configuration:**
+   - Auto-detect (default): Tries LM Studio first, falls back to Ollama
+   - Force LM Studio: Set `USE_LMSTUDIO=true` or edit file: `const USE_LMSTUDIO = true`
+   - Force Ollama: Set `USE_LMSTUDIO=false` or edit file: `const USE_LMSTUDIO = false`
+   
+   **LM Studio Models:**
+   - LLM Model: `qwen/qwen3-4b-2507`
+   - Embedding Model: `text-embedding-embeddinggemma-300m`
+   
+   **Ollama Models:**
+   - LLM Model: `granite4:3b`
+   - Embedding Model: `embeddinggemma:latest`
 
 ## 🚀 Quick Start
 
-3. **`03-metadata-filtering.js`** - Filter by metadata3. **`03-metadata-filtering.js`** - Filter by metadata
-
 ### With Ollama
 
-   - Add documents with metadata   - Add documents with metadata
-
 ```bash
-
-# Make sure Ollama is running   - Filter by category, language, etc.   - Filter by category, language, etc.
-
+# Make sure Ollama is running
 ollama serve
 
-   - Use minimum score threshold   - Use minimum score threshold
-
 # Install models
-
 ollama pull embeddinggemma
-
 ollama pull granite4:tiny-h
 
-4. **`04-lmstudio.js`** - Use LM Studio instead of Ollama4. **`04-lmstudio.js`** - Use LM Studio instead of Ollama
-
 # Run examples
+node example/01-basic-usage.js
+node example/02-document-loading.js
+node example/03-metadata-filtering.js
+node example/05-streaming.js
 
-node 01-basic-usage.js   - Setup LM Studio client   - Setup LM Studio client
+# Example 12: Conversation History & Export (Auto-detects provider)
+node example/12-conversation-history-and-export.js
 
-node 02-document-loading.js
+# Force LM Studio for Example 12
+USE_LMSTUDIO=true node example/12-conversation-history-and-export.js
 
-node 03-metadata-filtering.js   - Check loaded models   - Check loaded models
+# Force Ollama for Example 12
+USE_LMSTUDIO=false node example/12-conversation-history-and-export.js
 
-node 05-streaming.js
-
-```   - Query and generate answers   - Query and generate answers
-
-
+# Or run with LM Studio-specific examples:
+node example/01-basic-usage-lmstudio.js
+node example/02-document-loading-lmstudio.js
+node example/03-metadata-filtering-lmstudio.js
+node example/05-streaming-lmstudio.js
+```
 
 ### With LM Studio
 
-
-
-```bash5. **`05-streaming.js`** - Stream responses in real-time5. **`05-streaming.js`** - Stream responses in real-time
-
+```bash
 # 1. Open LM Studio
-
-# 2. Load a model (e.g., qwen3-4b, gemma-3-4b)   - Real-time token streaming   - Real-time token streaming
-
+# 2. Load a model (e.g., qwen3-4b, gemma-3-4b)
 # 3. Make sure nomic-embed-text-v1.5 is available
-
-# 4. Enable local server: Settings → Local Server → Start   - Better user experience   - Better user experience
-
-
+# 4. Enable local server: Settings → Local Server → Start
 
 # Run examples
-
-node 01-basic-usage-lmstudio.js
-
-node 02-document-loading-lmstudio.js6. **`06-test-both-providers.js`** - Test both Ollama & LM Studio6. **`06-test-both-providers.js`** - Test both Ollama & LM Studio
-
-node 03-metadata-filtering-lmstudio.js
-
-node 05-streaming-lmstudio.js   - Detect available providers   - Detect available providers
-
+node example/01-basic-usage-lmstudio.js
+node example/02-document-loading-lmstudio.js
+node example/03-metadata-filtering-lmstudio.js
+node example/05-streaming-lmstudio.js
 ```
-
-   - Test each provider   - Test each provider
 
 ### Test Both
 
-   - Show summary   - Show summary
-
 ```bash
-
 # Automatically detect and test available providers
-
-node 04-test-both-providers.js
-
-```## 🚀 Quick Start## 🚀 Quick Start
-
-
+node example/04-test-both-providers.js
+```
 
 ## 📄 Document Loading Examples
 
+To test PDF loading (examples 02):
 
-
-To test PDF loading (examples 02):```bash```
-
-
-
-```bash# Run any example
-
+```bash
 # Create PDF folder
+mkdir example/PDF
 
-mkdir PDFnode 01-basic-usage.js```bash
-
-
-
-# Add some PDF files to the foldernode 02-document-loading.js
-
+# Add some PDF files to the folder
 # Then run
-
-node 02-document-loading.jsnode 06-test-both-providers.jsnode example/official-lmstudio-example.js### All Examples
-
+node example/02-document-loading.js
 # or
-
-node 02-document-loading-lmstudio.js```
-
-```
-
+node example/02-document-loading-lmstudio.js
 ```
 
 ## 💡 Tips
 
+- **Start here**: `01-basic-usage.js` (Ollama) or `01-basic-usage-lmstudio.js` (LM Studio)
+- **Test setup**: `04-test-both-providers.js`
+- **Check errors**: All examples have helpful error messages
+- **Streaming**: Try `05-streaming.js` for better user experience
+- **New features**: Try `12-conversation-history-and-export.js` for conversation management
+
 ## 📋 Requirements
 
-- **Start here**: `01-basic-usage.js` (Ollama) or `01-basic-usage-lmstudio.js` (LM Studio)
+All examples work with a running Ollama server. Make sure you have:
 
-- **Test setup**: `04-test-both-providers.js`All examples work with a running Ollama server. Make sure you have:
+- **Node.js** 18+ (for native fetch support)
 
-- **Check errors**: All examples have helpful error messages
-
-- **Streaming**: Try `05-streaming.js` for better user experience- **Node.js** 18+ (for native fetch support)
-
-
-
-## 🔧 Requirements- **Ollama** or **LM Studio** running locally**Features:**```bash
-
-
-
-### Ollama- **Models installed**:
+### Ollama
 
 - Ollama running: `ollama serve`
+- Models: `embeddinggemma`, `granite4:tiny-h`
 
-- Models: `embeddinggemma`, `granite4:tiny-h`  - Ollama: `ollama pull embeddinggemma` and `ollama pull granite4:tiny-h`- ✅ Tests all downloaded modelsollama pull granite4:tiny-h
-
-
-
-### LM Studio  - LM Studio: Load any model + nomic-embed-text-v1.5
+### LM Studio
 
 - LM Studio app running
-
-- Local server enabled- ✅ Official LM Studio SDKollama pull embeddinggemma
-
+- Local server enabled
 - Models loaded: any LLM + `nomic-embed-text-v1.5` embedding
-
-## 📄 Document Loading
 
 ## 📖 Full Documentation
 
-- ✅ Automatic model loadingollama serve
-
 See main [README.md](../README.md) for complete API reference.
 
-To test document loading (example 02):
+## 🆘 Troubleshooting
 
-- ✅ Comparison output```
+| Problem | Solution |
+|---------|----------|
+| `Connection refused` | Start Ollama: `ollama serve` or LM Studio server |
+| `Model not found` | Pull model: `ollama pull <model>` or download in LM Studio |
+| `Import errors` | Run from project root: `node example/...` |
 
-```bash
+## 🎯 What's New in Examples?
 
-# Create PDF folder
+### Example 12: Conversation History & Export
 
-mkdir PDF
+**New Features Demonstrated:**
 
-### 3️⃣ Simple Node.js## 📁 Examples
+1. **Conversation History Manager**
+   - Track multiple query-response pairs
+   - Store metadata (timestamp, topK, retrieved docs)
+   - Manage conversation sessions
 
-# Add some PDF files
+2. **Export Functionality**
+   - Export conversations to JSON
+   - Include all metadata and context
+   - Save conversation history to file
 
-# Then run
+3. **Document Management**
+   - Add, update, delete documents
+   - Track document changes
+   - Manage document metadata
 
-node 02-document-loading.js
+4. **Settings Management**
+   - Change model on the fly
+   - Adjust topK dynamically
+   - Test different configurations
 
-```Basic example without streaming:### 🌟 **simple-nodejs.js** - Clean & Simple (NEW!)
+5. **Multi-Query Session**
+   - Ask multiple questions in sequence
+   - Build conversation context
+   - Export complete session
 
-
-
-## 💡 TipsPerfect starting point with clean output:
-
-
-
-- Start with `01-basic-usage.js` to understand the basics```bash- ✅ Minimal setup
-
-- Use `06-test-both-providers.js` to test your setup
-
-- Check console output for helpful error messagesnode example/simple-nodejs.js- ✅ Clean console output
-
-
-
-## 📖 Full Documentation```- ✅ Easy to understand
-
-
-
-See main [README.md](../README.md) for complete API reference.
-
-
-**Features:**```bash
-
-- ✅ Minimal setupnode example/simple-nodejs.js
-
-- ✅ Easy to understand```
-
-- ✅ Perfect for beginners
-
-### 🔧 **pure-nodejs-example.js** - Detailed Output
-
----Same as simple but with more details:
-
-- 📊 Step-by-step process
-
-## 📋 Prerequisites- 🔍 Detailed logging
-
-
-
-### For Ollama Examples```bash
-
-node example/pure-nodejs-example.js
-
-```bash```
-
-# Install Ollama
-
-curl -fsSL https://ollama.com/install.sh | sh### 1. **all-features-demo.js** - Complete Feature Showcase
-
-Demonstrates ALL new features in one comprehensive demo:
-
-# Pull models- ⚡ Batch embedding with Promise.all
-
-ollama pull granite4:tiny-h- 📚 CRUD operations (add, update, delete, get)
-
-ollama pull embeddinggemma- 🎯 Dynamic topK parameter
-
-- 🌊 Prompt return for streaming
-
-# Start server- 🚀 Modern fetch support
-
-ollama serve
-
-``````bash
-
-node example/all-features-demo.js
-
-### For LM Studio Examples```
-
-
-
-1. Download [LM Studio](https://lmstudio.ai/)### 2. **topk-example.js** - Dynamic topK Parameter
-
-2. Download models from the UIShows how the `topK` parameter now works correctly:
-
-3. Start local server: `Developer > Local Server`- Default retriever behavior (k=2)
-
-4. Server runs at `http://localhost:1234`- Override with different topK values (3, 5, 10)
-
-- Integration with generateWithRAG
-
----
+**Usage:**
 
 ```bash
+# Run the example
+node example/12-conversation-history-and-export.js
 
-## 📂 Advanced Examplesnode example/topk-example.js
-
+# Check the exports folder for JSON file
+cat exports/conversation-*.json
 ```
 
-More complex examples are in `example/advanced/`:
+**Output:**
 
-### 3. **crud-example.js** - VectorStore CRUD Operations
-
-- `all-features-demo.js` - Complete feature showcaseDemonstrates the new document management methods:
-
-- `batch-embedding-example.js` - Batch processing- `getAllDocuments()` - Get all documents
-
-- `crud-example.js` - CRUD operations- `getDocument(id)` - Get specific document
-
-- `streaming-example.js` - Streaming responses- `updateDocument(id, text, meta)` - Update and re-embed
-
-- `topk-example.js` - Dynamic retrieval- `deleteDocument(id)` - Remove document
-
-- `mrl-example.js` - Matryoshka embeddings- `clear()` - Clear all documents
-
-
-
----```bash
-
-node example/crud-example.js
-
-## 🆘 Troubleshooting```
-
-
-
-| Problem | Solution |### 4. **batch-embedding-example.js** - Performance Improvement
-
-|---------|----------|Shows the massive performance gain from parallel embedding:
-
-| `Connection refused` | Start Ollama: `ollama serve` or LM Studio server |- Sequential vs parallel embedding comparison
-
-| `Model not found` | Pull model: `ollama pull <model>` or download in LM Studio |- Real-world performance metrics
-
-| `Import errors` | Run from project root: `node example/...` |- Works with 80+ documents
-
-
-
----```bash
-
-node example/batch-embedding-example.js
-
-## 📖 Learn More```
-
-
-
-- [Main README](../README.md) - Full documentation### 5. **streaming-example.js** - Streaming Support
-
-- [Official Ollama SDK](https://github.com/ollama/ollama-js)Demonstrates how generateWithRAG now returns prompts:
-
-- [Official LM Studio SDK](https://github.com/lmstudio-ai/lmstudio-js)- Prompt structure and generation
-
-- Streaming integration (like useRAG hook)
-
-**Made with ⚡ by Quick RAG**- Backward compatibility
-
-
-```bash
-node example/streaming-example.js
-```
-
-### 6. **run.js** (Original) - Basic RAG Example
-The original simple RAG orchestration example.
-
-```bash
-node example/run.js
-```
-
-### 7. **mrl-example.js** (Original) - MRL Embedding
-Demonstrates Matryoshka Representation Learning with different dimensions.
-
-```bash
-node example/mrl-example.js
-```
-
-## 🔧 Environment Variables
-
-- `OLLAMA_TEST=1` - Enable real Ollama API calls
-- `OLLAMA_MODEL=<model>` - Set model (default: granite4:tiny-h)
-
-## 📊 Expected Output
-
-Each example includes:
-- ✅ Success indicators
-- 📊 Performance metrics
-- 🎯 Feature demonstrations
-- ❌ Error handling
-
-## 🎯 What's New in v0.6.0?
-
-### Critical Fixes
-- ✅ Removed circular dependency
-- ✅ Fixed topK parameter handling
-- ✅ Fixed streaming support
-
-### New Features
-- ⚡ 100x faster batch embedding
-- 📚 Full CRUD operations
-- 🎯 Dynamic topK parameter
-- 🌊 Streaming-ready prompt return
-- 🚀 Modern fetch (Node 18+)
-
-## 📝 Notes
-
-- All examples run without Ollama (mock mode) by default
-- Set `OLLAMA_TEST=1` for real API calls
-- Make sure Ollama is running on `localhost:11434` if testing with it
-- Examples use dimension 128 for speed (MRL allows this!)
+- Conversation session with multiple queries
+- Exported JSON file with full conversation history
+- Document CRUD operations demonstration
+- Settings management examples
+- Statistics and summaries
 
 ## 🤝 Contributing
 
 See more examples? Have suggestions? Open an issue or PR!
+
+**Made with ⚡ by Quick RAG**

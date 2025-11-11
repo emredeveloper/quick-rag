@@ -6,6 +6,8 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
+> **🎉 v2.0.3 Released!** Performance improvements with batch embedding, rate limiting, and better error handling for large documents! See [CHANGELOG.md](CHANGELOG.md) for details.
+
 ## ✨ Features
 
 - 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
@@ -40,13 +42,60 @@ npm install quick-rag
 **Prerequisites:**
 - [Ollama](https://ollama.ai) installed and running, OR
 - [LM Studio](https://lmstudio.ai) installed with server enabled
-- Models: `ollama pull granite4:3b` and `ollama pull nomic-embed-text`
+- Models: 
+  - Ollama: `ollama pull granite4:3b` and `ollama pull embeddinggemma:latest`
+  - LM Studio: Any LLM model + embedding model (e.g., `text-embedding-embeddinggemma-300m`)
 
-> **🎉 v1.1.8 Released!** New features: Function-based Filters, PowerPoint Support, Organized Examples, and Advanced Filtering scenarios! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **📖 Yeni React Projesi Açıyorsanız:** Detaylı kurulum rehberi için [QUICKSTART_REACT.md](./QUICKSTART_REACT.md) dosyasına bakın!
 
 ---
 
-## 🆕 What's New in v1.1.8
+- 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
+- ⚡ **5x Faster** - Parallel batch embedding with rate limiting
+- 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
+- 🔪 **Smart Chunking** - Intelligent text splitting with overlap
+- 🏷️ **Metadata Filtering** - Filter by document properties
+- 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
+- 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
+- 🧠 **Weighted Decision Making** - Multi-criteria document scoring (NEW!)
+- 🎯 **Heuristic Reasoning** - Pattern learning and query optimization (NEW!)
+- 📊 **Batch Processing** - Efficient handling of large document sets (v2.0.3!)
+- 🚦 **Rate Limiting** - Prevents server overload with configurable concurrency (v2.0.3!)
+- 🔄 **CRUD Operations** - Add, update, delete documents on the fly
+- 🎯 **Smart Retrieval** - Dynamic topK parameter
+- 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
+- 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
+- 🎨 **Multiple Providers** - Ollama & LM Studio support
+- 🛠️ **All SDK Features** - Tool calling, vision, agents, and more
+- 💪 **Type Safe** - Full TypeScript support
+- ✅ **Production Ready** - Thoroughly tested and documented
+
+---
+
+## 🆕 What's New
+
+### 🚀 v2.0.3 - Performance & Stability (Latest!)
+- ✅ **Batch Embedding** - Process large document sets efficiently (20+ chunks at once)
+- ✅ **Rate Limiting** - Configurable concurrency control (prevents server overload)
+- ✅ **Better Error Handling** - Improved network error messages and retry logic
+- ✅ **Progress Tracking** - Enhanced progress callbacks for batch processing
+
+### 🎉 v2.0.0 - Major Release
+
+### 🎯 Decision Engine (NEW!)
+Revolutionary AI-powered retrieval system with multi-criteria weighted scoring, heuristic reasoning, and adaptive learning. See full documentation below.
+
+### 🔍 Query Explainability (NEW!)
+Industry-first feature to understand WHY documents were retrieved. See full documentation below.
+
+### 🎨 Dynamic Prompt Management (NEW!)
+10 built-in templates + full customization for different response styles and use cases. See full documentation below.
+
+### 💬 Conversation History & Export (NEW!)
+Track and export conversation sessions with metadata and statistics. See `example/12-conversation-history-and-export.js`.
+
+### 🔄 Multi-Provider Auto-Detection (NEW!)
+Automatically detect and switch between Ollama and LM Studio providers. See `example/04-test-both-providers.js`.
 
 ### ✅ Function-based Filters
 Advanced filtering with custom logic - filter documents using JavaScript functions:
@@ -68,23 +117,20 @@ const pptDoc = await loadDocument('./presentation.pptx');
 ```
 
 ### 📁 Organized Examples
-Separated examples by provider for better clarity:
-- `quickstart/ollama/` - 9 Ollama examples (01-09)
-- `quickstart/lmstudio/` - 3 LM Studio examples (01-03)
-- Run with: `npm run ollama:01` or `npm run lmstudio:01`
-
-### 🔍 Advanced Filtering Example
-New `example/06-advanced-filtering.js` with 6 filtering scenarios:
-- Object-based filtering
-- Function-based filtering
-- Array operations
-- Combined filters
-- Advanced logic
-- minScore integration
+12 comprehensive examples covering all features:
+- Basic Usage (Ollama & LM Studio)
+- Document Loading (PDF, Word, Excel)
+- Metadata Filtering
+- Streaming Responses
+- Advanced Filtering
+- Query Explainability
+- Prompt Management
+- Decision Engine (Simple & Real-World)
+- Conversation History & Export
 
 ---
 
-## 🆕 What's New in v1.1.5
+## 🆕 Previous Features (v1.1.x)
 
 ### 📝 Internationalization Update
 - Translated all example files to English for better international accessibility
@@ -357,6 +403,8 @@ for await (const part of response) {
 ---
 
 ### Option 2: React with Vite
+
+> **💡 Sıfırdan başlıyorsanız:** Detaylı adım adım rehber için [QUICKSTART_REACT.md](./QUICKSTART_REACT.md) dosyasına bakın!
 
 **Step 1:** Create your project
 
@@ -707,7 +755,16 @@ const store = new InMemoryVectorStore(embeddingFn, { defaultDim: 128 });
 
 // Add documents
 await store.addDocument({ id: '1', text: 'Document text' });
-await store.addDocuments([{ id: '1', text: '...' }], { dim: 128 });
+
+// Add multiple documents with batch processing (v2.0.3!)
+await store.addDocuments([{ id: '1', text: '...' }], { 
+  dim: 128,
+  batchSize: 20,        // Process 20 chunks at a time
+  maxConcurrent: 5,     // Max 5 concurrent requests
+  onProgress: (current, total) => {
+    console.log(`Progress: ${current}/${total}`);
+  }
+});
 
 // Query
 const results = await store.similaritySearch('query', k, queryDim);
@@ -718,6 +775,21 @@ const all = store.getAllDocuments();
 await store.updateDocument('id', 'new text', { meta: 'data' });
 store.deleteDocument('id');
 store.clear();
+```
+
+**Batch Processing for Large Documents (v2.0.3):**
+
+```javascript
+// Process large PDFs efficiently
+const chunks = chunkDocuments([largePDF], { chunkSize: 1000, overlap: 100 });
+
+await store.addDocuments(chunks, {
+  batchSize: 20,        // Process 20 chunks per batch
+  maxConcurrent: 5,     // Max 5 concurrent embedding requests
+  onProgress: (current, total) => {
+    console.log(`Embedding progress: ${current}/${total} (${Math.round(current/total*100)}%)`);
+  }
+});
 ```
 
 ### Model Clients
@@ -749,6 +821,18 @@ const client = new OllamaClient({
 await store.addDocument({ 
   id: 'new-doc', 
   text: 'TypeScript adds types to JavaScript.' 
+});
+
+// Add multiple documents with batch processing (v2.0.3!)
+await store.addDocuments([
+  { id: 'doc1', text: 'First document' },
+  { id: 'doc2', text: 'Second document' }
+], {
+  batchSize: 10,        // Process in batches
+  maxConcurrent: 5,     // Rate limiting
+  onProgress: (current, total) => {
+    console.log(`Added ${current}/${total} documents`);
+  }
 });
 
 // Update existing

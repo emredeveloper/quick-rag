@@ -8,7 +8,7 @@ import {
   createLMStudioRAGEmbedding,
   InMemoryVectorStore,
   Retriever
-} from 'quick-rag';
+} from '../src/index.js';
 
 async function main() {
   console.log('📡 Streaming - LM Studio Example\n');

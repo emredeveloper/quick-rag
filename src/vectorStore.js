@@ -20,16 +20,118 @@ export class InMemoryVectorStore {
     this.embeddingFn = embeddingFn;
     this.items = []; // { id, text, meta, vector, dim }
     this.defaultDim = options.defaultDim || 768;
+    this.autoChunkThreshold = options.autoChunkThreshold || 10000; // Auto-chunk documents > 10KB
+    this.chunkSize = options.chunkSize || 1000;
+    this.chunkOverlap = options.chunkOverlap || 100;
   }
 
-  // addDocuments(docs, opts = { dim })
+  // addDocuments(docs, opts = { dim, onProgress, chunkDocuments, batchSize, maxConcurrent })
   // If opts.dim provided, request embeddings at that dimension (if embeddingFn supports it).
+  // If opts.onProgress provided, called with (current, total, currentDoc) for progress tracking
+  // If opts.chunkDocuments provided and document is large, will auto-chunk before embedding
   async addDocuments(docs, opts = {}) {
     const dim = opts.dim || this.defaultDim;
+    const onProgress = opts.onProgress;
+    const autoChunk = opts.autoChunk !== false; // Default: true
+    const batchSize = opts.batchSize || 10; // Process embeddings in batches
+    const maxConcurrent = opts.maxConcurrent || 5; // Max concurrent requests
+    
+    // Check if any document needs chunking
+    const needsChunking = autoChunk && docs.some(d => d.text && d.text.length > this.autoChunkThreshold);
+    
+    if (needsChunking && typeof opts.chunkDocuments === 'function') {
+      // Use provided chunking function
+      const allChunks = [];
+      for (let i = 0; i < docs.length; i++) {
+        const doc = docs[i];
+        if (doc.text && doc.text.length > this.autoChunkThreshold) {
+          const chunks = opts.chunkDocuments([doc], {
+            chunkSize: this.chunkSize,
+            overlap: this.chunkOverlap
+          });
+          allChunks.push(...chunks);
+        } else {
+          allChunks.push(doc);
+        }
+      }
+      
+      // Process chunks with progress
+      return this.addDocuments(allChunks, { ...opts, autoChunk: false });
+    }
     
     // Batch embedding for better performance
-    const embedPromises = docs.map(d => this.embeddingFn(d.text, dim));
-    const vectors = await Promise.all(embedPromises);
+    const totalDocs = docs.length;
+    const vectors = [];
+    
+    // Process in batches to avoid overwhelming the server
+    for (let i = 0; i < docs.length; i += batchSize) {
+      const batch = docs.slice(i, i + batchSize);
+      const batchTexts = batch.map(d => d.text);
+      
+      // Check if embedding function supports batch (array input)
+      let batchVectors;
+      try {
+        // Try batch embedding first (if supported)
+        const batchResult = await this.embeddingFn(batchTexts, dim);
+        if (Array.isArray(batchResult) && Array.isArray(batchResult[0])) {
+          // Batch result: array of vectors
+          batchVectors = batchResult;
+        } else {
+          // Single result or unexpected format, fall back to individual
+          batchVectors = await Promise.all(
+            batch.map((d, idx) => {
+              const promise = this.embeddingFn(d.text, dim);
+              if (onProgress) {
+                promise.then(() => {
+                  onProgress(i + idx + 1, totalDocs, d);
+                });
+              }
+              return promise;
+            })
+          );
+        }
+      } catch (error) {
+        // If batch fails, fall back to individual requests with rate limiting
+        const semaphore = { count: 0 };
+        const queue = [];
+        
+        for (let j = 0; j < batch.length; j++) {
+          const doc = batch[j];
+          const promise = (async () => {
+            // Wait if too many concurrent requests
+            while (semaphore.count >= maxConcurrent) {
+              await new Promise(resolve => setTimeout(resolve, 50));
+            }
+            
+            semaphore.count++;
+            try {
+              const vec = await this.embeddingFn(doc.text, dim);
+              if (onProgress) {
+                onProgress(i + j + 1, totalDocs, doc);
+              }
+              return vec;
+            } finally {
+              semaphore.count--;
+            }
+          })();
+          queue.push(promise);
+        }
+        
+        batchVectors = await Promise.all(queue);
+      }
+      
+      vectors.push(...batchVectors);
+      
+      // Update progress for batch
+      if (onProgress && i + batch.length <= totalDocs) {
+        onProgress(Math.min(i + batch.length, totalDocs), totalDocs);
+      }
+      
+      // Small delay between batches to prevent overwhelming
+      if (i + batchSize < docs.length) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+    }
     
     docs.forEach((d, idx) => {
       this.items.push({ 
@@ -43,6 +145,7 @@ export class InMemoryVectorStore {
   }
 
   // Add a single document (convenience method)
+  // Supports onProgress callback: (current, total) => void
   async addDocument(doc, opts = {}) {
     return this.addDocuments([doc], opts);
   }

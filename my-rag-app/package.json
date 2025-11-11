@@ -12,8 +12,11 @@
     "dev:client": "vite"
   },
   "dependencies": {
+    "@lmstudio/sdk": "^1.5.0",
     "express": "^5.1.0",
-    "js-rag-local-llm": "^0.6.2",
+    "multer": "^1.4.5-lts.1",
+    "ollama": "^0.6.2",
+    "quick-rag": "^2.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },

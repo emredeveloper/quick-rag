@@ -8,7 +8,7 @@ import {
   createLMStudioRAGEmbedding,
   InMemoryVectorStore,
   Retriever
-} from 'quick-rag';
+} from '../src/index.js';
 
 async function main() {
   console.log('🏷️  Metadata Filtering - LM Studio Example\n');

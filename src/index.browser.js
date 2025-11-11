@@ -10,6 +10,26 @@ export { initRAG } from './initRag.js';
 export { createBrowserModelClient } from './browserModelClient.js';
 export { createBrowserEmbedding } from './embeddings/browserEmbedding.js';
 
+// Utilities (browser-safe)
+export { 
+  chunkText, 
+  chunkBySentences, 
+  chunkDocuments, 
+  chunkMarkdown 
+} from './utils/chunking.js';
+
+// Prompt Management (browser-safe)
+export { PromptManager, PromptTemplates, createPromptManager, getTemplate } from './promptManager.js';
+
+// Decision Engine (browser-safe)
+export { 
+  WeightedDecisionEngine,
+  HeuristicEngine,
+  SmartRetriever,
+  createSmartRetriever,
+  DEFAULT_WEIGHTS
+} from './decisionEngine.js';
+
 // Intentionally NOT exporting OllamaClient or createOllamaEmbedding in browser build
 // LMStudioClient CAN be used in browser if LM Studio server is accessible
 

@@ -1,7 +1,6 @@
 /**
- * Quick RAG - Metadata Filtering Example
- * 
- * Shows how to filter documents by metadata
+ * Quick RAG - Metadata Filtering
+ * Run: node ollama/04-metadata-filtering.js
  */
 
 import { 
@@ -12,83 +11,33 @@ import {
   generateWithRAG
 } from 'quick-rag';
 
-async function main() {
-  console.log('🚀 Quick RAG - Metadata Filtering\n');
-
-  // Initialize
   const client = new OllamaRAGClient();
   const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
-  const vectorStore = new InMemoryVectorStore(embed);
-  const retriever = new Retriever(vectorStore);
+const store = new InMemoryVectorStore(embed);
+const retriever = new Retriever(store);
 
-  // Load documents with metadata
-  console.log('📚 Loading documents with metadata...\n');
-  const documents = [
-    { 
-      text: 'Paris is the capital of France.',
-      meta: { topic: 'geography', country: 'France' }
-    },
-    { 
-      text: 'The Eiffel Tower is a famous landmark in Paris.',
-      meta: { topic: 'landmarks', country: 'France' }
-    },
-    { 
-      text: 'The Louvre Museum is located in Paris and houses the Mona Lisa.',
-      meta: { topic: 'art', country: 'France' }
-    }
-  ];
+const docs = [
+  { text: 'Paris is the capital of France.', meta: { topic: 'geography' } },
+  { text: 'The Eiffel Tower is in Paris.', meta: { topic: 'landmarks' } },
+  { text: 'The Louvre Museum is in Paris.', meta: { topic: 'art' } }
+];
 
-  await vectorStore.addDocuments(documents);
-  console.log(`✅ Loaded ${documents.length} documents\n`);
+async function main() {
+  await store.addDocuments(docs);
 
-  // Query 1: With metadata filter
-  console.log('🔍 Query 1: WITH metadata filter (topic: "landmarks")\n');
+  // With filter
   const query1 = 'What famous landmark is in Paris?';
-  
-  const results1 = await retriever.getRelevant(query1, 2, {
-    filter: { topic: 'landmarks' }
-  });
+  const results1 = await retriever.getRelevant(query1, 1, { filters: { topic: 'landmarks' } });
+  const answer1 = await generateWithRAG(client, 'granite4:3b', query1, results1.map(d => d.text));
 
-  console.log(`📚 Retrieved ${results1.length} document(s) with filter`);
-  results1.forEach((doc, i) => {
-    console.log(`   ${i + 1}. [${doc.meta.topic}] "${doc.text.substring(0, 50)}..."`);
-  });
+  console.log('With filter:', answer1.response);
 
-  const response1 = await generateWithRAG(
-    client,
-    'granite4:3b',
-    query1,
-    results1.map(d => d.text)
-  );
-
-  console.log('\n🤖 Answer:');
-  console.log(response1.response);
-  console.log('\n---\n');
-
-  // Query 2: Without filter
-  console.log('🔍 Query 2: WITHOUT metadata filter\n');
+  // Without filter
   const query2 = 'What is the capital of France?';
-  
-  const results2 = await retriever.getRelevant(query2, 2);
+  const results2 = await retriever.getRelevant(query2, 1);
+  const answer2 = await generateWithRAG(client, 'granite4:3b', query2, results2.map(d => d.text));
 
-  console.log(`📚 Retrieved ${results2.length} document(s) without filter`);
-  results2.forEach((doc, i) => {
-    console.log(`   ${i + 1}. [${doc.meta.topic}] "${doc.text.substring(0, 50)}..."`);
-  });
-
-  const response2 = await generateWithRAG(
-    client,
-    'granite4:3b',
-    query2,
-    results2.map(d => d.text)
-  );
-
-  console.log('\n🤖 Answer:');
-  console.log(response2.response);
-  console.log('\n✅ Metadata filtering completed!');
+  console.log('\nWithout filter:', answer2.response);
 }
 
-main().catch(error => {
-  console.error('❌ Error:', error.message);
-  process.exit(1);
-});
+main().catch(console.error);

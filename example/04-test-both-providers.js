@@ -11,7 +11,7 @@ import {
   createOllamaRAGEmbedding,
   createLMStudioRAGEmbedding,
   generateWithRAG
-} from 'quick-rag';
+} from '../src/index.js';
 
 // Detect available providers
 async function detectProviders() {

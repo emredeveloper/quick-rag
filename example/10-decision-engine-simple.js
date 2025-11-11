@@ -30,10 +30,9 @@ import {
   LMStudioRAGClient,
   createLMStudioRAGEmbedding,
   InMemoryVectorStore,
-  Retriever
-} from 'quick-rag';
-
-import { SmartRetriever } from '../src/decisionEngine.js';
+  Retriever,
+  SmartRetriever
+} from '../src/index.js';
 
 // ═══════════════════════════════════════════════════════════════════
 // CONFIGURATION

@@ -13,7 +13,7 @@ import {
   InMemoryVectorStore,
   Retriever,
   generateWithRAG
-} from 'quick-rag';
+} from '../src/index.js';
 
 async function main() {
   console.log('📄 Document Loading - Ollama Example\n');

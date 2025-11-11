@@ -18,14 +18,11 @@ import {
   generateWithRAG,
   loadPDF,
   loadText,
-  loadDirectory
-} from 'quick-rag';
-
-import {
+  loadDirectory,
   SmartRetriever,
   WeightedDecisionEngine,
   DEFAULT_WEIGHTS
-} from '../src/decisionEngine.js';
+} from '../src/index.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';

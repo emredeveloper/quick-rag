@@ -5,6 +5,19 @@
 
 // ==================== Core Types ====================
 
+export interface QueryExplanation {
+  queryTerms: string[];
+  matchedTerms: string[];
+  matchCount: number;
+  matchRatio: number;
+  cosineSimilarity: number;
+  relevanceFactors: {
+    termMatches: number;
+    semanticSimilarity: number;
+    coverage: string;
+  };
+}
+
 export interface Document {
   id?: string;
   text: string;
@@ -12,6 +25,7 @@ export interface Document {
   vector?: number[];
   dim?: number;
   score?: number;
+  explanation?: QueryExplanation;
 }
 
 export interface EmbeddingOptions {
@@ -25,13 +39,25 @@ export type EmbeddingFunction = (text: string, dim?: number) => Promise<number[]
 
 export interface VectorStoreOptions {
   defaultDim?: number;
+  autoChunkThreshold?: number; // Auto-chunk documents larger than this (default: 10000)
+  chunkSize?: number; // Characters per chunk (default: 1000)
+  chunkOverlap?: number; // Overlap between chunks (default: 100)
+}
+
+export interface AddDocumentsOptions {
+  dim?: number;
+  onProgress?: (current: number, total: number, currentDoc?: Document) => void; // Progress callback
+  autoChunk?: boolean; // Auto-chunk large documents (default: true)
+  chunkDocuments?: (docs: Document[], options: { chunkSize: number; overlap: number }) => Document[]; // Chunking function
+  batchSize?: number; // Process embeddings in batches (default: 10)
+  maxConcurrent?: number; // Max concurrent requests when batch fails (default: 5)
 }
 
 export class InMemoryVectorStore {
   constructor(embeddingFn: EmbeddingFunction, options?: VectorStoreOptions);
   
-  addDocuments(docs: Document[], opts?: { dim?: number }): Promise<void>;
-  addDocument(doc: Document, opts?: { dim?: number }): Promise<void>;
+  addDocuments(docs: Document[], opts?: AddDocumentsOptions): Promise<void>;
+  addDocument(doc: Document, opts?: AddDocumentsOptions): Promise<void>;
   similaritySearch(query: string, k?: number, queryDim?: number): Promise<Document[]>;
   deleteDocument(id: string): boolean;
   updateDocument(id: string, newText: string, newMeta?: Record<string, any>): Promise<boolean>;
@@ -47,8 +73,9 @@ export interface RetrieverOptions {
 }
 
 export interface GetRelevantOptions {
-  filters?: Record<string, any>;
+  filters?: Record<string, any> | ((meta: Record<string, any>) => boolean);
   minScore?: number;
+  explain?: boolean;
 }
 
 export class Retriever {
@@ -165,6 +192,16 @@ export function createBrowserEmbedding(options: {
   headers?: Record<string, string>;
 }): EmbeddingFunction;
 
+export interface BrowserModelClient {
+  generate(model: string, prompt: string): Promise<string>;
+  generateStream(model: string, prompt: string, options?: { signal?: AbortSignal }): AsyncGenerator<string, void, unknown>;
+}
+
+export function createBrowserModelClient(options?: {
+  endpoint?: string;
+  headers?: Record<string, string>;
+}): BrowserModelClient;
+
 export function createMRL(
   baseEmbedding: EmbeddingFunction,
   baseDim?: number
@@ -181,6 +218,13 @@ export interface GenerateWithRAGOptions {
   topK?: number;
 }
 
+export interface GenerateWithRAGOptionsV2 {
+  systemPrompt?: string;
+  template?: string | PromptTemplate;
+  promptManager?: PromptManager;
+  context?: ContextFormatOptions;
+}
+
 export function generateWithRAG(
   options: GenerateWithRAGOptions
 ): Promise<{ response: string; docs: Document[] }>;
@@ -189,7 +233,8 @@ export function generateWithRAG(
   client: OllamaRAGClient | LMStudioRAGClient,
   model: string,
   query: string,
-  results: Document[]
+  results: Document[],
+  options?: GenerateWithRAGOptionsV2
 ): Promise<string>;
 
 // ==================== Init RAG ====================
@@ -338,3 +383,130 @@ export interface LoadURLOptions {
 export function loadURL(url: string, options?: LoadURLOptions): Promise<LoadedDocument>;
 export function loadURLs(urls: string[], options?: LoadURLOptions): Promise<LoadedDocument[]>;
 export function loadSitemap(sitemapURL: string, options?: LoadURLOptions): Promise<string[]>;
+
+// ==================== Prompt Management ====================
+
+export type PromptTemplate = (query: string, context: string) => string;
+
+export interface PromptTemplates {
+  default: PromptTemplate;
+  conversational: PromptTemplate;
+  technical: PromptTemplate;
+  academic: PromptTemplate;
+  code: PromptTemplate;
+  concise: PromptTemplate;
+  detailed: PromptTemplate;
+  qa: PromptTemplate;
+  instructional: PromptTemplate;
+  creative: PromptTemplate;
+  [key: string]: PromptTemplate;
+}
+
+export interface PromptManagerOptions {
+  systemPrompt?: string;
+  template?: string | PromptTemplate;
+  variables?: Record<string, string>;
+  contextFormatters?: Record<string, any>;
+}
+
+export interface ContextFormatOptions {
+  includeScores?: boolean;
+  includeMetadata?: boolean;
+  maxLength?: number;
+  separator?: string;
+}
+
+export class PromptManager {
+  constructor(options?: PromptManagerOptions);
+  setSystemPrompt(prompt: string): PromptManager;
+  setTemplate(template: string | PromptTemplate): PromptManager;
+  addVariables(variables: Record<string, string>): PromptManager;
+  generate(query: string, docs: Document[], options?: { context?: ContextFormatOptions }): string;
+  clone(options?: PromptManagerOptions): PromptManager;
+}
+
+export const PromptTemplates: PromptTemplates;
+
+export function createPromptManager(options?: PromptManagerOptions): PromptManager;
+
+export function getTemplate(name: string): PromptTemplate | undefined;
+
+// ==================== Decision Engine ====================
+
+export interface DecisionWeights {
+  semanticSimilarity: number;
+  keywordMatch: number;
+  recency: number;
+  sourceQuality: number;
+  contextRelevance: number;
+}
+
+export const DEFAULT_WEIGHTS: DecisionWeights;
+
+export interface ScoreBreakdown {
+  semanticSimilarity: { score: number; weight: number; contribution: number };
+  keywordMatch: { score: number; weight: number; contribution: number };
+  recency: { score: number; weight: number; contribution: number };
+  sourceQuality: { score: number; weight: number; contribution: number };
+  contextRelevance: { score: number; weight: number; contribution: number };
+}
+
+export interface ScoredDocument extends Document {
+  weightedScore: number;
+  scoreBreakdown: ScoreBreakdown;
+  originalScore?: number;
+}
+
+export interface HeuristicRule {
+  name: string;
+  condition: (query: string, context: any) => boolean;
+  action: (query: string, context: any) => any;
+  priority: number;
+}
+
+export interface DecisionContext {
+  weights: DecisionWeights;
+  appliedRules: string[];
+  suggestions: string[];
+}
+
+export interface SmartRetrievalResult {
+  results: ScoredDocument[];
+  decisions: DecisionContext;
+}
+
+export class WeightedDecisionEngine {
+  constructor(weights?: Partial<DecisionWeights>);
+  scoreDocument(doc: Document, factors?: Record<string, any>): ScoredDocument;
+  calculateRecency(dateStr?: string): number;
+  getSourceQuality(source?: string): number;
+}
+
+export class HeuristicEngine {
+  constructor(options?: { enableLearning?: boolean });
+  addRule(name: string, condition: (query: string, context: any) => boolean, action: (query: string, context: any) => any, priority?: number): void;
+  removeRule(name: string): void;
+  evaluate(query: string, context: any): any;
+  provideFeedback(query: string, results: Document[], feedback: { rating: number; comment?: string }): void;
+  getInsights(): any;
+  exportKnowledge(): any;
+  importKnowledge(knowledge: any): void;
+}
+
+export interface SmartRetrieverOptions {
+  weights?: Partial<DecisionWeights>;
+  enableHeuristics?: boolean;
+  enableLearning?: boolean;
+}
+
+export class SmartRetriever {
+  constructor(retriever: Retriever, options?: SmartRetrieverOptions);
+  getRelevant(query: string, k?: number, options?: GetRelevantOptions): Promise<SmartRetrievalResult>;
+  provideFeedback(query: string, results: Document[], feedback: { rating: number; comment?: string }): void;
+  getInsights(): any;
+  exportKnowledge(): any;
+  importKnowledge(knowledge: any): void;
+  heuristicEngine: HeuristicEngine;
+}
+
+export function createSmartRetriever(retriever: Retriever, options?: SmartRetrieverOptions): SmartRetriever;

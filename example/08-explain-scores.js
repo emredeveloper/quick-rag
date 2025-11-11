@@ -21,7 +21,7 @@ import {
   InMemoryVectorStore,
   Retriever,
   generateWithRAG
-} from 'quick-rag';
+} from '../src/index.js';
 
 async function testOllama() {
   console.log('═══════════════════════════════════════════════');

@@ -14,14 +14,11 @@ import {
   createOllamaRAGEmbedding,
   InMemoryVectorStore,
   Retriever,
-  generateWithRAG
-} from 'quick-rag';
-
-import {
+  generateWithRAG,
   PromptManager,
   PromptTemplates,
   createPromptManager
-} from '../src/promptManager.js';
+} from '../src/index.js';
 
 async function main() {
   console.log('🎯 Dynamic Prompt Management Example\n');

@@ -8,7 +8,7 @@ import {
   createOllamaRAGEmbedding,
   InMemoryVectorStore,
   Retriever
-} from 'quick-rag';
+} from '../src/index.js';
 
 async function main() {
   console.log('📡 Streaming - Ollama Example\n');

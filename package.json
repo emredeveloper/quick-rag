@@ -1,7 +1,7 @@
 {
   "name": "quick-rag",
-  "version": "1.1.10",
-  "description": "⚡ Quick RAG - Production-ready local AI with Ollama & LM Studio SDK integration + Document Loaders (PDF, Word, Excel, PowerPoint) + Function-based Filters + Query Explainability + Dynamic Prompts + Decision Engine",
+  "version": "2.0.3",
+  "description": "⚡ Quick RAG v2.0 - Production-ready RAG framework with Official Ollama & LM Studio SDKs, Document Loaders, Smart Chunking, Query Explainability, Dynamic Prompts, Decision Engine, Streaming, React Hooks, and more!",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",
   "types": "src/index.d.ts",
@@ -19,7 +19,9 @@
     }
   },
   "scripts": {
-    "test": "node --experimental-vm-modules ./test/run-tests.js",
+    "test": "node ./test/run-tests.js",
+    "test:all": "node ./test/run-tests.js && node ./test/run-integration.js",
+    "test:integration": "node ./test/run-integration.js",
     "start": "node ./example/run.js",
     "prepublishOnly": "npm test"
   },
@@ -37,7 +39,18 @@
     "document-loader",
     "pdf-parser",
     "word",
-    "excel"
+    "excel",
+    "decision-engine",
+    "query-explainability",
+    "prompt-management",
+    "streaming",
+    "typescript",
+    "vector-store",
+    "semantic-search",
+    "ai",
+    "llm",
+    "chatbot",
+    "knowledge-base"
   ],
   "author": "Cihat Emre Karataş",
   "license": "MIT",
@@ -52,6 +65,7 @@
   "files": [
     "src/",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "publishConfig": {

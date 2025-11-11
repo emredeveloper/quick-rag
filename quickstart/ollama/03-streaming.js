@@ -1,62 +1,33 @@
 /**
- * Quick RAG - Streaming Example
- * 
- * Shows how to use streaming responses from Ollama
+ * Quick RAG - Streaming
+ * Run: node ollama/03-streaming.js
  */
 
-import { 
-  OllamaRAGClient, 
-  createOllamaRAGEmbedding,
-  InMemoryVectorStore, 
-  Retriever
-} from 'quick-rag';
+import { OllamaRAGClient, createOllamaRAGEmbedding, InMemoryVectorStore, Retriever } from 'quick-rag';
+
+const client = new OllamaRAGClient();
+const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+const store = new InMemoryVectorStore(embed);
+const retriever = new Retriever(store);
 
 async function main() {
-  console.log('🚀 Quick RAG - Streaming Example\n');
+  await store.addDocument({ text: 'Robots are now being programmed to appreciate music.' });
 
-  // Initialize
-  const client = new OllamaRAGClient();
-  const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
-  const vectorStore = new InMemoryVectorStore(embed);
-  const retriever = new Retriever(vectorStore);
-
-  // Add context document
-  await vectorStore.addDocument({ 
-    text: 'Music is a universal language that can evoke emotions and bring people together. Robots, traditionally seen as logical machines, are now being programmed to appreciate and create music.',
-    meta: { source: 'ai-stories' }
-  });
-
-  console.log('✅ Context loaded\n');
-
-  // Query
-  const query = 'Write a very short story about a robot who discovers music.';
-  console.log(`❓ Query: ${query}\n`);
-
+  const query = 'Write a short story about a robot who discovers music.';
   const results = await retriever.getRelevant('robot music', 1);
   const context = results.map(d => d.text).join('\n');
 
-  // Stream response
-  console.log('🤖 Story (streaming):\n');
-  console.log('─'.repeat(60));
-
+  console.log('Streaming response:\n');
   const response = await client.chat({
     model: 'granite4:3b',
-    messages: [{ 
-      role: 'user', 
-      content: `Context: ${context}\n\n${query}` 
-    }],
+    messages: [{ role: 'user', content: `Context: ${context}\n\n${query}` }],
     stream: true
   });
 
   for await (const part of response) {
     process.stdout.write(part.message?.content || '');
   }
-
-  console.log('\n' + '─'.repeat(60));
-  console.log('\n✅ Streaming completed!');
+  console.log('\n');
 }
 
-main().catch(error => {
-  console.error('❌ Error:', error.message);
-  process.exit(1);
-});
+main().catch(console.error);

@@ -1,6 +1,52 @@
 # Quick RAG - Quick Start Examples
 
-Ready-to-run examples that use `quick-rag` from NPM.
+Ready-to-run examples that use `quick-rag` from NPM (v2.0.3+).
+
+## 🆕 v2.0.3 Performance Features
+
+**New performance improvements:**
+- ✅ Batch embedding for large documents
+- ✅ Rate limiting to prevent server overload
+- ✅ Enhanced progress tracking
+- ✅ Better error handling
+
+## 🆕 v2.0.0 New Features Showcase
+
+**Quick demos of the most powerful v2.0.0 features:**
+
+### 1. Features Showcase
+```bash
+npm run v2:features
+# or: node v2-features-showcase.js
+```
+**Demonstrates:**
+- ✅ Decision Engine - Multi-criteria weighted scoring
+- ✅ Query Explainability - Understand WHY documents were retrieved
+- ✅ Comparison: Basic vs Smart Retrieval
+
+### 2. Prompt Management & Conversation History
+```bash
+npm run v2:prompts
+# or: node v2-prompt-conversation.js
+```
+**Demonstrates:**
+- ✅ Dynamic Prompt Management - 10 built-in templates
+- ✅ Custom PromptManager configurations
+- ✅ Conversation History tracking and export
+
+### 3. Multi-Provider Auto-Detection
+```bash
+npm run v2:auto
+# or: node v2-auto-detection.js
+```
+**Demonstrates:**
+- ✅ Automatic provider detection (Ollama or LM Studio)
+- ✅ Seamless switching between providers
+- ✅ Zero configuration needed
+
+---
+
+## Legacy Examples
 
 Examples are organized by provider:
 - **`ollama/`** - Examples using Ollama (examples 01-09)
@@ -17,7 +63,7 @@ npm install
 Make sure Ollama is running with required models:
 ```bash
 ollama pull granite4:3b
-ollama pull nomic-embed-text
+ollama pull embeddinggemma:latest
 ```
 
 ### For LM Studio Examples
