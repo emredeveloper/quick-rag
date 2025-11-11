@@ -1,41 +1,41 @@
-# Beyaz Ekran Sorunu - Çözüm
+# White Screen Issue - Solution
 
-## Sorun
-`quick-rag@2.0.1` browser build'inde `chunkDocuments` export edilmiyordu, bu yüzden import hatası oluşuyor ve beyaz ekran gösteriyordu.
+## Problem
+`quick-rag@2.0.1` browser build was not exporting `chunkDocuments`, causing an import error and displaying a white screen.
 
-## Çözüm: Local Development için npm link
+## Solution: npm link for Local Development
 
-### Adım 1: Ana projede link oluştur
+### Step 1: Create link in main project
 ```bash
-# Ana proje klasöründe (javascript-ai)
+# In main project folder (javascript-ai)
 cd C:\Users\emreq\Desktop\javascript-ai
 npm link
 ```
 
-### Adım 2: my-rag-app'te link kullan
+### Step 2: Use link in my-rag-app
 ```bash
-# my-rag-app klasöründe
+# In my-rag-app folder
 cd C:\Users\emreq\Desktop\javascript-ai\my-rag-app
 npm link quick-rag
 ```
 
-### Adım 3: Çalıştır
+### Step 3: Run
 ```bash
 npm run dev
 ```
 
-## Alternatif: npm'den Güncelleme (2.0.2 publish edildikten sonra)
+## Alternative: Update from npm (after 2.0.2 is published)
 
 ```bash
 cd my-rag-app
 npm install quick-rag@^2.0.2
 ```
 
-## Kontrol
+## Verification
 ```bash
 npm list quick-rag
-# quick-rag@2.0.2 görmeli
+# Should see quick-rag@2.0.2
 ```
 
-## Not
-`package.json`'da versiyonu `^2.0.2` olarak güncelledim. `npm link` kullanırsanız local geliştirme yapabilirsiniz.
+## Note
+I've updated the version to `^2.0.2` in `package.json`. You can use `npm link` for local development.

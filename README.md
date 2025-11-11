@@ -46,7 +46,7 @@ npm install quick-rag
   - Ollama: `ollama pull granite4:3b` and `ollama pull embeddinggemma:latest`
   - LM Studio: Any LLM model + embedding model (e.g., `text-embedding-embeddinggemma-300m`)
 
-> **📖 Yeni React Projesi Açıyorsanız:** Detaylı kurulum rehberi için [QUICKSTART_REACT.md](./QUICKSTART_REACT.md) dosyasına bakın!
+> **📖 Starting a New React Project?** Check out the detailed setup guide in [QUICKSTART_REACT.md](./QUICKSTART_REACT.md)!
 
 ---
 
@@ -404,7 +404,7 @@ for await (const part of response) {
 
 ### Option 2: React with Vite
 
-> **💡 Sıfırdan başlıyorsanız:** Detaylı adım adım rehber için [QUICKSTART_REACT.md](./QUICKSTART_REACT.md) dosyasına bakın!
+> **💡 Starting from scratch?** Check out the detailed step-by-step guide in [QUICKSTART_REACT.md](./QUICKSTART_REACT.md)!
 
 **Step 1:** Create your project
 

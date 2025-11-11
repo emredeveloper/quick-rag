@@ -1,16 +1,16 @@
-# 🚀 Quick RAG - React Projesi Kurulum Rehberi
+# 🚀 Quick RAG - React Project Setup Guide
 
-Bu rehber, sıfırdan bir React projesi açıp Quick RAG kütüphanesini kullanmak isteyenler için hazırlanmıştır.
+This guide is designed for those who want to create a React project from scratch and use the Quick RAG library.
 
-## 📋 Gereksinimler
+## 📋 Prerequisites
 
-1. **Node.js 18+** yüklü olmalı
-2. **Ollama** kurulu ve çalışıyor olmalı
-3. **Gerekli modeller** çekilmiş olmalı
+1. **Node.js 18+** must be installed
+2. **Ollama** must be installed and running
+3. **Required models** must be pulled
 
-## 🎯 Adım Adım Kurulum
+## 🎯 Step-by-Step Setup
 
-### Adım 1: React Projesi Oluşturun
+### Step 1: Create React Project
 
 ```bash
 npm create vite@latest my-rag-app -- --template react
@@ -18,42 +18,42 @@ cd my-rag-app
 npm install
 ```
 
-### Adım 2: Quick RAG ve Bağımlılıkları Yükleyin
+### Step 2: Install Quick RAG and Dependencies
 
 ```bash
 npm install quick-rag express concurrently multer
 npm install --save-dev concurrently
 ```
 
-**Not:** `quick-rag` paketi (v2.0.3+) otomatik olarak `ollama` ve `@lmstudio/sdk` paketlerini yükler.
+**Note:** The `quick-rag` package (v2.0.3+) automatically installs `ollama` and `@lmstudio/sdk` packages.
 
-### Adım 3: Ollama'yı Kurun ve Modelleri Çekin
+### Step 3: Install Ollama and Pull Models
 
-**Ollama Kurulumu:**
-- [ollama.ai](https://ollama.ai) adresinden indirin ve kurun
-- Terminal'de kontrol edin: `ollama --version`
+**Ollama Installation:**
+- Download and install from [ollama.ai](https://ollama.ai)
+- Check in terminal: `ollama --version`
 
-**Gerekli Modelleri Çekin:**
+**Pull Required Models:**
 ```bash
-# LLM modeli (soru-cevap için)
+# LLM model (for Q&A)
 ollama pull granite4:3b
 
-# Embedding modeli (doküman arama için)
+# Embedding model (for document search)
 ollama pull embeddinggemma:latest
 ```
 
-**Ollama'nın Çalıştığını Kontrol Edin:**
+**Verify Ollama is Running:**
 ```bash
-# Ollama servisini başlatın (eğer çalışmıyorsa)
+# Start Ollama service (if not running)
 ollama serve
 
-# Modelleri listeleyin
+# List models
 ollama list
 ```
 
-### Adım 4: Backend Proxy Server Oluşturun
+### Step 4: Create Backend Proxy Server
 
-Proje kök dizininde `server.js` dosyası oluşturun:
+Create a `server.js` file in the project root directory:
 
 ```javascript
 // server.js
@@ -71,7 +71,7 @@ const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// CORS (geliştirme için)
+// CORS (for development)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -152,7 +152,7 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// Uploads klasörünü oluştur
+// Create uploads directory
 (async () => {
   await fs.mkdir('uploads', { recursive: true }).catch(() => {});
 })();
@@ -160,9 +160,9 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 app.listen(3001, () => console.log('🚀 Backend Server: http://127.0.0.1:3001'));
 ```
 
-### Adım 5: Vite Proxy Yapılandırması
+### Step 5: Vite Proxy Configuration
 
-`vite.config.js` dosyasını güncelleyin:
+Update the `vite.config.js` file:
 
 ```javascript
 import { defineConfig } from 'vite';
@@ -187,9 +187,9 @@ export default defineConfig({
 });
 ```
 
-### Adım 6: Package.json Scripts Güncelleme
+### Step 6: Update Package.json Scripts
 
-`package.json` dosyasındaki `scripts` bölümünü güncelleyin:
+Update the `scripts` section in `package.json`:
 
 ```json
 {
@@ -203,15 +203,15 @@ export default defineConfig({
 }
 ```
 
-### Adım 7: React Component'te Kullanım
+### Step 7: Usage in React Component
 
-`src/App.jsx` dosyasını güncelleyin:
+Update the `src/App.jsx` file:
 
 ```jsx
 import { useState, useEffect } from 'react';
 import { useRAG, initRAG, createBrowserModelClient } from 'quick-rag';
 
-// Örnek dokümanlar
+// Example documents
 const docs = [
   { id: '1', text: 'React is a JavaScript library for building user interfaces.' },
   { id: '2', text: 'Ollama provides local LLM hosting capabilities.' },
@@ -229,7 +229,7 @@ export default function App() {
     model: 'granite4:3b'
   });
 
-  // RAG sistemini başlat
+  // Initialize RAG system
   useEffect(() => {
     initRAG(docs, {
       baseEmbeddingOptions: {
@@ -255,7 +255,7 @@ export default function App() {
       <h1>🤖 Quick RAG Demo</h1>
       
       {!isReady && (
-        <p>⏳ RAG sistemi başlatılıyor...</p>
+        <p>⏳ Initializing RAG system...</p>
       )}
       
       {isReady && (
@@ -265,7 +265,7 @@ export default function App() {
               value={query}
               onChange={e => setQuery(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleAsk()}
-              placeholder="Sorunuzu yazın..."
+              placeholder="Type your question..."
               style={{ 
                 width: '100%', 
                 padding: 12, 
@@ -288,7 +288,7 @@ export default function App() {
                 cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              {loading ? '⏳ Düşünüyor...' : '🚀 Sor'}
+              {loading ? '⏳ Thinking...' : '🚀 Ask'}
             </button>
           </div>
           
@@ -299,13 +299,13 @@ export default function App() {
               borderRadius: 8,
               marginBottom: 20
             }}>
-              ❌ Hata: {String(error)}
+              ❌ Error: {String(error)}
             </div>
           )}
           
           {results && results.length > 0 && (
             <div style={{ marginBottom: 20 }}>
-              <h3>📚 Bulunan Dokümanlar ({results.length}):</h3>
+              <h3>📚 Found Documents ({results.length}):</h3>
               {results.map((doc, i) => (
                 <div key={i} style={{ 
                   padding: 10, 
@@ -313,7 +313,7 @@ export default function App() {
                   background: '#f5f5f5',
                   borderRadius: 6
                 }}>
-                  <strong>#{i + 1}</strong> (Skor: {(doc.score * 100).toFixed(1)}%)<br/>
+                  <strong>#{i + 1}</strong> (Score: {(doc.score * 100).toFixed(1)}%)<br/>
                   {doc.text}
                 </div>
               ))}
@@ -326,7 +326,7 @@ export default function App() {
               background: '#e8f5e9',
               borderRadius: 8
             }}>
-              <h3>✨ Cevap:</h3>
+              <h3>✨ Answer:</h3>
               <p style={{ whiteSpace: 'pre-wrap' }}>{response}</p>
             </div>
           )}
@@ -337,114 +337,113 @@ export default function App() {
 }
 ```
 
-### Adım 8: Uygulamayı Çalıştırın
+### Step 8: Run the Application
 
 ```bash
 npm run dev
 ```
 
-Bu komut:
-- ✅ Backend server'ı başlatır (`http://127.0.0.1:3001`)
-- ✅ Frontend dev server'ı başlatır (`http://localhost:5173`)
+This command:
+- ✅ Starts the backend server (`http://127.0.0.1:3001`)
+- ✅ Starts the frontend dev server (`http://localhost:5173`)
 
-Tarayıcıda `http://localhost:5173` adresini açın ve kullanmaya başlayın! 🎉
+Open `http://localhost:5173` in your browser and start using it! 🎉
 
-## 🔧 Sorun Giderme
+## 🔧 Troubleshooting
 
-### "Cannot find package 'ollama'" Hatası
+### "Cannot find package 'ollama'" Error
 
 ```bash
-# node_modules'ı temizleyip yeniden yükleyin
+# Clean and reinstall node_modules
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-Windows'ta:
+On Windows:
 ```bash
 rmdir /s /q node_modules
 del package-lock.json
 npm install
 ```
 
-### "Connection refused" Hatası
+### "Connection refused" Error
 
-- Ollama'nın çalıştığından emin olun: `ollama serve`
-- Modellerin yüklü olduğunu kontrol edin: `ollama list`
-- Port 11434'ün açık olduğunu kontrol edin
+- Make sure Ollama is running: `ollama serve`
+- Check that models are installed: `ollama list`
+- Verify port 11434 is open
 
-### Backend Çalışmıyor
+### Backend Not Working
 
-- Port 3001'in boş olduğundan emin olun
-- `server.js` dosyasının proje kök dizininde olduğunu kontrol edin
-- Terminal'de hata mesajlarını kontrol edin
+- Make sure port 3001 is free
+- Check that `server.js` is in the project root directory
+- Check error messages in the terminal
 
-### Frontend Hataları
+### Frontend Errors
 
-- Vite config'in doğru olduğundan emin olun
-- Browser console'da hata mesajlarını kontrol edin
-- `/api/embed` ve `/api/rag-generate` endpoint'lerinin çalıştığını kontrol edin
+- Make sure Vite config is correct
+- Check error messages in the browser console
+- Verify that `/api/embed` and `/api/rag-generate` endpoints are working
 
-## 📚 Daha Fazla Bilgi
+## 📚 More Information
 
-- **Tam Dokümantasyon:** [README.md](../README.md)
-- **Örnekler:** [quickstart/](../quickstart/) klasörü
-- **API Referansı:** README.md içindeki API Reference bölümü
+- **Full Documentation:** [README.md](../README.md)
+- **Examples:** [quickstart/](../quickstart/) folder
+- **API Reference:** API Reference section in README.md
 
-## ✅ Kontrol Listesi
+## ✅ Checklist
 
-Kurulum tamamlandığında şunları kontrol edin:
+When setup is complete, check the following:
 
-- [ ] Node.js 18+ yüklü
-- [ ] Ollama kurulu ve çalışıyor
-- [ ] `granite4:3b` modeli çekilmiş
-- [ ] `embeddinggemma:latest` modeli çekilmiş
-- [ ] `quick-rag` paketi yüklü
-- [ ] Backend server çalışıyor (port 3001)
-- [ ] Frontend dev server çalışıyor (port 5173)
-- [ ] Tarayıcıda uygulama açılıyor
-- [ ] Soru sorduğunuzda cevap alıyorsunuz
+- [ ] Node.js 18+ installed
+- [ ] Ollama installed and running
+- [ ] `granite4:3b` model pulled
+- [ ] `embeddinggemma:latest` model pulled
+- [ ] `quick-rag` package installed
+- [ ] Backend server running (port 3001)
+- [ ] Frontend dev server running (port 5173)
+- [ ] Application opens in browser
+- [ ] You get answers when asking questions
 
-## 🎉 Başarılı!
+## 🎉 Success!
 
-Artık Quick RAG kütüphanesini React projenizde kullanabilirsiniz!
+You can now use the Quick RAG library in your React project!
 
-**Sonraki Adımlar:**
-- Doküman yükleme özelliklerini ekleyin
-- Streaming response'ları aktif edin
-- Metadata filtering kullanın
-- Decision Engine ile akıllı arama yapın
-- Büyük PDF'ler için batch processing kullanın (v2.0.3+)
+**Next Steps:**
+- Add document upload features
+- Enable streaming responses
+- Use metadata filtering
+- Perform smart search with Decision Engine
+- Use batch processing for large PDFs (v2.0.3+)
 
 ## ⚡ Performance Tips (v2.0.3+)
 
-### Büyük Dokümanlar İçin Batch Processing
+### Batch Processing for Large Documents
 
-Büyük PDF'ler yüklerken batch processing kullanın:
+Use batch processing when uploading large PDFs:
 
 ```javascript
 import { chunkDocuments } from 'quick-rag';
 
-// Büyük PDF'i chunk'lara böl
+// Split large PDF into chunks
 const chunks = chunkDocuments([largePDF], { 
   chunkSize: 1000, 
   overlap: 100 
 });
 
-// Batch processing ile ekle
+// Add with batch processing
 await store.addDocuments(chunks, {
-  batchSize: 20,        // 20 chunk/batch (ayarlanabilir)
-  maxConcurrent: 5,     // Max 5 concurrent request
+  batchSize: 20,        // 20 chunks/batch (adjustable)
+  maxConcurrent: 5,     // Max 5 concurrent requests
   onProgress: (current, total) => {
     console.log(`Progress: ${current}/${total} (${Math.round(current/total*100)}%)`);
   }
 });
 ```
 
-### Rate Limiting Ayarları
+### Rate Limiting Settings
 
-- **Küçük dokümanlar (< 100 chunk)**: `batchSize: 10, maxConcurrent: 5`
-- **Orta dokümanlar (100-1000 chunk)**: `batchSize: 20, maxConcurrent: 5`
-- **Büyük dokümanlar (> 1000 chunk)**: `batchSize: 30, maxConcurrent: 3`
+- **Small documents (< 100 chunks)**: `batchSize: 10, maxConcurrent: 5`
+- **Medium documents (100-1000 chunks)**: `batchSize: 20, maxConcurrent: 5`
+- **Large documents (> 1000 chunks)**: `batchSize: 30, maxConcurrent: 3`
 
-Daha fazla örnek için `quickstart/` klasörüne bakın!
-
+For more examples, check the `quickstart/` folder!
