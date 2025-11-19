@@ -1,204 +1,221 @@
-// Very small in-memory vector store for prototyping.
-// Requires a user-supplied embedding function: async (text) => number[]
+/**
+ * Vector Store Interface and In-Memory Implementation
+ */
 
-function dot(a, b) {
-  return a.reduce((s, v, i) => s + v * b[i], 0);
-}
+import { AbstractVectorStore } from './stores/abstractStore.js';
+import { VectorStoreError } from './errors/index.js';
 
-function norm(a) {
-  return Math.sqrt(dot(a, a));
-}
+/**
+ * @typedef {Object} Document
+ * @property {string} id - Unique identifier
+ * @property {string} text - Document content
+ * @property {Object} [meta] - Metadata
+ * @property {number[]} [embedding] - Vector embedding
+ * @property {number} [score] - Similarity score
+ */
 
-function cosine(a, b) {
-  const n = norm(a) * norm(b);
-  return n === 0 ? 0 : dot(a, b) / n;
-}
-
-export class InMemoryVectorStore {
+/**
+ * In-Memory Vector Store
+ * Suitable for small datasets and browser usage
+ * @extends AbstractVectorStore
+ */
+export class InMemoryVectorStore extends AbstractVectorStore {
+  /**
+   * @param {Function} embeddingFn - Embedding function
+   * @param {Object} [options] - Store options
+   */
   constructor(embeddingFn, options = {}) {
-    if (!embeddingFn) throw new Error('embeddingFn required');
-    this.embeddingFn = embeddingFn;
-    this.items = []; // { id, text, meta, vector, dim }
-    this.defaultDim = options.defaultDim || 768;
-    this.autoChunkThreshold = options.autoChunkThreshold || 10000; // Auto-chunk documents > 10KB
-    this.chunkSize = options.chunkSize || 1000;
-    this.chunkOverlap = options.chunkOverlap || 100;
+    super(embeddingFn, options);
+
+    /** @type {Map<string, Document>} */
+    this.docs = new Map();
+
+    /** @type {number[][]} */
+    this.embeddings = [];
+
+    /** @type {string[]} */
+    this.ids = [];
   }
 
-  // addDocuments(docs, opts = { dim, onProgress, chunkDocuments, batchSize, maxConcurrent })
-  // If opts.dim provided, request embeddings at that dimension (if embeddingFn supports it).
-  // If opts.onProgress provided, called with (current, total, currentDoc) for progress tracking
-  // If opts.chunkDocuments provided and document is large, will auto-chunk before embedding
-  async addDocuments(docs, opts = {}) {
-    const dim = opts.dim || this.defaultDim;
-    const onProgress = opts.onProgress;
-    const autoChunk = opts.autoChunk !== false; // Default: true
-    const batchSize = opts.batchSize || 10; // Process embeddings in batches
-    const maxConcurrent = opts.maxConcurrent || 5; // Max concurrent requests
-    
-    // Check if any document needs chunking
-    const needsChunking = autoChunk && docs.some(d => d.text && d.text.length > this.autoChunkThreshold);
-    
-    if (needsChunking && typeof opts.chunkDocuments === 'function') {
-      // Use provided chunking function
-      const allChunks = [];
-      for (let i = 0; i < docs.length; i++) {
-        const doc = docs[i];
-        if (doc.text && doc.text.length > this.autoChunkThreshold) {
-          const chunks = opts.chunkDocuments([doc], {
-            chunkSize: this.chunkSize,
-            overlap: this.chunkOverlap
-          });
-          allChunks.push(...chunks);
-        } else {
-          allChunks.push(doc);
-        }
-      }
-      
-      // Process chunks with progress
-      return this.addDocuments(allChunks, { ...opts, autoChunk: false });
+  /**
+   * Add a single document
+   * @param {Document} doc 
+   */
+  async addDocument(doc) {
+    this._validateDocument(doc);
+
+    // Generate embedding if not present
+    if (!doc.embedding) {
+      doc.embedding = await this.embeddingFn(doc.text);
     }
-    
-    // Batch embedding for better performance
-    const totalDocs = docs.length;
-    const vectors = [];
-    
-    // Process in batches to avoid overwhelming the server
-    for (let i = 0; i < docs.length; i += batchSize) {
-      const batch = docs.slice(i, i + batchSize);
-      const batchTexts = batch.map(d => d.text);
-      
-      // Check if embedding function supports batch (array input)
-      let batchVectors;
-      try {
-        // Try batch embedding first (if supported)
-        const batchResult = await this.embeddingFn(batchTexts, dim);
-        if (Array.isArray(batchResult) && Array.isArray(batchResult[0])) {
-          // Batch result: array of vectors
-          batchVectors = batchResult;
-        } else {
-          // Single result or unexpected format, fall back to individual
-          batchVectors = await Promise.all(
-            batch.map((d, idx) => {
-              const promise = this.embeddingFn(d.text, dim);
-              if (onProgress) {
-                promise.then(() => {
-                  onProgress(i + idx + 1, totalDocs, d);
-                });
-              }
-              return promise;
-            })
-          );
-        }
-      } catch (error) {
-        // If batch fails, fall back to individual requests with rate limiting
-        const semaphore = { count: 0 };
-        const queue = [];
-        
-        for (let j = 0; j < batch.length; j++) {
-          const doc = batch[j];
-          const promise = (async () => {
-            // Wait if too many concurrent requests
-            while (semaphore.count >= maxConcurrent) {
-              await new Promise(resolve => setTimeout(resolve, 50));
-            }
-            
-            semaphore.count++;
-            try {
-              const vec = await this.embeddingFn(doc.text, dim);
-              if (onProgress) {
-                onProgress(i + j + 1, totalDocs, doc);
-              }
-              return vec;
-            } finally {
-              semaphore.count--;
-            }
-          })();
-          queue.push(promise);
-        }
-        
-        batchVectors = await Promise.all(queue);
+
+    // Update or insert
+    if (this.docs.has(doc.id)) {
+      const index = this.ids.indexOf(doc.id);
+      if (index !== -1) {
+        this.embeddings[index] = doc.embedding;
       }
-      
-      vectors.push(...batchVectors);
-      
-      // Update progress for batch
-      if (onProgress && i + batch.length <= totalDocs) {
-        onProgress(Math.min(i + batch.length, totalDocs), totalDocs);
-      }
-      
-      // Small delay between batches to prevent overwhelming
-      if (i + batchSize < docs.length) {
-        await new Promise(resolve => setTimeout(resolve, 10));
-      }
+    } else {
+      this.ids.push(doc.id);
+      this.embeddings.push(doc.embedding);
     }
-    
-    docs.forEach((d, idx) => {
-      this.items.push({ 
-        id: d.id || String(this.items.length), 
-        text: d.text, 
-        meta: d.meta || {}, 
-        vector: vectors[idx], 
-        dim 
-      });
-    });
-  }
 
-  // Add a single document (convenience method)
-  // Supports onProgress callback: (current, total) => void
-  async addDocument(doc, opts = {}) {
-    return this.addDocuments([doc], opts);
-  }
-
-  // Return top-k nearest documents by cosine similarity. Accepts queryDim to control query embedding size.
-  async similaritySearch(query, k = 3, queryDim) {
-    const dim = queryDim || this.defaultDim;
-    const qVec = await this.embeddingFn(query, dim);
-    const scored = this.items.map(it => ({ score: cosine(qVec, it.vector), doc: it }));
-    scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, k).map(s => ({ ...s.doc, score: s.score }));
-  }
-
-  // Delete a document by id
-  deleteDocument(id) {
-    const index = this.items.findIndex(item => item.id === id);
-    if (index !== -1) {
-      this.items.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-
-  // Update a document by id (re-embeds the text)
-  async updateDocument(id, newText, newMeta) {
-    const index = this.items.findIndex(item => item.id === id);
-    if (index === -1) return false;
-    
-    const item = this.items[index];
-    const dim = item.dim || this.defaultDim;
-    const vec = await this.embeddingFn(newText, dim);
-    
-    this.items[index] = {
-      ...item,
-      text: newText,
-      meta: newMeta !== undefined ? newMeta : item.meta,
-      vector: vec
-    };
+    this.docs.set(doc.id, doc);
     return true;
   }
 
-  // Get document by id
+  /**
+   * Add multiple documents
+   * @param {Document[]} docs 
+   * @param {Object} [options]
+   */
+  async addDocuments(docs, options = {}) {
+    this._validateDocuments(docs);
+
+    // Process in batches if needed
+    const batchSize = options.batchSize || 50;
+    const total = docs.length;
+
+    for (let i = 0; i < total; i += batchSize) {
+      const batch = docs.slice(i, i + batchSize);
+
+      // Generate embeddings in parallel
+      const embeddings = await Promise.all(
+        batch.map(d => d.embedding || this.embeddingFn(d.text))
+      );
+
+      // Store documents
+      batch.forEach((doc, idx) => {
+        doc.embedding = embeddings[idx];
+        this.addDocument(doc); // Reuse single add logic
+      });
+
+      if (options.onProgress) {
+        options.onProgress(Math.min(i + batchSize, total), total);
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Search for similar documents
+   * @param {string} query 
+   * @param {number} [k=3] 
+   * @param {Object} [options] 
+   */
+  async similaritySearch(query, k = 3, options = {}) {
+    if (!query || typeof query !== 'string') {
+      throw VectorStoreError.invalidQuery('Query must be a non-empty string');
+    }
+
+    const queryEmbedding = await this.embeddingFn(query);
+    const scores = this.embeddings.map(emb => this._cosineSimilarity(queryEmbedding, emb));
+
+    // Map scores to documents
+    let results = this.ids.map((id, i) => ({
+      ...this.docs.get(id),
+      score: scores[i]
+    }));
+
+    // Filter
+    if (options.filter) {
+      results = results.filter(doc => {
+        return Object.entries(options.filter).every(([key, val]) => doc.meta[key] === val);
+      });
+    }
+
+    // Sort and slice
+    return results
+      .sort((a, b) => b.score - a.score)
+      .slice(0, k);
+  }
+
+  /**
+   * Get document by ID
+   * @param {string} id 
+   */
   getDocument(id) {
-    return this.items.find(item => item.id === id);
+    return this.docs.get(id) || null;
   }
 
-  // Get all documents
-  getAllDocuments() {
-    return [...this.items];
+  /**
+   * Update document
+   * @param {string} id 
+   * @param {string} newText 
+   * @param {Object} [newMeta] 
+   */
+  async updateDocument(id, newText, newMeta) {
+    const doc = this.docs.get(id);
+    if (!doc) return false;
+
+    doc.text = newText;
+    if (newMeta) {
+      doc.meta = { ...doc.meta, ...newMeta };
+    }
+
+    // Re-embed
+    doc.embedding = await this.embeddingFn(newText);
+
+    // Update embedding array
+    const index = this.ids.indexOf(id);
+    if (index !== -1) {
+      this.embeddings[index] = doc.embedding;
+    }
+
+    return true;
   }
 
-  // Clear all documents
+  /**
+   * Delete document
+   * @param {string} id 
+   */
+  deleteDocument(id) {
+    if (!this.docs.has(id)) return false;
+
+    const index = this.ids.indexOf(id);
+    if (index !== -1) {
+      this.ids.splice(index, 1);
+      this.embeddings.splice(index, 1);
+    }
+
+    this.docs.delete(id);
+    return true;
+  }
+
+  /**
+   * Get stats
+   */
+  getStats() {
+    return {
+      documentCount: this.docs.size,
+      dimension: this.embeddings[0]?.length || 0,
+      type: 'memory'
+    };
+  }
+
+  /**
+   * Clear store
+   */
   clear() {
-    this.items = [];
+    this.docs.clear();
+    this.embeddings = [];
+    this.ids = [];
+  }
+
+  /**
+   * Calculate cosine similarity
+   * @private
+   */
+  _cosineSimilarity(a, b) {
+    let dot = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 }

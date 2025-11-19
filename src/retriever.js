@@ -1,125 +1,75 @@
+/**
+ * RAG Retriever
+ * 
+ * Orchestrates document retrieval from vector stores
+ */
+
+import { RetrievalError } from './errors/index.js';
+
+/**
+ * @typedef {Object} RetrieverOptions
+ * @property {number} [k=3] - Number of documents to retrieve
+ * @property {Object} [filter] - Metadata filter
+ * @property {boolean} [debug=false] - Enable debug logging
+ */
+
 export class Retriever {
+  /**
+   * @param {import('./stores/abstractStore').AbstractVectorStore} vectorStore 
+   * @param {RetrieverOptions} [options]
+   */
   constructor(vectorStore, options = {}) {
-    this.store = vectorStore;
+    if (!vectorStore) {
+      throw new RetrievalError('Vector store is required');
+    }
+
+    this.vectorStore = vectorStore;
     this.k = options.k || 3;
+    this.filter = options.filter || null;
+    this.debug = options.debug || false;
   }
 
   /**
-   * Get relevant documents with optional metadata filtering and explanations
+   * Retrieve relevant documents
    * @param {string} query - Search query
-   * @param {number} topK - Number of results to return (optional)
-   * @param {Object} options - Additional options
-   * @param {Object} options.filters - Object-based metadata filters (e.g., { source: 'web', date: '2025-01-01' })
-   * @param {Function} options.filter - Function-based filter (e.g., (meta) => meta.topic === 'science')
-   * @param {number} options.minScore - Minimum similarity score (0-1)
-   * @param {boolean} options.explain - Add explanation for why each document was retrieved
-   * @returns {Promise<Array>} Relevant documents
+   * @param {number} [k] - Override default k
+   * @param {Object} [options] - Additional search options
+   * @returns {Promise<import('./vectorStore').Document[]>}
    */
-  async getRelevant(query, topK, options = {}) {
-    // Use provided topK or fall back to instance default
-    const k = topK !== undefined ? topK : this.k;
-    const { filters, filter, minScore, explain } = options;
-    
-    // Get more results if filtering, to ensure we have enough after filtering
-    const hasFiltering = filters || filter;
-    const fetchK = hasFiltering ? k * 3 : k;
-    let results = await this.store.similaritySearch(query, fetchK);
-    
-    // Apply function-based filter first (if provided)
-    if (filter && typeof filter === 'function') {
-      results = results.filter(doc => {
-        if (!doc.meta) return false;
-        try {
-          return filter(doc.meta);
-        } catch (error) {
-          console.warn('Filter function error:', error);
-          return false;
-        }
-      });
-    }
-    
-    // Apply object-based metadata filters
-    if (filters && Object.keys(filters).length > 0) {
-      results = results.filter(doc => {
-        if (!doc.meta) return false;
-        return Object.entries(filters).every(([key, value]) => {
-          // Support exact match
-          if (doc.meta[key] === value) return true;
-          // Support array contains
-          if (Array.isArray(doc.meta[key]) && doc.meta[key].includes(value)) return true;
-          // Support regex match
-          if (value instanceof RegExp && typeof doc.meta[key] === 'string') {
-            return value.test(doc.meta[key]);
-          }
-          return false;
-        });
-      });
-    }
-    
-    // Apply minimum score filter
-    if (minScore !== undefined) {
-      results = results.filter(doc => doc.score >= minScore);
-    }
-    
-    // Add explanations if requested
-    if (explain) {
-      results = results.map(doc => this._addExplanation(query, doc));
-    }
-    
-    // Return top k after filtering
-    return results.slice(0, k);
-  }
+  async getRelevant(query, k, options = {}) {
+    try {
+      const limit = k || this.k;
+      const searchOptions = {
+        filter: this.filter,
+        ...options
+      };
 
-  /**
-   * Add explanation for why a document was retrieved
-   * @private
-   * @param {string} query - Search query
-   * @param {Object} doc - Document with score
-   * @returns {Object} Document with explanation
-   */
-  _addExplanation(query, doc) {
-    // Extract query terms (simple tokenization)
-    const queryTerms = query
-      .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter(term => term.length > 2); // Ignore very short words
-
-    // Extract document terms
-    const docText = doc.text.toLowerCase();
-    const docTerms = docText
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter(term => term.length > 2);
-
-    // Find matched terms
-    const matchedTerms = queryTerms.filter(term => 
-      docTerms.some(docTerm => 
-        docTerm.includes(term) || term.includes(docTerm)
-      )
-    );
-
-    // Calculate match statistics
-    const matchCount = matchedTerms.length;
-    const matchRatio = queryTerms.length > 0 ? matchCount / queryTerms.length : 0;
-
-    // Create explanation
-    const explanation = {
-      queryTerms,
-      matchedTerms,
-      matchCount,
-      matchRatio: Math.round(matchRatio * 100) / 100,
-      cosineSimilarity: Math.round(doc.score * 1000) / 1000,
-      relevanceFactors: {
-        termMatches: matchCount,
-        semanticSimilarity: doc.score,
-        coverage: `${Math.round(matchRatio * 100)}%`
+      if (this.debug) {
+        console.log(`[Retriever] Searching for: "${query}" (k=${limit})`);
       }
-    };
 
-    return {
-      ...doc,
-      explanation
-    };
+      const results = await this.vectorStore.similaritySearch(query, limit, searchOptions);
+
+      if (this.debug) {
+        console.log(`[Retriever] Found ${results.length} documents`);
+      }
+
+      return results;
+    } catch (error) {
+      throw new RetrievalError(`Retrieval failed: ${error.message}`, {
+        query,
+        originalError: error
+      });
+    }
+  }
+
+  /**
+   * Update retrieval configuration
+   * @param {RetrieverOptions} options 
+   */
+  configure(options = {}) {
+    if (options.k) this.k = options.k;
+    if (options.filter !== undefined) this.filter = options.filter;
+    if (options.debug !== undefined) this.debug = options.debug;
   }
 }

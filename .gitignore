@@ -82,3 +82,11 @@ $RECYCLE.BIN/
 *~
 .directory
 .Trash-*
+
+# SQLite Databases
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+rag-*.db
+test-store.db

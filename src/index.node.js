@@ -23,7 +23,7 @@ export { initRAG } from './initRag.js';
 export { PromptManager, PromptTemplates, createPromptManager, getTemplate } from './promptManager.js';
 
 // Decision Engine (Advanced RAG)
-export { 
+export {
   WeightedDecisionEngine,
   HeuristicEngine,
   SmartRetriever,
@@ -32,15 +32,15 @@ export {
 } from './decisionEngine.js';
 
 // Utilities
-export { 
-  chunkText, 
-  chunkBySentences, 
-  chunkDocuments, 
-  chunkMarkdown 
+export {
+  chunkText,
+  chunkBySentences,
+  chunkDocuments,
+  chunkMarkdown
 } from './utils/chunking.js';
 
 // Document Loaders (Node.js only)
-export { 
+export {
   loadPDF,
   loadWord,
   loadExcel,
@@ -52,10 +52,27 @@ export {
 } from './loaders/documents.js';
 
 // Web Loaders
-export { 
+export {
   loadURL,
   loadURLs,
   loadSitemap
 } from './loaders/web.js';
+
+// Error Handling (v2.1.0+)
+export {
+  RAGError,
+  EmbeddingError,
+  RetrievalError,
+  DocumentLoadError,
+  VectorStoreError,
+  GenerationError,
+  ConfigurationError,
+  isRAGError,
+  getErrorCode,
+  getErrorMetadata
+} from './errors/index.js';
+
+// Persistent Vector Stores (v2.1.0+)
+export { SQLiteVectorStore } from './stores/sqliteStore.js';
 
 // React hook is NOT exported here (use index.js for React projects)

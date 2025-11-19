@@ -1,5 +1,193 @@
 # Changelog
 
+## [2.1.0] - 2025-11-20 🎉
+
+### 🚀 Major Features - Phase 1: Technical Infrastructure
+
+**Embedded Persistent Storage with SQLite**
+- ✅ **SQLiteVectorStore** - Embedded persistent vector storage (no server required!)
+- ✅ **Single File Storage** - All data in one .db file
+- ✅ **Full CRUD Operations** - Create, Read, Update, Delete documents
+- ✅ **Metadata Filtering** - SQL-based filtering capabilities
+- ✅ **Batch Processing** - Efficient handling of large document sets
+- ✅ **Rate Limiting** - Configurable concurrency control
+- ✅ **Progress Tracking** - Real-time progress callbacks
+- ✅ **Zero Configuration** - No server setup needed
+
+**Advanced Error Handling System**
+- ✅ **7 Custom Error Classes** - Specific errors for different failure types
+  - `RAGError` - Base error class with codes and metadata
+  - `EmbeddingError` - Embedding operation failures
+  - `RetrievalError` - Document retrieval failures
+  - `DocumentLoadError` - Document loading failures
+  - `VectorStoreError` - Vector store operation failures
+  - `GenerationError` - LLM generation failures
+  - `ConfigurationError` - Configuration issues
+- ✅ **Error Codes** - Programmatic error identification
+- ✅ **Rich Metadata** - Context and debugging information
+- ✅ **Helpful Suggestions** - How to fix the error
+- ✅ **Utility Functions** - `isRAGError()`, `getErrorCode()`, `getErrorMetadata()`
+
+### 📚 New Files
+
+**Core Implementation:**
+- `src/stores/sqliteStore.js` - SQLite vector store integration (~400 lines)
+- `src/errors/index.js` - Complete error handling system (~350 lines)
+
+**Examples:**
+- `example/14-sqlite-embedded-storage.js` - Full SQLite workflow demo
+
+**Documentation:**
+- `docs/ERROR_HANDLING.md` - Error handling best practices
+
+### 🔧 API Changes
+
+**New Exports (v2.1.0+):**
+```javascript
+// Persistent Vector Stores (Embedded - No Server!)
+import { SQLiteVectorStore } from 'quick-rag';
+
+// Error Handling
+import { 
+  RAGError,
+  EmbeddingError,
+  RetrievalError,
+  DocumentLoadError,
+  VectorStoreError,
+  GenerationError,
+  ConfigurationError,
+  isRAGError,
+  getErrorCode,
+  getErrorMetadata
+} from 'quick-rag';
+```
+
+### 📝 Usage Examples
+
+**SQLite Vector Store (No Server Required!):**
+```javascript
+import { SQLiteVectorStore, createOllamaRAGEmbedding } from 'quick-rag';
+
+const embed = createOllamaRAGEmbedding(ollamaClient, 'embeddinggemma');
+const store = new SQLiteVectorStore('./my-vectors.db', embed);
+
+// Add documents with progress
+await store.addDocuments(docs, {
+  batchSize: 20,
+  maxConcurrent: 5,
+  onProgress: (current, total) => console.log(`${current}/${total}`)
+});
+
+// Search with metadata filtering
+const results = await store.similaritySearch('query', 5, {
+  where: { category: 'programming' }
+});
+
+// Update document
+await store.updateDocument('id', 'new text', { updated: true });
+
+// Get statistics
+const stats = store.getStats();
+console.log(`Documents: ${stats.documentCount}`);
+
+// Close database
+store.close();
+```
+
+**Error Handling:**
+```javascript
+import { EmbeddingError, isRAGError } from 'quick-rag';
+
+try {
+  await vectorStore.addDocuments(docs);
+} catch (error) {
+  if (error instanceof EmbeddingError) {
+    console.error('Embedding failed:', error.message);
+    console.log('Suggestion:', error.metadata.suggestion);
+  } else if (isRAGError(error)) {
+    console.error('Error code:', error.code);
+    console.error('Metadata:', error.metadata);
+  }
+}
+```
+
+### 📦 Dependencies
+
+**New Optional Dependency:**
+- `better-sqlite3` (^11.10.0) - Fast SQLite library for Node.js
+
+**Installation:**
+```bash
+npm install better-sqlite3
+```
+
+### 🎯 Key Benefits
+
+1. **No Server** - Embedded database, no setup required
+2. **Single File** - All data in one .db file
+3. **Fast** - SQLite is battle-tested and performant
+4. **Easy Backup** - Just copy the .db file
+5. **Better Debugging** - Clear error messages with suggestions
+6. **Production Ready** - Used by countless applications
+7. **Type Safe** - Full TypeScript support for errors
+
+### 🔄 Migration from v2.0
+
+**No Breaking Changes!** All v2.0 code works unchanged.
+
+**Optional Upgrades:**
+
+1. **Add persistence with SQLite:**
+```javascript
+// Before (v2.0) - in-memory
+import { InMemoryVectorStore } from 'quick-rag';
+const store = new InMemoryVectorStore(embed);
+
+// After (v2.1.0) - persistent, no server!
+import { SQLiteVectorStore } from 'quick-rag';
+const store = new SQLiteVectorStore('./my-vectors.db', embed);
+// Same API, but persistent!
+```
+
+2. **Add error handling:**
+```javascript
+// Before (v2.0)
+try {
+  await store.addDocuments(docs);
+} catch (error) {
+  console.error(error.message);
+}
+
+// After (v2.1.0) - Optional
+import { EmbeddingError, isRAGError } from 'quick-rag';
+try {
+  await store.addDocuments(docs);
+} catch (error) {
+  if (error instanceof EmbeddingError) {
+    console.error('Code:', error.code);
+    console.error('Suggestion:', error.metadata.suggestion);
+  }
+}
+```
+
+### 🧪 Testing
+
+- Error handling system fully tested
+- SQLite store tested manually
+- No external dependencies for testing
+
+### 📖 Documentation
+
+- Error handling best practices and patterns
+- Migration guides from InMemoryVectorStore
+- SQLite usage examples
+
+### 🙏 Acknowledgments
+
+Thank you to the community for requesting persistent storage and better error handling!
+
+---
+
 ## [2.0.3] - 2025-01-XX 🚀
 
 ### ✨ Performance Improvements & Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "quick-rag",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "⚡ Quick RAG v2.0 - Production-ready RAG framework with Official Ollama & LM Studio SDKs, Document Loaders, Smart Chunking, Query Explainability, Dynamic Prompts, Decision Engine, Streaming, React Hooks, and more!",
   "main": "src/index.node.js",
   "browser": "src/index.browser.js",
@@ -73,9 +73,16 @@
   },
   "dependencies": {
     "@lmstudio/sdk": "^1.5.0",
-    "ollama": "^0.6.2"
+    "ollama": "^0.6.2",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.11.5"
   },
   "optionalDependencies": {
+    "better-sqlite3": "^11.10.0",
     "mammoth": "^1.11.0",
     "node-fetch": "^3.3.2",
     "officeparser": "^5.2.1",

@@ -6,27 +6,27 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.0.3 Released!** Performance improvements with batch embedding, rate limiting, and better error handling for large documents! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.1.0 Released!** Embedded SQLite Persistence, Advanced Error Handling, Structured Logging, and Telemetry! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
 
 - 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
+- 💾 **Embedded Persistence** - SQLite-based vector store (No server required!) (NEW!)
+- 🛡️ **Robust Error Handling** - 7 custom error classes with recovery suggestions (NEW!)
+- 📊 **Telemetry & Metrics** - Track performance, latency, and usage (NEW!)
+- 📝 **Structured Logging** - JSON logging with Pino integration (NEW!)
 - ⚡ **5x Faster** - Parallel batch embedding
 - 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
 - 🔪 **Smart Chunking** - Intelligent text splitting with overlap
 - 🏷️ **Metadata Filtering** - Filter by document properties
 - 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
 - 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
-- 🧠 **Weighted Decision Making** - Multi-criteria document scoring (NEW!)
-- 🎯 **Heuristic Reasoning** - Pattern learning and query optimization (NEW!)
--  **CRUD Operations** - Add, update, delete documents on the fly
-- 🎯 **Smart Retrieval** - Dynamic topK parameter
-- 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
+- 🧠 **Weighted Decision Making** - Multi-criteria document scoring
+- 🎯 **Heuristic Reasoning** - Pattern learning and query optimization
+- 🔄 **CRUD Operations** - Add, update, delete documents on the fly
+- 🌊 **Streaming Support** - Real-time AI responses
 - 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
-- 🎨 **Multiple Providers** - Ollama & LM Studio support
-- 🛠️ **All SDK Features** - Tool calling, vision, agents, and more
 - 💪 **Type Safe** - Full TypeScript support
-- ✅ **Production Ready** - Thoroughly tested and documented
 
 ## 📦 Installation
 
@@ -34,70 +34,34 @@ Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](ht
 npm install quick-rag
 ```
 
-**This package includes:**
-- ✅ Official `ollama` SDK (0.6.2+)
-- ✅ Official `@lmstudio/sdk` (1.5.0+)
-- ✅ RAG components (vector store, retrieval, embeddings)
+**Optional Dependencies:**
+```bash
+# For embedded persistence
+npm install better-sqlite3
 
-**Prerequisites:**
-- [Ollama](https://ollama.ai) installed and running, OR
-- [LM Studio](https://lmstudio.ai) installed with server enabled
-- Models: 
-  - Ollama: `ollama pull granite4:3b` and `ollama pull embeddinggemma:latest`
-  - LM Studio: Any LLM model + embedding model (e.g., `text-embedding-embeddinggemma-300m`)
+# For logging
+npm install pino pino-pretty
+```
 
-> **📖 Starting a New React Project?** Check out the detailed setup guide in [QUICKSTART_REACT.md](./QUICKSTART_REACT.md)!
+## 🆕 What's New in v2.1.0
 
----
+### 💾 Embedded Persistence (SQLite)
+Store your vectors locally without setting up a complex database server!
+- **Zero Setup:** Just provide a file path (`./rag.db`)
+- **Fast:** Built on `better-sqlite3`
+- **Full Features:** Batch insert, metadata filtering, CRUD
 
-- 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
-- ⚡ **5x Faster** - Parallel batch embedding with rate limiting
-- 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
-- 🔪 **Smart Chunking** - Intelligent text splitting with overlap
-- 🏷️ **Metadata Filtering** - Filter by document properties
-- 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
-- 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
-- 🧠 **Weighted Decision Making** - Multi-criteria document scoring (NEW!)
-- 🎯 **Heuristic Reasoning** - Pattern learning and query optimization (NEW!)
-- 📊 **Batch Processing** - Efficient handling of large document sets (v2.0.3!)
-- 🚦 **Rate Limiting** - Prevents server overload with configurable concurrency (v2.0.3!)
-- 🔄 **CRUD Operations** - Add, update, delete documents on the fly
-- 🎯 **Smart Retrieval** - Dynamic topK parameter
-- 🌊 **Streaming Support** - Real-time AI responses (official SDK feature)
-- 🔧 **Zero Config** - Works with React, Next.js, Vite, Node.js
-- 🎨 **Multiple Providers** - Ollama & LM Studio support
-- 🛠️ **All SDK Features** - Tool calling, vision, agents, and more
-- 💪 **Type Safe** - Full TypeScript support
-- ✅ **Production Ready** - Thoroughly tested and documented
+### 🛡️ Advanced Error Handling
+Never crash without knowing why. New error system provides:
+- **Specific Error Types:** `RAGError`, `EmbeddingError`, `RetrievalError`, etc.
+- **Error Codes:** Programmatic handling
+- **Recovery Hints:** Actionable suggestions in error messages
 
----
-
-## 🆕 What's New
-
-### 🚀 v2.0.3 - Performance & Stability (Latest!)
-- ✅ **Batch Embedding** - Process large document sets efficiently (20+ chunks at once)
-- ✅ **Rate Limiting** - Configurable concurrency control (prevents server overload)
-- ✅ **Better Error Handling** - Improved network error messages and retry logic
-- ✅ **Progress Tracking** - Enhanced progress callbacks for batch processing
-
-### 🎉 v2.0.0 - Major Release
-
-### 🎯 Decision Engine (NEW!)
-Revolutionary AI-powered retrieval system with multi-criteria weighted scoring, heuristic reasoning, and adaptive learning. See full documentation below.
-
-### 🔍 Query Explainability (NEW!)
-Industry-first feature to understand WHY documents were retrieved. See full documentation below.
-
-### 🎨 Dynamic Prompt Management (NEW!)
-10 built-in templates + full customization for different response styles and use cases. See full documentation below.
-
-### 💬 Conversation History & Export (NEW!)
-Track and export conversation sessions with metadata and statistics. See `example/12-conversation-history-and-export.js`.
-
-### 🔄 Multi-Provider Auto-Detection (NEW!)
-Automatically detect and switch between Ollama and LM Studio providers. See `example/04-test-both-providers.js`.
-
-### ✅ Function-based Filters
+### 📊 Metrics & Logging
+Monitor your RAG pipeline in production:
+- **Performance Tracking:** Embedding time, search latency, generation speed
+- **Structured Logs:** JSON format for easy parsing
+- **Prometheus Support:** Export metrics for monitoring dashboards
 Advanced filtering with custom logic - filter documents using JavaScript functions:
 ```javascript
 const results = await retriever.getRelevant('latest AI news', 5, {

@@ -447,3 +447,14 @@ await store.addDocuments(chunks, {
 - **Large documents (> 1000 chunks)**: `batchSize: 30, maxConcurrent: 3`
 
 For more examples, check the `quickstart/` folder!
+
+## 💾 Persistence in React
+
+**Important:** The new SQLite persistence feature (`SQLiteVectorStore`) works **ONLY** in Node.js environments (like your backend server in `server.js`). It does **NOT** work directly in the browser.
+
+For browser-side storage, use `InMemoryVectorStore` (default) or implement a custom store using IndexedDB.
+
+If you need persistence in your React app:
+1. Use `SQLiteVectorStore` in your **backend** (`server.js`).
+2. Expose API endpoints (`/api/search`, `/api/add-doc`) to your frontend.
+3. The frontend calls these endpoints instead of using the vector store directly.
