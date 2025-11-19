@@ -38,9 +38,10 @@ export class AbstractVectorStore {
      * @protected
      */
     _validateDocuments(docs) {
-        if (!Array.isArray(docs) || docs.length === 0) {
-            throw VectorStoreError.invalidDocument('docs must be a non-empty array');
+        if (!Array.isArray(docs)) {
+            throw VectorStoreError.invalidDocument('docs must be an array');
         }
+        if (docs.length === 0) return true;
         docs.forEach(doc => this._validateDocument(doc));
         return true;
     }

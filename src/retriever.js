@@ -54,6 +54,30 @@ export class Retriever {
         console.log(`[Retriever] Found ${results.length} documents`);
       }
 
+      // Add explanations if requested
+      if (options.explain) {
+        results.forEach(doc => {
+          const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
+          const text = (doc.text || '').toLowerCase();
+          const matchedTerms = terms.filter(term => text.includes(term));
+
+          doc.explanation = {
+            score: doc.score,
+            reason: `Matched query with similarity score of ${(doc.score * 100).toFixed(1)}%`,
+            metadata: doc.meta,
+            queryTerms: terms,
+            matchedTerms: matchedTerms,
+            matchCount: matchedTerms.length,
+            matchRatio: terms.length > 0 ? matchedTerms.length / terms.length : 0,
+            cosineSimilarity: doc.score,
+            relevanceFactors: {
+              semanticScore: doc.score,
+              termMatch: matchedTerms.length / (terms.length || 1)
+            }
+          };
+        });
+      }
+
       return results;
     } catch (error) {
       throw new RetrievalError(`Retrieval failed: ${error.message}`, {

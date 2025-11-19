@@ -44,6 +44,11 @@ export class InMemoryVectorStore extends AbstractVectorStore {
   async addDocument(doc) {
     this._validateDocument(doc);
 
+    // Generate ID if missing
+    if (!doc.id) {
+      doc.id = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
     // Generate embedding if not present
     if (!doc.embedding) {
       doc.embedding = await this.embeddingFn(doc.text);
@@ -119,10 +124,16 @@ export class InMemoryVectorStore extends AbstractVectorStore {
     }));
 
     // Filter
-    if (options.filter) {
-      results = results.filter(doc => {
-        return Object.entries(options.filter).every(([key, val]) => doc.meta[key] === val);
-      });
+    const filter = options.filter || options.filters;
+    if (filter) {
+      if (typeof filter === 'function') {
+        results = results.filter(doc => filter(doc.meta || {}));
+      } else {
+        results = results.filter(doc => {
+          if (!doc.meta) return false;
+          return Object.entries(filter).every(([key, val]) => doc.meta[key] === val);
+        });
+      }
     }
 
     // Sort and slice

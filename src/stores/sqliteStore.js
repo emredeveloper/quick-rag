@@ -252,8 +252,9 @@ export class SQLiteVectorStore {
         const params = [dim];
 
         // Apply metadata filters if provided
-        if (options.where) {
-            for (const [key, value] of Object.entries(options.where)) {
+        const filter = options.where || options.filter || options.filters;
+        if (filter) {
+            for (const [key, value] of Object.entries(filter)) {
                 sql += ` AND json_extract(metadata, '$.${key}') = ?`;
                 params.push(value);
             }
