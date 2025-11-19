@@ -184,6 +184,18 @@ export class InMemoryVectorStore extends AbstractVectorStore {
   }
 
   /**
+   * Get all documents (with pagination)
+   * @param {Object} [options]
+   */
+  getAllDocuments(options = {}) {
+    const limit = options.limit || 100;
+    const offset = options.offset || 0;
+
+    const allDocs = Array.from(this.docs.values());
+    return allDocs.slice(offset, offset + limit);
+  }
+
+  /**
    * Get stats
    */
   getStats() {
