@@ -1,0 +1,101 @@
+﻿
+> quick-rag@2.1.0 test
+> node test/run-tests.js
+
+­şğ¬ Running Quick RAG Test Suite...
+
+Ô£à vectorStore tests passed
+Ô£à retriever tests passed
+
+­şğ¬ Running Chunking Tests...
+Ô£à chunkText tests passed
+Ô£à chunkBySentences tests passed
+Ô£à chunkDocuments tests passed
+Ô£à chunkMarkdown tests passed
+Ô£à Chunking tests completed
+
+
+­şğ¬ Running Retriever Filtering Tests...
+Ô£à Metadata filtering tests passed
+Ô£à Minimum score filtering tests passed
+Ô£à Retriever filtering tests completed
+
+
+­şğ¬ Running Document Loader Tests...
+Ô£à Text loader tests passed
+Ô£à JSON loader tests passed
+Ô£à Markdown loader tests passed
+Ô£à Auto-detect tests passed
+Ô£à Web loader tests passed
+Ôä╣´©Å  PDF loader requires: npm install pdf-parse
+   Skipping PDF tests (optional dependency)
+Ô£à Document loader tests completed
+
+
+­şğ¬ Running VectorStore CRUD Tests...
+Ô£à VectorStore CRUD tests passed
+Ô£à VectorStore CRUD tests completed
+
+
+­şğ¬ Running Query Explainability Tests...
+Ô£à Query Explainability tests passed
+Ô£à Query Explainability tests completed
+
+
+­şğ¬ Running Function-based Filter Tests...
+Ô£à Function-based filter tests passed
+Ô£à Function-based filter tests completed
+
+
+­şğ¬ Running PromptManager Tests...
+Ô£à PromptTemplates tests passed
+Ô£à PromptManager tests passed
+Ô£à createPromptManager tests passed
+Ô£à getTemplate tests passed
+Ô£à PromptManager tests completed
+
+
+­şğ¬ Running Web Loader Tests...
+Ô£à loadURL tests passed
+Ô£à loadURLs tests passed
+Ôä╣´©Å  loadSitemap test skipped (no sitemap available)
+Ô£à Web loader tests completed
+
+
+­şğ¬ Running loadDirectory Tests...
+Ô£à loadDirectory tests passed
+Ô£à loadDirectory tests completed
+
+
+­şğ¬ Running createSmartRetriever Tests...
+Ô£à createSmartRetriever tests passed
+Ô£à createSmartRetriever tests completed
+
+
+­şğ¬ Running initRAG Tests...
+Ô£à initRAG tests passed
+Ô£à initRAG tests completed
+
+
+­şğ¬ Running createMRL Tests...
+Ô£à createMRL tests passed
+Ô£à createMRL tests completed
+
+
+­şğ¬ Running Retriever Edge Cases Tests...
+Ô£à Retriever edge cases tests passed
+Ô£à Retriever edge cases tests completed
+
+
+­şğ¬ Running VectorStore Edge Cases Tests...
+Ô£à VectorStore edge cases tests passed
+Ô£à VectorStore edge cases tests completed
+
+
+­şğ¬ Running Decision Engine Tests...
+Ô£à Decision Engine tests completed
+
+
+Ô£à ALL TESTS PASSED!
+
+­şÆí Tip: Run integration tests with: npm run test:integration

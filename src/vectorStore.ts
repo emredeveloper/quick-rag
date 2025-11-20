@@ -104,7 +104,7 @@ export class InMemoryVectorStore extends AbstractVectorStore {
      */
     async similaritySearch(query: string, k: number = 3, options: any = {}): Promise<Document[]> {
         if (!query || typeof query !== 'string') {
-            throw VectorStoreError.invalidQuery('Query must be a non-empty string');
+            throw new VectorStoreError('Query must be a non-empty string');
         }
 
         const queryEmbedding = (await this.embeddingFn(query)) as number[];

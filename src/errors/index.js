@@ -215,6 +215,13 @@ export class VectorStoreError extends RAGError {
       }
     );
   }
+
+  static invalidQuery(reason) {
+    return new VectorStoreError(
+      `Invalid query: ${reason}`,
+      { reason, suggestion: 'Ensure query is a non-empty string' }
+    );
+  }
 }
 
 /**

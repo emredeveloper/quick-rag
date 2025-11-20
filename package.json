@@ -1,8 +1,35 @@
+{
+  "name": "quick-rag",
+  "version": "2.1.0",
+  "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "node": "./src/index.node.js",
+      "browser": "./src/index.browser.js",
+      "default": "./src/index.js"
+    },
+    "./react": {
+      "types": "./src/react/index.d.ts",
+      "default": "./src/react/index.js"
+    }
+  },
+  "keywords": [
+    "rag",
+    "ollama",
+    "lmstudio",
+    "vector-store",
+    "embeddings",
+    "retrieval",
+    "ai",
+    "llm",
     "react",
     "local-ai",
     "vector-search",
     "retrieval-augmented-generation",
-    "embeddings",
     "pdf",
     "document-loader",
     "pdf-parser",
@@ -13,10 +40,7 @@
     "prompt-management",
     "streaming",
     "typescript",
-    "vector-store",
     "semantic-search",
-    "ai",
-    "llm",
     "chatbot",
     "knowledge-base"
   ],
