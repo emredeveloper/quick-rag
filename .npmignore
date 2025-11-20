@@ -1,6 +1,48 @@
+# Test files
 test/
+*.test.js
+*.test.ts
+
+# Examples and documentation source
 example/
+quickstart/
+my-rag-app/
+docs/
+
+# Development files
 .github/
+.vscode/
+.idea/
+*.md
+!README.md
+!CHANGELOG.md
+!LICENSE
+
+# Build and development
 node_modules/
+coverage/
+.nyc_output/
 *.log
-/.vscode/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Source maps
+*.map
+
+# Environment and config
+.env
+.env.*
+.eslintrc*
+.prettierrc*
+.editorconfig
+tsconfig.json
+build.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.gitignore
+.gitattributes

@@ -1000,18 +1000,42 @@ console.log(answer);
 
 ---
 
-## 📚 Learn More
+## 📚 Documentation
 
-- **Examples:** [`/example`](./example) folder with working demos
-- **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md) - version history
+- **📖 [API Reference](./docs/API_REFERENCE.md)** - Complete API documentation
+- **🛡️ [Error Handling](./docs/ERROR_HANDLING.md)** - Error handling best practices
+- **💾 [SQLite Persistence](./docs/SQLITE_PERSISTENCE.md)** - Embedded storage guide
+- **📊 [Metrics & Telemetry](./docs/METRICS_TELEMETRY.md)** - Monitoring and logging
+- **🤝 [Contributing](./CONTRIBUTING.md)** - Contribution guidelines
+- **📝 [Changelog](./CHANGELOG.md)** - Version history
+- **💡 [Examples](./example)** - Working code examples
+- **🚀 [Quickstart](./quickstart)** - Quick start guides
+
+## 🔗 Resources
+
 - **Ollama Models:** [ollama.ai/library](https://ollama.ai/library)
-- **Issues:** [GitHub Issues](https://github.com/emredeveloper/rag-js-local/issues)
+- **LM Studio:** [lmstudio.ai](https://lmstudio.ai)
+- **Issues:** [GitHub Issues](https://github.com/emredeveloper/quick-rag/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/emredeveloper/quick-rag/discussions)
+- **NPM Package:** [npmjs.com/package/quick-rag](https://www.npmjs.com/package/quick-rag)
 
 ---
 
 ## 📄 License
 
-MIT © [Emre Developer](https://github.com/emredeveloper)
+MIT © [Cihat Emre Karataş](https://github.com/emredeveloper)
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+- [Ollama JS SDK](https://github.com/ollama/ollama-js)
+- [LM Studio SDK](https://github.com/lmstudio-ai/lmstudio-js)
+- [Pino](https://github.com/pinojs/pino) - Fast logging
+- [Better SQLite3](https://github.com/WiseLibs/better-sqlite3) - Embedded database
+
+Special thanks to all contributors and the open-source community!
 
 ---
 

@@ -1,0 +1,153 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the information below to help us resolve the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Install quick-rag
+        2. Create a vector store with...
+        3. Call retriever.getRelevant()
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Sample
+      description: Please provide a minimal code sample that reproduces the issue
+      render: javascript
+      placeholder: |
+        import { OllamaRAGClient, InMemoryVectorStore } from 'quick-rag';
+        
+        const client = new OllamaRAGClient();
+        // ... your code
+    validations:
+      required: false
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message/Stack Trace
+      description: If applicable, paste the full error message and stack trace
+      render: shell
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Quick RAG Version
+      description: Which version of quick-rag are you using?
+      placeholder: e.g., 2.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Output of `node --version`
+      placeholder: e.g., v20.10.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: AI Provider
+      options:
+        - Ollama
+        - LM Studio
+        - Both
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model Name
+      description: Which model are you using?
+      placeholder: e.g., granite4:tiny-h, embeddinggemma
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Additional Environment Details
+      description: Any other relevant environment information
+      placeholder: |
+        - TypeScript version: 5.3.3
+        - Using React: Yes/No
+        - Browser (if applicable): Chrome 120
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched for similar issues before creating this one
+          required: true
+        - label: I have provided all the information requested
+          required: true
+        - label: I can reproduce this issue consistently
+          required: false

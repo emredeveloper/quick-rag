@@ -7,7 +7,7 @@
             "ES2020"
         ],
         // Module Resolution
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,

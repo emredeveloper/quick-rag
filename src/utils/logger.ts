@@ -4,27 +4,27 @@
  * Centralized logging utility for the entire library
  */
 
-import pino from 'pino';
+import pino, { Logger, LoggerOptions } from 'pino';
 import fs from 'fs';
 import path from 'path';
 
+export interface LoggerConfig {
+    level?: string;
+    logFile?: string;
+    pretty?: boolean;
+}
+
 /**
  * Create logger instance
- * 
- * @param {Object} options - Logger options
- * @param {string} options.level - Log level (trace, debug, info, warn, error, fatal)
- * @param {string} options.logFile - Optional log file path
- * @param {boolean} options.pretty - Pretty print for development
- * @returns {pino.Logger} Logger instance
  */
-export function createLogger(options = {}) {
+export function createLogger(options: LoggerConfig = {}): Logger {
     const {
         level = process.env.LOG_LEVEL || 'info',
         logFile,
         pretty = process.env.NODE_ENV !== 'production'
     } = options;
 
-    const streams = [];
+    const streams: any[] = [];
 
     // Console output
     if (pretty) {
@@ -71,23 +71,15 @@ export const logger = createLogger();
 
 /**
  * Create child logger with context
- * 
- * @param {string} component - Component name
- * @param {Object} context - Additional context
- * @returns {pino.Logger} Child logger
  */
-export function createComponentLogger(component, context = {}) {
+export function createComponentLogger(component: string, context: object = {}): Logger {
     return logger.child({ component, ...context });
 }
 
 /**
  * Log performance metrics
- * 
- * @param {string} operation - Operation name
- * @param {number} duration - Duration in ms
- * @param {Object} metadata - Additional metadata
  */
-export function logPerformance(operation, duration, metadata = {}) {
+export function logPerformance(operation: string, duration: number, metadata: object = {}): void {
     logger.info({
         type: 'performance',
         operation,
@@ -98,18 +90,14 @@ export function logPerformance(operation, duration, metadata = {}) {
 
 /**
  * Log error with context
- * 
- * @param {Error} error - Error object
- * @param {string} operation - Operation that failed
- * @param {Object} context - Additional context
  */
-export function logError(error, operation, context = {}) {
+export function logError(error: Error, operation: string, context: object = {}): void {
     logger.error({
         type: 'error',
         operation,
         error: {
             message: error.message,
-            code: error.code,
+            code: (error as any).code,
             stack: error.stack
         },
         ...context
