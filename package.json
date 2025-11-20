@@ -1,6 +1,6 @@
 {
   "name": "quick-rag",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs",
   "main": "src/index.js",
   "types": "src/index.d.ts",

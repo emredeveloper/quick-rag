@@ -1,5 +1,29 @@
 # Changelog
 
+## [2.1.1] - 2025-11-20 🔧
+
+### 🐛 Bug Fixes
+
+- Fixed `package.json` structure - Added missing header fields
+- Fixed `VectorStoreError.invalidQuery()` method
+- Fixed TypeScript error in `vectorStore.ts`
+- Updated `tsconfig.json` - Changed deprecated `moduleResolution: "node"` to `"bundler"`
+
+### 🧹 Project Cleanup
+
+- Removed CI/CD workflows (manual deployment preferred)
+- Removed excessive documentation files
+- Cleaned up project structure
+- Optimized `.npmignore` configuration
+
+### ✅ Testing
+
+- All unit tests passing
+- All edge case tests passing
+- Build process verified
+
+---
+
 ## [2.1.0] - 2025-11-20 🎉
 
 ### 🚀 Major Features - Phase 1: Technical Infrastructure
