@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.1.3] - 2025-11-20 🔧
+
+### 🐛 Bug Fixes
+
+- **Critical:** Fixed Ollama SDK embed() method call signature (now uses `{model, input}` object syntax)
+- Fixed embedding function for proper Ollama API v0.6.2 compatibility
+
+---
+
+## [2.1.2] - 2025-11-20 🔧
+
+### 🐛 Bug Fixes
+
+- Fixed missing `logger.js` file (only TypeScript version was present)
+- Improved test examples in quickstart
+
+### ✅ Testing
+
+- Added comprehensive test file for v2.1 features
+- Verified all new features working correctly
+
+---
+
 ## [2.1.1] - 2025-11-20 🔧
 
 ### 🐛 Bug Fixes
