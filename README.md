@@ -6,15 +6,22 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.1.0 Released!** Embedded SQLite Persistence, Advanced Error Handling, Structured Logging, and Telemetry! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.2.0 Released!** Advanced Search with BM25, Hybrid Retrieval, Reranking & Query Transformation! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
 
+### 🆕 v2.2.0 - Advanced Search
+- 🔍 **BM25 Sparse Search** - Pure JS keyword-based retrieval (no dependencies!)
+- 🔀 **Hybrid Search** - Combines BM25 + Vector with RRF fusion (20-30% better retrieval)
+- 📊 **Reranking** - Multi-signal scoring (keyword, semantic, coverage, coherence)
+- 🔄 **Query Transformation** - Expansion, decomposition, multi-query, HyDE
+
+### Core Features
 - 🎯 **Official SDKs** - Built on `ollama` and `@lmstudio/sdk` packages
-- 💾 **Embedded Persistence** - SQLite-based vector store (No server required!) (NEW!)
-- 🛡️ **Robust Error Handling** - 7 custom error classes with recovery suggestions (NEW!)
-- 📊 **Telemetry & Metrics** - Track performance, latency, and usage (NEW!)
-- 📝 **Structured Logging** - JSON logging with Pino integration (NEW!)
+- 💾 **Embedded Persistence** - SQLite-based vector store (No server required!)
+- 🛡️ **Robust Error Handling** - 7 custom error classes with recovery suggestions
+- 📊 **Telemetry & Metrics** - Track performance, latency, and usage
+- 📝 **Structured Logging** - JSON logging with Pino integration
 - ⚡ **5x Faster** - Parallel batch embedding
 - 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
 - 🔪 **Smart Chunking** - Intelligent text splitting with overlap
@@ -43,9 +50,125 @@ npm install better-sqlite3
 npm install pino pino-pretty
 ```
 
-## 🆕 What's New in v2.1.0
+## 🆕 What's New in v2.2.0
 
-### 💾 Embedded Persistence (SQLite)
+### 🔍 BM25 Sparse Search
+Pure JavaScript implementation - no external dependencies!
+
+```javascript
+import { BM25 } from 'quick-rag';
+
+const bm25 = new BM25({ k1: 1.2, b: 0.75 });
+bm25.addDocuments([
+  { id: '1', text: 'Machine learning is a subset of AI' },
+  { id: '2', text: 'Deep learning uses neural networks' },
+  { id: '3', text: 'Natural language processing handles text' }
+]);
+
+const results = bm25.search('neural networks AI', 2);
+// Fast keyword-based retrieval with TF-IDF scoring
+```
+
+### 🔀 Hybrid Search (BM25 + Vector)
+Combine sparse and dense retrieval for 20-30% better results!
+
+```javascript
+import { HybridRetriever, InMemoryVectorStore } from 'quick-rag';
+
+const vectorStore = new InMemoryVectorStore(embedFn);
+await vectorStore.addDocuments(docs);
+
+const hybrid = new HybridRetriever(vectorStore, {
+  alpha: 0.5,           // Balance: 0=sparse only, 1=dense only
+  fusionMethod: 'rrf',  // Reciprocal Rank Fusion
+  rrfK: 60
+});
+
+const results = await hybrid.search('query', 5, { explain: true });
+// Results include both dense and sparse scores
+```
+
+### 📊 Reranking
+Multi-signal scoring to improve top-K precision:
+
+```javascript
+import { Reranker, createRerankedRetriever } from 'quick-rag';
+
+const reranker = new Reranker({
+  keywordWeight: 0.35,   // Keyword overlap
+  semanticWeight: 0.35,  // Semantic similarity
+  coverageWeight: 0.20,  // Query term coverage
+  coherenceWeight: 0.10  // Text coherence
+});
+
+// Rerank any retriever's results
+const reranked = reranker.rerank(query, initialResults, { explain: true });
+
+// Or wrap a retriever for automatic reranking
+const smartRetriever = createRerankedRetriever(hybridRetriever, rerankerOptions);
+```
+
+### 🔄 Query Transformation
+Advanced query processing techniques:
+
+```javascript
+import { QueryExpander, QueryDecomposer, MultiQueryGenerator } from 'quick-rag';
+
+// 1. Query Expansion - Add synonyms
+const expander = new QueryExpander();
+expander.addSynonyms('ml', ['machine learning', 'AI']);
+const expanded = expander.expand('ml models');
+// "ml models machine learning AI"
+
+// 2. Query Decomposition - Split complex queries
+const decomposer = new QueryDecomposer();
+const parts = decomposer.decompose('Compare BM25 with vector search and explain differences');
+// ["Compare BM25 with vector search", "explain differences"]
+
+// 3. Multi-Query - Generate variations
+const generator = new MultiQueryGenerator();
+const variations = generator.generate('How does RAG work?');
+// ["How does RAG work?", "What is RAG?", "RAG explanation"]
+```
+
+### 🎯 Full Pipeline Example
+Combine all features for maximum retrieval quality:
+
+```javascript
+import {
+  OllamaRAGClient,
+  createOllamaRAGEmbedding,
+  InMemoryVectorStore,
+  HybridRetriever,
+  createRerankedRetriever,
+  QueryExpander,
+  generateWithRAG
+} from 'quick-rag';
+
+// Setup
+const client = new OllamaRAGClient();
+const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+const store = new InMemoryVectorStore(embed);
+await store.addDocuments(documents);
+
+// Create hybrid + reranked retriever
+const hybrid = new HybridRetriever(store, { alpha: 0.5, fusionMethod: 'rrf' });
+const retriever = createRerankedRetriever(hybrid, { keywordWeight: 0.3 });
+
+// Expand query and retrieve
+const expander = new QueryExpander();
+const { expanded } = expander.expand(userQuery);
+const results = await retriever.getRelevant(expanded, 5);
+
+// Generate response
+const response = await generateWithRAG(client, 'llama3', userQuery, results);
+```
+
+---
+
+## 📚 Previous Features
+
+### 💾 Embedded Persistence (v2.1.0)
 Store your vectors locally without setting up a complex database server!
 - **Zero Setup:** Just provide a file path (`./rag.db`)
 - **Fast:** Built on `better-sqlite3`
