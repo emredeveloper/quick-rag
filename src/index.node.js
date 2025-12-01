@@ -75,4 +75,23 @@ export {
 // Persistent Vector Stores (v2.1.0+)
 export { SQLiteVectorStore } from './stores/sqliteStore.js';
 
+// Advanced Search (v2.2.0+)
+export { 
+  BM25,
+  HybridRetriever,
+  Reranker,
+  createRerankedRetriever,
+  reciprocalRankFusion,
+  linearCombination
+} from './search/index.js';
+
+// Query Transformation (v2.2.0+)
+export {
+  QueryTransformer,
+  HyDETransformer,
+  QueryExpander,
+  QueryDecomposer,
+  MultiQueryGenerator
+} from './query/index.js';
+
 // React hook is NOT exported here (use index.js for React projects)

@@ -93,6 +93,25 @@ async function run() {
   await runRetrieverEdgeCaseTests();
   await runVectorStoreEdgeCaseTests();
   
+  // Phase 1: Advanced Search Tests (uses node:test)
+  console.log('\n🧪 Running Phase 1 Advanced Search Tests...');
+  try {
+    const { run: runNodeTest } = await import('node:test');
+    const { pathToFileURL } = await import('node:url');
+    const phase1TestPath = join(__dirname, 'phase1-advanced-search.test.js');
+    const phase1TestURL = pathToFileURL(phase1TestPath);
+    
+    await runNodeTest({ 
+      files: [phase1TestURL],
+      concurrency: false
+    });
+    
+    console.log('✅ Phase 1 Advanced Search tests completed\n');
+  } catch (err) {
+    console.error('❌ Phase 1 tests failed:', err.message);
+    console.warn('⚠️  Continuing with other tests...\n');
+  }
+  
   // Decision Engine tests (uses node:test)
   console.log('\n🧪 Running Decision Engine Tests...');
   try {

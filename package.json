@@ -1,7 +1,7 @@
 {
   "name": "quick-rag",
-  "version": "2.1.4",
-  "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs",
+  "version": "2.2.0",
+  "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs with Hybrid Search, Reranking & Query Transformation",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "type": "module",
@@ -42,7 +42,12 @@
     "typescript",
     "semantic-search",
     "chatbot",
-    "knowledge-base"
+    "knowledge-base",
+    "bm25",
+    "hybrid-search",
+    "reranking",
+    "query-expansion",
+    "reciprocal-rank-fusion"
   ],
   "scripts": {
     "test": "node test/run-tests.js",
