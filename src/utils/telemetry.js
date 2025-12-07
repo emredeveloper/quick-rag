@@ -4,6 +4,8 @@
  * Tracks events and usage patterns across the library
  */
 
+import { randomUUID } from 'crypto';
+
 /**
  * Event types
  */
@@ -137,7 +139,7 @@ class TelemetryCollector {
 
     // Private helpers
     _generateSessionId() {
-        return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        return randomUUID();
     }
 
     _hashString(str) {

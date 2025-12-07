@@ -5,6 +5,7 @@
  * Perfect for local applications and development
  */
 
+import { randomUUID } from 'crypto';
 import Database from 'better-sqlite3';
 import { VectorStoreError, EmbeddingError } from '../errors/index.js';
 
@@ -165,7 +166,7 @@ export class SQLiteVectorStore {
             const insertMany = this.db.transaction((docs, embeddings) => {
                 for (let j = 0; j < docs.length; j++) {
                     const doc = docs[j];
-                    const id = doc.id || `doc_${Date.now()}_${Math.random()}`;
+                    const id = doc.id || randomUUID();
                     const metadata = JSON.stringify(doc.meta || {});
                     const vectorBlob = this._serializeVector(embeddings[j]);
 

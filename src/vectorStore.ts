@@ -2,6 +2,7 @@
  * Vector Store Interface and In-Memory Implementation
  */
 
+import { randomUUID } from 'crypto';
 import { AbstractVectorStore, Document, EmbeddingFunction } from './stores/abstractStore.js';
 import { VectorStoreError } from './errors/index.js';
 
@@ -37,7 +38,7 @@ export class InMemoryVectorStore extends AbstractVectorStore {
 
         // Generate ID if missing
         if (!doc.id) {
-            doc.id = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            doc.id = randomUUID();
         }
 
         // Generate embedding if not present
