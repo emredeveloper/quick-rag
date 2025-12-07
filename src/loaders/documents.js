@@ -18,7 +18,7 @@ export async function loadPDF(filePath, options = {}) {
   try {
     // Dynamic import to avoid bundling in browser
     const pdfParse = (await import('pdf-parse')).default;
-    
+
     const buffer = await fs.readFile(filePath);
     const data = await pdfParse(buffer);
 
@@ -51,7 +51,7 @@ export async function loadPDF(filePath, options = {}) {
 export async function loadWord(filePath, options = {}) {
   try {
     const mammoth = await import('mammoth');
-    
+
     const buffer = await fs.readFile(filePath);
     const result = await mammoth.extractRawText({ buffer });
 
@@ -75,7 +75,7 @@ export async function loadWord(filePath, options = {}) {
 
 /**
  * Load Excel document (.xlsx, .xls)
- * Requires: npm install xlsx
+ * Requires: npm install exceljs
  * @param {string} filePath - Path to Excel file
  * @param {Object} options - Options
  * @param {string} options.sheetName - Specific sheet to load (default: first sheet)
@@ -84,28 +84,53 @@ export async function loadWord(filePath, options = {}) {
  */
 export async function loadExcel(filePath, options = {}) {
   try {
-    const XLSX = await import('xlsx');
-    
-    const buffer = await fs.readFile(filePath);
-    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const ExcelJS = (await import('exceljs')).default;
+    const workbook = new ExcelJS.Workbook();
+
+    await workbook.xlsx.readFile(filePath);
 
     let text = '';
     let sheetsData = {};
+    const sheetNames = workbook.worksheets.map(ws => ws.name);
 
     if (options.allSheets) {
       // Load all sheets
-      workbook.SheetNames.forEach(sheetName => {
-        const sheet = workbook.Sheets[sheetName];
-        const sheetText = XLSX.utils.sheet_to_csv(sheet);
-        text += `\n\n=== Sheet: ${sheetName} ===\n${sheetText}`;
-        sheetsData[sheetName] = XLSX.utils.sheet_to_json(sheet);
-      });
+      for (const worksheet of workbook.worksheets) {
+        const sheetText = [];
+        const sheetJson = [];
+
+        worksheet.eachRow((row, rowNumber) => {
+          const rowValues = row.values.slice(1); // exceljs row.values is 1-indexed
+          sheetText.push(rowValues.join(','));
+          if (rowNumber === 1) return; // Skip header for JSON
+          sheetJson.push(rowValues);
+        });
+
+        text += `\n\n=== Sheet: ${worksheet.name} ===\n${sheetText.join('\n')}`;
+        sheetsData[worksheet.name] = sheetJson;
+      }
     } else {
       // Load specific sheet or first sheet
-      const sheetName = options.sheetName || workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      text = XLSX.utils.sheet_to_csv(sheet);
-      sheetsData[sheetName] = XLSX.utils.sheet_to_json(sheet);
+      const worksheet = options.sheetName
+        ? workbook.getWorksheet(options.sheetName)
+        : workbook.worksheets[0];
+
+      if (!worksheet) {
+        throw new Error(`Sheet "${options.sheetName}" not found`);
+      }
+
+      const sheetText = [];
+      const sheetJson = [];
+
+      worksheet.eachRow((row, rowNumber) => {
+        const rowValues = row.values.slice(1);
+        sheetText.push(rowValues.join(','));
+        if (rowNumber === 1) return;
+        sheetJson.push(rowValues);
+      });
+
+      text = sheetText.join('\n');
+      sheetsData[worksheet.name] = sheetJson;
     }
 
     return {
@@ -114,14 +139,14 @@ export async function loadExcel(filePath, options = {}) {
         fileName: path.basename(filePath),
         filePath,
         format: 'excel',
-        sheetNames: workbook.SheetNames,
+        sheetNames,
         ...options.meta
       },
       sheets: sheetsData
     };
   } catch (err) {
     if (err.code === 'ERR_MODULE_NOT_FOUND') {
-      throw new Error('Excel support requires: npm install xlsx');
+      throw new Error('Excel support requires: npm install exceljs');
     }
     throw err;
   }
@@ -263,7 +288,7 @@ export async function loadDirectory(dirPath, options = {}) {
   } = options;
 
   const documents = [];
-  
+
   async function scanDir(dir) {
     const entries = await fs.readdir(dir, { withFileTypes: true });
 

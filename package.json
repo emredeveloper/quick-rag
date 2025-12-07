@@ -86,12 +86,12 @@
   },
   "optionalDependencies": {
     "better-sqlite3": "^11.10.0",
+    "exceljs": "^4.4.0",
     "mammoth": "^1.11.0",
     "node-fetch": "^3.3.2",
     "officeparser": "^5.2.1",
     "pdf-parse": "^1.1.4",
     "pino": "^8.19.0",
-    "pino-pretty": "^10.3.1",
-    "xlsx": "^0.18.5"
+    "pino-pretty": "^10.3.1"
   }
 }
