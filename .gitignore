@@ -90,3 +90,6 @@ $RECYCLE.BIN/
 *.db-wal
 rag-*.db
 test-store.db
+
+# Test outputs
+test-output.txt

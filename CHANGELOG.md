@@ -377,7 +377,7 @@ Thank you to the community for requesting persistent storage and better error ha
 
 ---
 
-## [2.0.3] - 2025-01-XX 🚀
+## [2.0.3] - 2025-01-15 🚀
 
 ### ✨ Performance Improvements & Bug Fixes
 - ✅ **Batch Embedding Support** - `InMemoryVectorStore.addDocuments()` now processes embeddings in batches to prevent overwhelming the server
@@ -407,7 +407,7 @@ await store.addDocuments(largeChunks, {
 - Fixed CORS issues in browser embedding
 - Improved connection error handling
 
-## [2.0.2] - 2025-01-XX 🚀
+## [2.0.2] - 2025-01-10 🚀
 
 ### ✨ New Features & Improvements
 - ✅ **Progress Callback Support** - `addDocument` and `addDocuments` now support `onProgress` callback for tracking embedding progress
@@ -434,7 +434,7 @@ await store.addDocument(largeDoc, {
 });
 ```
 
-## [2.0.1] - 2025-01-XX 🔧
+## [2.0.1] - 2025-01-05 🔧
 
 ### 🐛 Bug Fixes & Improvements
 - ✅ Fixed npm package dependencies resolution
@@ -442,7 +442,7 @@ await store.addDocument(largeDoc, {
 - ✅ Enhanced error messages for missing dependencies
 - ✅ Updated documentation for npm installation
 
-## [2.0.0] - 2025-01-XX 🎉
+## [2.0.0] - 2025-01-01 🎉
 
 ### 🎊 Major Release - Production-Ready v2.0
 
