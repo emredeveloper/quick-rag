@@ -77,11 +77,10 @@
   },
   "dependencies": {
     "@lmstudio/sdk": "^1.5.0",
-    "ollama": "^0.6.2",
-    "pino": "^8.19.0",
-    "pino-pretty": "^10.3.1"
+    "ollama": "^0.6.2"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.5",
     "typescript": "^5.3.3"
   },
@@ -91,6 +90,8 @@
     "node-fetch": "^3.3.2",
     "officeparser": "^5.2.1",
     "pdf-parse": "^1.1.4",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1",
     "xlsx": "^0.18.5"
   }
 }
