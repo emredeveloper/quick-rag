@@ -114,10 +114,31 @@ export class AbstractVectorStore {
 /**
  * Factory function to create vector stores
  * 
- * @param {string} type - Store type: 'memory', 'sqlite'
+ * @param {string} type - Store type: 'memory', 'sqlite', 'chroma', 'qdrant'
  * @param {Function} embeddingFn - Embedding function
  * @param {Object} options - Store-specific options
- * @returns {AbstractVectorStore} Vector store instance
+ * @returns {Promise<AbstractVectorStore>} Vector store instance
+ * 
+ * @example
+ * // In-memory store
+ * const memoryStore = await createVectorStore('memory', embedFn);
+ * 
+ * // SQLite store
+ * const sqliteStore = await createVectorStore('sqlite', embedFn, { dbPath: './data.db' });
+ * 
+ * // Chroma store (requires: npm install chromadb)
+ * const chromaStore = await createVectorStore('chroma', embedFn, {
+ *   collectionName: 'my-docs',
+ *   host: 'localhost',
+ *   port: 8000
+ * });
+ * 
+ * // Qdrant store (requires: npm install @qdrant/js-client-rest)
+ * const qdrantStore = await createVectorStore('qdrant', embedFn, {
+ *   collectionName: 'my-docs',
+ *   host: 'localhost',
+ *   port: 6333
+ * });
  */
 export async function createVectorStore(type, embeddingFn, options = {}) {
     switch (type.toLowerCase()) {
@@ -135,7 +156,21 @@ export async function createVectorStore(type, embeddingFn, options = {}) {
             return new SQLiteVectorStore(options.dbPath, embeddingFn, options);
         }
 
+        case 'chroma': {
+            const { ChromaVectorStore } = await import('./chromaStore.js');
+            const store = new ChromaVectorStore(embeddingFn, options);
+            await store.initialize();
+            return store;
+        }
+
+        case 'qdrant': {
+            const { QdrantVectorStore } = await import('./qdrantStore.js');
+            const store = new QdrantVectorStore(embeddingFn, options);
+            await store.initialize();
+            return store;
+        }
+
         default:
-            throw new VectorStoreError(`Unknown vector store type: ${type}`);
+            throw new VectorStoreError(`Unknown vector store type: ${type}. Supported: memory, sqlite, chroma, qdrant`);
     }
 }

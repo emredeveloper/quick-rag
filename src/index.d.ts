@@ -510,3 +510,409 @@ export class SmartRetriever {
 }
 
 export function createSmartRetriever(retriever: Retriever, options?: SmartRetrieverOptions): SmartRetriever;
+
+// ==================== Caching (v2.3.0+) ====================
+
+export interface LRUCacheOptions {
+  maxSize?: number;
+  defaultTTL?: number;
+  updateAgeOnGet?: boolean;
+  onEvict?: (key: string, value: any) => void;
+}
+
+export interface CacheStats {
+  hits: number;
+  misses: number;
+  evictions: number;
+  size: number;
+  maxSize: number;
+  hitRate: number;
+}
+
+export class LRUCache<T = any> {
+  constructor(options?: LRUCacheOptions);
+  get(key: string): T | undefined;
+  set(key: string, value: T, options?: { ttl?: number }): LRUCache<T>;
+  has(key: string): boolean;
+  delete(key: string): boolean;
+  clear(): void;
+  readonly size: number;
+  keys(): string[];
+  values(): T[];
+  getStats(): CacheStats;
+  prune(): number;
+  getOrSet(key: string, factory: () => Promise<T>, options?: { ttl?: number }): Promise<T>;
+  toJSON(): object;
+  static fromJSON<T>(data: object): LRUCache<T>;
+}
+
+export interface EmbeddingCacheOptions {
+  maxSize?: number;
+  ttl?: number;
+  hashAlgorithm?: string;
+  normalizeText?: boolean;
+}
+
+export interface EmbeddingCacheStats extends CacheStats {
+  embeddings: number;
+  cacheHits: number;
+  cacheMisses: number;
+  estimatedLatencySaved: string;
+}
+
+export class EmbeddingCache {
+  constructor(options?: EmbeddingCacheOptions);
+  generateKey(text: string): string;
+  get(text: string): number[] | undefined;
+  set(text: string, embedding: number[], options?: { ttl?: number }): void;
+  has(text: string): boolean;
+  wrap(embeddingFn: EmbeddingFunction): EmbeddingFunction;
+  wrapBatch(embeddingFn: EmbeddingFunction): (texts: string[]) => Promise<number[][]>;
+  precompute(texts: string[], embeddingFn: EmbeddingFunction, options?: { batchSize?: number; onProgress?: (current: number, total: number) => void }): Promise<void>;
+  getStats(): EmbeddingCacheStats;
+  clear(): void;
+  readonly size: number;
+  toJSON(): object;
+  static fromJSON(data: object): EmbeddingCache;
+}
+
+export interface QueryCacheOptions {
+  maxSize?: number;
+  ttl?: number;
+  cacheMetadata?: boolean;
+}
+
+export class QueryCache {
+  constructor(options?: QueryCacheOptions);
+  generateKey(query: string, options?: object): string;
+  get(query: string, options?: object): Document[] | undefined;
+  set(query: string, results: Document[], options?: object): void;
+  has(query: string, options?: object): boolean;
+  invalidate(predicate: (query: string) => boolean): void;
+  wrap(retrieverFn: (query: string, options?: object) => Promise<Document[]>): (query: string, options?: object) => Promise<Document[]>;
+  getStats(): CacheStats;
+  clear(): void;
+  readonly size: number;
+}
+
+export interface CacheManagerOptions {
+  embeddings?: EmbeddingCacheOptions;
+  queries?: QueryCacheOptions;
+  responses?: LRUCacheOptions;
+  general?: LRUCacheOptions;
+  enabled?: boolean;
+}
+
+export interface CacheManagerStats {
+  enabled: boolean;
+  embeddings: EmbeddingCacheStats;
+  queries: CacheStats;
+  responses: CacheStats;
+  general: CacheStats;
+}
+
+export class CacheManager {
+  constructor(options?: CacheManagerOptions);
+  embeddings: EmbeddingCache;
+  queries: QueryCache;
+  responses: LRUCache;
+  general: LRUCache;
+  wrapEmbedding(embeddingFn: EmbeddingFunction): EmbeddingFunction;
+  wrapRetriever(retrieverFn: (query: string, options?: object) => Promise<Document[]>): (query: string, options?: object) => Promise<Document[]>;
+  getResponse(key: string): any;
+  setResponse(key: string, value: any, options?: { ttl?: number }): void;
+  get(key: string): any;
+  set(key: string, value: any, options?: { ttl?: number }): void;
+  getStats(): CacheManagerStats;
+  clearAll(): void;
+  clear(type: 'embeddings' | 'queries' | 'responses' | 'general'): void;
+  enable(): void;
+  disable(): void;
+  prune(): { embeddings: number; queries: number; responses: number; general: number };
+  toJSON(): object;
+  static fromJSON(data: object): CacheManager;
+}
+
+// ==================== Conversation Management (v2.3.0+) ====================
+
+export interface Message {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: number;
+  metadata?: Record<string, any>;
+  tokenCount?: number;
+}
+
+export interface ConversationManagerOptions {
+  id?: string;
+  maxTokens?: number;
+  reservedTokens?: number;
+  autoSummarize?: boolean;
+  systemPrompt?: string;
+  tokenCounter?: (text: string) => number;
+  summarizer?: (history: string) => Promise<string>;
+}
+
+export interface TokenUsage {
+  total: number;
+  contextWindow: number;
+  maxTokens: number;
+  reservedTokens: number;
+  availableTokens: number;
+  utilization: number;
+  isOverLimit: boolean;
+}
+
+export interface ConversationStats extends TokenUsage {
+  id: string;
+  messageCount: number;
+  userMessages: number;
+  assistantMessages: number;
+  hasSummary: boolean;
+  hasSystemPrompt: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export class ConversationManager {
+  constructor(options?: ConversationManagerOptions);
+  id: string;
+  messages: Message[];
+  summary: string | null;
+  systemPrompt: string | null;
+  addMessage(role: 'user' | 'assistant' | 'system', content: string, metadata?: Record<string, any>): Message;
+  addUserMessage(content: string, metadata?: Record<string, any>): Message;
+  addAssistantMessage(content: string, metadata?: Record<string, any>): Message;
+  addSystemMessage(content: string): Message;
+  getContext(options?: { maxTokens?: number; includeSystem?: boolean }): Array<{ role: string; content: string }>;
+  getFormattedHistory(options?: { separator?: string; rolePrefix?: boolean }): string;
+  getLastMessages(n: number): Message[];
+  getMessage(id: string): Message | null;
+  updateMessage(id: string, newContent: string): boolean;
+  deleteMessage(id: string): boolean;
+  clear(keepSummary?: boolean): void;
+  setSystemPrompt(prompt: string): void;
+  setSummary(summary: string): void;
+  summarize(summarizer?: (history: string) => Promise<string>): Promise<string>;
+  getTokenUsage(): TokenUsage;
+  getStats(): ConversationStats;
+  fork(): ConversationManager;
+  toJSON(): object;
+  static fromJSON(data: object, options?: ConversationManagerOptions): ConversationManager;
+}
+
+export interface ContextWindowOptions {
+  maxTokens?: number;
+  reservedTokens?: number;
+  tokenCounter?: (text: string) => number;
+}
+
+export interface ContextUtilization {
+  usedTokens: number;
+  availableTokens: number;
+  maxTokens: number;
+  reservedTokens: number;
+  utilization: number;
+  remaining: number;
+  fits: boolean;
+}
+
+export class ContextWindow {
+  constructor(options?: ContextWindowOptions);
+  readonly availableTokens: number;
+  countTokens(text: string): number;
+  fits(content: string | string[]): boolean;
+  truncate(text: string, maxTokens?: number): string;
+  fitItems(items: Array<{ content: string; priority?: number }>): string[];
+  buildContext(messages: Array<{ role: string; content: string }>, options?: { systemFirst?: boolean }): Array<{ role: string; content: string }>;
+  getUtilization(content: string | string[]): ContextUtilization;
+}
+
+export const tokenCounters: {
+  simple: (text: string) => number;
+  wordBased: (text: string) => number;
+  gptApprox: (text: string) => number;
+};
+
+export const modelContextLimits: Record<string, number>;
+
+export function getContextLimit(model: string): number;
+
+export function createSummarizer(client: any, options?: { model?: string; prompt?: string }): (history: string) => Promise<string>;
+
+export function extractiveSummarize(text: string, options?: { maxSentences?: number; maxLength?: number }): string;
+
+export function summarizeByRoles(messages: Array<{ role: string; content: string }>, options?: object): string;
+
+export class ProgressiveSummarizer {
+  constructor(options?: { summarizer?: (text: string) => Promise<string>; maxHistoryLength?: number });
+  currentSummary: string;
+  addText(text: string): void;
+  addMessage(role: string, content: string): void;
+  needsSummarization(): boolean;
+  summarizeIfNeeded(): Promise<string | null>;
+  summarize(): Promise<string>;
+  getContext(): string;
+  reset(): void;
+}
+
+// ==================== RAG Evaluation (v2.3.0+) ====================
+
+export function precisionAtK(retrieved: string[], relevant: string[], k: number): number;
+export function recallAtK(retrieved: string[], relevant: string[], k: number): number;
+export function f1AtK(retrieved: string[], relevant: string[], k: number): number;
+export function meanReciprocalRank(retrieved: string[], relevant: string[]): number;
+export function averageMRR(queries: Array<{ retrieved: string[]; relevant: string[] }>): number;
+export function dcg(relevanceScores: number[], k: number): number;
+export function ndcgAtK(retrieved: string[], relevanceMap: Record<string, number>, k: number): number;
+export function ndcgAtKBinary(retrieved: string[], relevant: string[], k: number): number;
+export function averagePrecision(retrieved: string[], relevant: string[]): number;
+export function meanAveragePrecision(queries: Array<{ retrieved: string[]; relevant: string[] }>): number;
+export function hitAtK(retrieved: string[], relevant: string[], k: number): number;
+export function averageHitRate(queries: Array<{ retrieved: string[]; relevant: string[] }>, k: number): number;
+
+export interface MetricsResult {
+  mrr: number;
+  ap: number;
+  [key: string]: number;
+}
+
+export function calculateAllMetrics(retrieved: string[], relevant: string[], options?: { kValues?: number[]; relevanceScores?: Record<string, number> }): MetricsResult;
+export function calculateAggregateMetrics(queries: Array<{ retrieved: string[]; relevant: string[] }>, options?: { kValues?: number[] }): MetricsResult;
+
+export interface EvaluationQuery {
+  query: string;
+  relevantDocs: string[];
+  relevanceScores?: Record<string, number>;
+}
+
+export interface EvaluationSummary {
+  overallScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  recommendations: string[];
+}
+
+export interface EvaluationResult {
+  metrics: MetricsResult;
+  queryResults: Array<{
+    query: string;
+    retrieved: string[];
+    relevant: string[];
+    metrics: MetricsResult;
+    retrievedDocs: Array<{ id: string; score: number; isRelevant: boolean }>;
+  }>;
+  summary: EvaluationSummary;
+}
+
+export interface RAGEvaluatorOptions {
+  kValues?: number[];
+  includePerQuery?: boolean;
+}
+
+export class RAGEvaluator {
+  constructor(retriever: Retriever, options?: RAGEvaluatorOptions);
+  evaluate(testQueries: EvaluationQuery[], options?: { onProgress?: (current: number, total: number, metrics: MetricsResult) => void; retrievalOptions?: object }): Promise<EvaluationResult>;
+  quickEvaluate(testQueries: EvaluationQuery[], metric?: string): Promise<number>;
+  static compare(retrieverA: Retriever, retrieverB: Retriever, testQueries: EvaluationQuery[], options?: RAGEvaluatorOptions): Promise<{
+    retrieverA: MetricsResult;
+    retrieverB: MetricsResult;
+    differences: Record<string, { absolute: number; relative: number }>;
+    winner: Record<string, 'A' | 'B' | 'tie'>;
+  }>;
+}
+
+export function evaluateRetrieval(retriever: Retriever, testQueries: EvaluationQuery[], options?: RAGEvaluatorOptions): Promise<EvaluationResult>;
+
+export interface BenchmarkResult {
+  name: string;
+  metrics: MetricsResult;
+  summary: EvaluationSummary;
+  latency: {
+    average: number;
+    min: number;
+    max: number;
+    p95: number;
+  };
+  throughput: number;
+}
+
+export class BenchmarkRunner {
+  constructor();
+  addRetriever(name: string, retriever: Retriever): BenchmarkRunner;
+  removeRetriever(name: string): BenchmarkRunner;
+  run(testQueries: EvaluationQuery[], options?: { kValues?: number[] }): Promise<BenchmarkResult[]>;
+  runComparison(testQueries: EvaluationQuery[]): Promise<{
+    results: BenchmarkResult[];
+    rankings: Record<string, Array<{ rank: number; name: string; value: number }>>;
+    overall: Array<{ name: string; score: number; latency: number }>;
+    fastest: string;
+  }>;
+  printReport(results: BenchmarkResult[]): void;
+  exportJSON(results: BenchmarkResult[]): string;
+}
+
+export function createTestDataset(documents: Document[], options?: { queriesPerDoc?: number }): EvaluationQuery[];
+
+// ==================== Vector Store Adapters (v2.3.0+) ====================
+
+export interface ChromaStoreOptions extends VectorStoreOptions {
+  collectionName?: string;
+  host?: string;
+  port?: number;
+  path?: string;
+  metadata?: Record<string, any>;
+  distanceFunction?: 'cosine' | 'l2' | 'ip';
+}
+
+export class ChromaVectorStore {
+  constructor(embeddingFn: EmbeddingFunction, options?: ChromaStoreOptions);
+  initialize(): Promise<void>;
+  addDocument(doc: Document): Promise<boolean>;
+  addDocuments(docs: Document[], options?: AddDocumentsOptions): Promise<boolean>;
+  similaritySearch(query: string, k?: number, options?: { filter?: Record<string, any> }): Promise<Document[]>;
+  getDocument(id: string): Promise<Document | null>;
+  updateDocument(id: string, newText: string, newMeta?: Record<string, any>): Promise<boolean>;
+  deleteDocument(id: string): Promise<boolean>;
+  deleteWhere(filter: Record<string, any>): Promise<number>;
+  getStats(): Promise<{ documentCount: number; collectionName: string; distanceFunction: string; host: string; port: number }>;
+  clear(): Promise<void>;
+  listCollections(): Promise<string[]>;
+  switchCollection(collectionName: string): Promise<void>;
+  close(): Promise<void>;
+}
+
+export interface QdrantStoreOptions extends VectorStoreOptions {
+  collectionName?: string;
+  host?: string;
+  port?: number;
+  apiKey?: string;
+  https?: boolean;
+  vectorSize?: number;
+  distance?: 'Cosine' | 'Euclid' | 'Dot';
+}
+
+export class QdrantVectorStore {
+  constructor(embeddingFn: EmbeddingFunction, options?: QdrantStoreOptions);
+  initialize(): Promise<void>;
+  addDocument(doc: Document): Promise<boolean>;
+  addDocuments(docs: Document[], options?: AddDocumentsOptions): Promise<boolean>;
+  similaritySearch(query: string, k?: number, options?: { filter?: Record<string, any>; scoreThreshold?: number }): Promise<Document[]>;
+  getDocument(id: string): Promise<Document | null>;
+  updateDocument(id: string, newText: string, newMeta?: Record<string, any>): Promise<boolean>;
+  deleteDocument(id: string): Promise<boolean>;
+  deleteWhere(filter: Record<string, any>): Promise<void>;
+  getStats(): Promise<{ documentCount: number; vectorCount: number; collectionName: string; vectorSize: number; distance: string; status: string }>;
+  clear(): Promise<void>;
+  listCollections(): Promise<string[]>;
+  close(): Promise<void>;
+}
+
+export type VectorStoreType = 'memory' | 'inmemory' | 'sqlite' | 'chroma' | 'qdrant';
+
+export function createVectorStore(type: 'memory' | 'inmemory', embeddingFn: EmbeddingFunction, options?: VectorStoreOptions): Promise<InMemoryVectorStore>;
+export function createVectorStore(type: 'sqlite', embeddingFn: EmbeddingFunction, options: VectorStoreOptions & { dbPath: string }): Promise<any>;
+export function createVectorStore(type: 'chroma', embeddingFn: EmbeddingFunction, options?: ChromaStoreOptions): Promise<ChromaVectorStore>;
+export function createVectorStore(type: 'qdrant', embeddingFn: EmbeddingFunction, options?: QdrantStoreOptions): Promise<QdrantVectorStore>;
+export function createVectorStore(type: VectorStoreType, embeddingFn: EmbeddingFunction, options?: VectorStoreOptions): Promise<InMemoryVectorStore | ChromaVectorStore | QdrantVectorStore | any>;

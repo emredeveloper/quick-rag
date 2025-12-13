@@ -79,6 +79,14 @@ export {
 // Persistent Vector Stores (v2.1.0+)
 export { SQLiteVectorStore } from './stores/sqliteStore.js';
 
+// Vector Store Factory & Adapters (v2.3.0+)
+export { 
+  AbstractVectorStore, 
+  createVectorStore 
+} from './stores/abstractStore.js';
+export { ChromaVectorStore } from './stores/chromaStore.js';
+export { QdrantVectorStore } from './stores/qdrantStore.js';
+
 // Advanced Search (v2.2.0+)
 export { 
   BM25,
@@ -97,3 +105,48 @@ export {
   QueryDecomposer,
   MultiQueryGenerator
 } from './query/index.js';
+
+// Caching Layer (v2.3.0+)
+export {
+  LRUCache,
+  EmbeddingCache,
+  QueryCache,
+  CacheManager
+} from './cache/index.js';
+
+// Conversation Management (v2.3.0+)
+export {
+  ConversationManager,
+  ContextWindow,
+  tokenCounters,
+  modelContextLimits,
+  getContextLimit,
+  createSummarizer,
+  extractiveSummarize,
+  summarizeByRoles,
+  ProgressiveSummarizer
+} from './conversation/index.js';
+
+// RAG Evaluation (v2.3.0+)
+export {
+  // Metrics
+  precisionAtK,
+  recallAtK,
+  f1AtK,
+  meanReciprocalRank,
+  averageMRR,
+  ndcgAtK,
+  ndcgAtKBinary,
+  averagePrecision,
+  meanAveragePrecision,
+  hitAtK,
+  averageHitRate,
+  calculateAllMetrics,
+  calculateAggregateMetrics,
+  // Evaluator
+  RAGEvaluator,
+  evaluateRetrieval,
+  // Benchmark
+  BenchmarkRunner,
+  createTestDataset
+} from './evaluation/index.js';

@@ -1,5 +1,185 @@
 # Changelog
 
+## [2.3.0] - 2025-12-13 🚀 Caching, Conversation Management & Evaluation
+
+### 🚀 Major Features
+
+**Caching Layer**
+- ✅ **LRUCache** - High-performance LRU cache with TTL support
+  - Configurable max size and TTL
+  - Cache statistics and hit rate tracking
+  - Automatic eviction of least recently used items
+  - Export/import for persistence
+- ✅ **EmbeddingCache** - Specialized cache for vector embeddings
+  - Content-addressable storage with SHA-256 hashing
+  - Text normalization for better cache hits
+  - Batch embedding support
+  - Precompute embeddings for common terms
+- ✅ **QueryCache** - Cache for retrieval results
+  - Query + options based cache keys
+  - Configurable TTL (default: 30 minutes)
+  - Wrap retriever functions automatically
+- ✅ **CacheManager** - Unified cache management
+  - Single interface for all cache types
+  - Enable/disable caching globally
+  - Comprehensive statistics
+
+**Conversation Management**
+- ✅ **ConversationManager** - Full conversation history management
+  - Context window token management
+  - Automatic summarization when limit reached
+  - Message CRUD operations
+  - Fork conversations for branching
+  - Export/import conversation state
+- ✅ **ContextWindow** - Token limit management utilities
+  - Multiple token counting strategies
+  - Model-specific context limits (GPT-4, Claude, Llama, etc.)
+  - Content truncation and fitting
+- ✅ **Summarization utilities**
+  - LLM-based summarization with customizable prompts
+  - Extractive summarization (no LLM required)
+  - Progressive summarization for long conversations
+
+**RAG Evaluation Framework**
+- ✅ **Metrics** - Standard IR evaluation metrics
+  - Precision@K, Recall@K, F1@K
+  - Mean Reciprocal Rank (MRR)
+  - Normalized Discounted Cumulative Gain (NDCG)
+  - Mean Average Precision (MAP)
+  - Hit Rate@K
+- ✅ **RAGEvaluator** - Comprehensive evaluation
+  - Per-query and aggregate metrics
+  - Human-readable summaries with recommendations
+  - Compare two retrievers side-by-side
+- ✅ **BenchmarkRunner** - Performance benchmarking
+  - Latency measurement (avg, min, max, p95)
+  - Throughput calculation
+  - Multi-retriever comparison
+  - Formatted console reports
+
+**Vector Database Connectors**
+- ✅ **ChromaVectorStore** - Integration with ChromaDB
+  - Full CRUD operations
+  - Metadata filtering
+  - Collection management
+  - Requires: `npm install chromadb`
+- ✅ **QdrantVectorStore** - Integration with Qdrant
+  - Full CRUD operations
+  - Range and IN filters
+  - Score threshold support
+  - Requires: `npm install @qdrant/js-client-rest`
+- ✅ **createVectorStore()** - Factory function for all stores
+  - Supports: memory, sqlite, chroma, qdrant
+  - Unified API for store creation
+
+### 📚 New Files
+
+**Cache Module:**
+- `src/cache/LRUCache.js` - LRU cache implementation (~260 lines)
+- `src/cache/EmbeddingCache.js` - Embedding cache (~230 lines)
+- `src/cache/QueryCache.js` - Query result cache (~170 lines)
+- `src/cache/CacheManager.js` - Unified manager (~200 lines)
+- `src/cache/index.js` - Module exports
+
+**Conversation Module:**
+- `src/conversation/ConversationManager.js` - Conversation management (~400 lines)
+- `src/conversation/contextWindow.js` - Context utilities (~220 lines)
+- `src/conversation/summarizer.js` - Summarization utilities (~250 lines)
+- `src/conversation/index.js` - Module exports
+
+**Evaluation Module:**
+- `src/evaluation/metrics.js` - IR metrics (~280 lines)
+- `src/evaluation/evaluator.js` - RAG evaluator (~250 lines)
+- `src/evaluation/benchmark.js` - Benchmarking (~200 lines)
+- `src/evaluation/index.js` - Module exports
+
+**Vector Store Adapters:**
+- `src/stores/chromaStore.js` - Chroma adapter (~350 lines)
+- `src/stores/qdrantStore.js` - Qdrant adapter (~350 lines)
+
+**Examples:**
+- `example/17-caching-layer.js` - Caching demonstration
+- `example/18-conversation-manager.js` - Conversation management
+- `example/19-rag-evaluation.js` - Evaluation and benchmarking
+- `example/20-vector-database-connectors.js` - External vector DBs
+
+### 🔧 API Changes
+
+**New Exports (v2.3.0+):**
+```javascript
+// Caching Layer
+import { 
+  LRUCache,
+  EmbeddingCache,
+  QueryCache,
+  CacheManager
+} from 'quick-rag';
+
+// Conversation Management
+import {
+  ConversationManager,
+  ContextWindow,
+  tokenCounters,
+  modelContextLimits,
+  getContextLimit,
+  createSummarizer,
+  extractiveSummarize,
+  ProgressiveSummarizer
+} from 'quick-rag';
+
+// RAG Evaluation
+import {
+  precisionAtK,
+  recallAtK,
+  meanReciprocalRank,
+  ndcgAtK,
+  RAGEvaluator,
+  evaluateRetrieval,
+  BenchmarkRunner,
+  createTestDataset
+} from 'quick-rag';
+
+// Vector Store Factory & Adapters
+import {
+  createVectorStore,
+  ChromaVectorStore,
+  QdrantVectorStore
+} from 'quick-rag';
+```
+
+### 💡 Usage Examples
+
+**Caching:**
+```javascript
+const cache = new CacheManager({
+  embeddings: { maxSize: 5000 },
+  queries: { ttl: 30 * 60 * 1000 }
+});
+const cachedEmbed = cache.wrapEmbedding(embedFn);
+```
+
+**Conversation:**
+```javascript
+const conversation = new ConversationManager({ maxTokens: 4096 });
+conversation.addUserMessage('Hello!');
+const context = conversation.getContext();
+```
+
+**Evaluation:**
+```javascript
+const results = await evaluateRetrieval(retriever, testQueries);
+console.log(results.metrics.mrr); // 0.85
+```
+
+**Vector Stores:**
+```javascript
+const store = await createVectorStore('chroma', embedFn, {
+  collectionName: 'my-docs'
+});
+```
+
+---
+
 ## [2.2.0] - 2025-12-01 🚀 Advanced Search & Query Transformation
 
 ### 🚀 Major Features - Phase 1: Advanced RAG

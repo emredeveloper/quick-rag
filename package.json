@@ -1,7 +1,7 @@
 {
   "name": "quick-rag",
-  "version": "2.2.3",
-  "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs with Hybrid Search, Reranking & Query Transformation",
+  "version": "2.3.0",
+  "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs with Hybrid Search, Reranking, Query Transformation, Caching, Conversation Management & Evaluation",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "type": "module",
@@ -47,7 +47,13 @@
     "hybrid-search",
     "reranking",
     "query-expansion",
-    "reciprocal-rank-fusion"
+    "reciprocal-rank-fusion",
+    "caching",
+    "conversation-manager",
+    "rag-evaluation",
+    "chromadb",
+    "qdrant",
+    "vector-database"
   ],
   "scripts": {
     "test": "node test/run-tests.js",
@@ -86,6 +92,8 @@
   },
   "optionalDependencies": {
     "better-sqlite3": "^11.10.0",
+    "chromadb": "^1.9.0",
+    "@qdrant/js-client-rest": "^1.12.0",
     "exceljs": "^4.4.0",
     "mammoth": "^1.11.0",
     "node-fetch": "^3.3.2",

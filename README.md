@@ -6,11 +6,17 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.2.0 Released!** Advanced Search with BM25, Hybrid Retrieval, Reranking & Query Transformation! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.3.0 Released!** Caching, Conversation Management, RAG Evaluation & Vector DB Connectors! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
 
-### 🆕 v2.2.0 - Advanced Search
+### 🆕 v2.3.0 - Performance & Evaluation
+- 🚀 **Caching Layer** - LRU cache, embedding cache, query cache for 10x speedup
+- 💬 **Conversation Manager** - Context window management & auto-summarization
+- 📊 **RAG Evaluation** - Precision@K, Recall, MRR, NDCG metrics
+- 🗄️ **Vector DB Connectors** - ChromaDB & Qdrant adapters
+
+### 🔍 v2.2.0 - Advanced Search
 - 🔍 **BM25 Sparse Search** - Pure JS keyword-based retrieval (no dependencies!)
 - 🔀 **Hybrid Search** - Combines BM25 + Vector with RRF fusion (20-30% better retrieval)
 - 📊 **Reranking** - Multi-signal scoring (keyword, semantic, coverage, coherence)
@@ -46,11 +52,95 @@ npm install quick-rag
 # For embedded persistence
 npm install better-sqlite3
 
-# For logging
-npm install pino pino-pretty
+# For vector databases (optional)
+npm install chromadb @qdrant/js-client-rest
 ```
 
-## 🆕 What's New in v2.2.0
+## 🆕 What's New in v2.3.0
+
+### 🚀 Caching Layer
+Speed up repeated operations with intelligent caching:
+
+```javascript
+import { CacheManager, EmbeddingCache } from 'quick-rag';
+
+// Unified cache manager
+const cache = new CacheManager({
+  embeddings: { maxSize: 5000, ttl: 3600000 }, // 1 hour
+  queries: { maxSize: 500, ttl: 1800000 }      // 30 min
+});
+
+// Wrap embedding function for automatic caching
+const cachedEmbed = cache.wrapEmbedding(embedFn);
+
+// Check statistics
+console.log(cache.getStats());
+// { embeddings: { size: 100, cacheHits: 450, cacheMisses: 50, hitRate: 0.9 } }
+```
+
+### 💬 Conversation Manager
+Manage chat history with context window limits:
+
+```javascript
+import { ConversationManager, getContextLimit } from 'quick-rag';
+
+const conversation = new ConversationManager({
+  maxTokens: getContextLimit('llama3'), // 8192
+  autoSummarize: true,
+  systemPrompt: 'You are a helpful assistant.'
+});
+
+conversation.addMessage('user', 'What is RAG?');
+conversation.addMessage('assistant', 'RAG stands for...');
+
+// Get context for LLM (respects token limits)
+const context = conversation.getContext();
+
+// Fork, export, or summarize
+const forked = conversation.fork();
+const json = conversation.toJSON();
+```
+
+### 📊 RAG Evaluation
+Measure retrieval quality with standard metrics:
+
+```javascript
+import { precisionAtK, meanReciprocalRank, RAGEvaluator } from 'quick-rag';
+
+// Individual metrics
+const retrieved = ['doc1', 'doc4', 'doc2'];
+const relevant = ['doc1', 'doc2', 'doc3'];
+
+console.log(precisionAtK(retrieved, relevant, 3));  // 0.667
+console.log(meanReciprocalRank(retrieved, relevant)); // 1.0
+
+// Full evaluation
+const evaluator = new RAGEvaluator(retriever);
+const results = await evaluator.evaluate(testQueries);
+console.log(results.metrics); // { precision, recall, mrr, ndcg }
+```
+
+### 🗄️ Vector Database Connectors
+Connect to external vector databases:
+
+```javascript
+import { createVectorStore, ChromaVectorStore, QdrantVectorStore } from 'quick-rag';
+
+// Factory pattern
+const store = await createVectorStore('chroma', embedFn, {
+  collectionName: 'my-docs',
+  host: 'localhost',
+  port: 8000
+});
+
+// Or direct usage
+const qdrant = new QdrantVectorStore(embedFn, {
+  url: 'http://localhost:6333',
+  collectionName: 'documents'
+});
+```
+
+## 🔍 What's in v2.2.0
 
 ### 🔍 BM25 Sparse Search
 Pure JavaScript implementation - no external dependencies!
