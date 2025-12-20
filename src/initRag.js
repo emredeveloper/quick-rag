@@ -22,6 +22,10 @@ export async function initRAG(docs, options = {}) {
       model: baseEmbeddingOptions.model,
       headers: baseEmbeddingOptions.headers
     });
+  } else if (baseEmbeddingOptions.provider === 'lmstudio' || (baseEmbeddingOptions.baseUrl && baseEmbeddingOptions.baseUrl.includes('localhost'))) {
+    // Auto-detect LM Studio if provider explicit or localhost URL looks like one
+    const { createLMStudioEmbedding } = await import('./embeddings/lmstudioEmbedding.js');
+    baseEmbedding = createLMStudioEmbedding(baseEmbeddingOptions);
   } else {
     const { createOllamaEmbedding } = await import('./embeddings/ollamaEmbedding.js');
     baseEmbedding = createOllamaEmbedding(baseEmbeddingOptions);

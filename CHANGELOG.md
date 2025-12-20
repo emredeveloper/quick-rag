@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.4] - 2025-12-20
+
+### Fixed
+- **MRL Dimensions**: Fixed logic in `createMRL` to correctly slice embeddings to the requested dimensionality. Previously it might return the full dimension vector.
+- **initRAG Compatibility**: Added support for **LM Studio** in `initRAG` via `baseEmbeddingOptions.provider: 'lmstudio'`. It also auto-detects localhost URLs.
+
 ## [2.4.3] - 2025-12-20
 
 ### Fixed

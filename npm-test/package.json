@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "quick-rag": "^2.4.2"
+    "quick-rag": "^2.4.3"
   }
 }
