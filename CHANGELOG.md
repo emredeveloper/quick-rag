@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.3] - 2025-12-20
+
+### Fixed
+- **Export Issues**: Fixed missing exports in `index.node.js` and `index.browser.js`. The library now properly exposes `CacheManager`, `ConversationManager`, `HybridRetriever`, `EvaluationMetrics`, and other core modules in Node.js and Browser environments.
+- **NPM Integration**: Verified full package functionality with consumer-side tests.
+
 ## [2.4.1] - 2025-12-20
 
 ### Fixed
