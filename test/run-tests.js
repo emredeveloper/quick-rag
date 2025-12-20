@@ -33,12 +33,12 @@ async function testVectorStore() {
     assert('score' in r, 'result should have score');
     assert(typeof r.score === 'number' && !isNaN(r.score));
   });
-  
+
   // Test addDocument (singular) - v0.6.1
   await store.addDocument({ id: 'd', text: 'dragon fruit exotic' });
   const allDocs = store.getAllDocuments();
   assert(allDocs.length === 4, 'should have 4 docs after addDocument');
-  
+
   console.log('✅ vectorStore tests passed');
 }
 
@@ -57,11 +57,11 @@ async function testRetriever() {
 
 async function run() {
   console.log('🧪 Running Quick RAG Test Suite...\n');
-  
+
   // Core tests (always run)
   await testVectorStore();
   await testRetriever();
-  
+
   // Feature tests
   const { runChunkingTests } = await import('./chunking.test.js');
   const { runRetrieverFilteringTests } = await import('./retriever-filtering.test.js');
@@ -77,7 +77,7 @@ async function run() {
   const { runCreateMRLTests } = await import('./createMRL.test.js');
   const { runRetrieverEdgeCaseTests } = await import('./retriever-edge-cases.test.js');
   const { runVectorStoreEdgeCaseTests } = await import('./vectorStore-edge-cases.test.js');
-  
+
   await runChunkingTests();
   await runRetrieverFilteringTests();
   await runDocumentLoaderTests();
@@ -92,7 +92,10 @@ async function run() {
   await runCreateMRLTests();
   await runRetrieverEdgeCaseTests();
   await runVectorStoreEdgeCaseTests();
-  
+
+  // v2.4.0 Feature Tests
+  await import('./v2.4.0-features.test.js');
+
   // Phase 1: Advanced Search Tests (uses node:test)
   console.log('\n🧪 Running Phase 1 Advanced Search Tests...');
   try {
@@ -100,18 +103,18 @@ async function run() {
     const { pathToFileURL } = await import('node:url');
     const phase1TestPath = join(__dirname, 'phase1-advanced-search.test.js');
     const phase1TestURL = pathToFileURL(phase1TestPath);
-    
-    await runNodeTest({ 
+
+    await runNodeTest({
       files: [phase1TestURL],
       concurrency: false
     });
-    
+
     console.log('✅ Phase 1 Advanced Search tests completed\n');
   } catch (err) {
     console.error('❌ Phase 1 tests failed:', err.message);
     console.warn('⚠️  Continuing with other tests...\n');
   }
-  
+
   // Decision Engine tests (uses node:test)
   console.log('\n🧪 Running Decision Engine Tests...');
   try {
@@ -119,13 +122,13 @@ async function run() {
     const { pathToFileURL } = await import('node:url');
     const decisionEngineTestPath = join(__dirname, 'decisionEngine.test.js');
     const decisionEngineTestURL = pathToFileURL(decisionEngineTestPath);
-    
+
     // Run tests - node:test outputs directly to console, we just need to wait for it
-    await run({ 
+    await run({
       files: [decisionEngineTestURL],
       concurrency: false
     });
-    
+
     // If we get here without exception, tests passed
     console.log('✅ Decision Engine tests completed\n');
   } catch (err) {
@@ -134,7 +137,7 @@ async function run() {
     // Don't throw - let other tests continue, but mark as failed
     console.warn('⚠️  Continuing with other tests...\n');
   }
-  
+
   // Optional integration tests (require Ollama/LM Studio running)
   if (process.env.RUN_INTEGRATION_TESTS === 'true') {
     console.log('🔌 Running Integration Tests (requires Ollama/LM Studio)...\n');
@@ -147,7 +150,7 @@ async function run() {
         console.warn('   Skipping integration tests\n');
         return;
       }
-      
+
       const { runOllamaRAGClientTests } = await import('./ollamaRAGClient.test.js');
       const { runLMStudioRAGClientTests } = await import('./lmstudioRAGClient.test.js');
       const { runGenerateWithRAGTests } = await import('./generateWithRAG.test.js');
@@ -167,7 +170,7 @@ async function run() {
       }
     }
   }
-  
+
   console.log('\n✅ ALL TESTS PASSED!');
   if (process.env.RUN_INTEGRATION_TESTS !== 'true') {
     console.log('\n💡 Tip: Run integration tests with: npm run test:integration');

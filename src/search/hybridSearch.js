@@ -24,7 +24,7 @@ import { BM25 } from './bm25.js';
  */
 function reciprocalRankFusion(rankedLists, k = 60) {
     const scores = new Map();
-    
+
     for (const rankedList of rankedLists) {
         for (let rank = 0; rank < rankedList.length; rank++) {
             const doc = rankedList[rank];
@@ -32,7 +32,7 @@ function reciprocalRankFusion(rankedLists, k = 60) {
             scores.set(doc.id, (scores.get(doc.id) || 0) + rrfScore);
         }
     }
-    
+
     return scores;
 }
 
@@ -47,11 +47,11 @@ function reciprocalRankFusion(rankedLists, k = 60) {
  */
 function linearCombination(denseResults, sparseResults, alpha = 0.5) {
     const scores = new Map();
-    
+
     // Normalize dense scores to 0-1 range
     const maxDense = Math.max(...denseResults.map(r => r.score), 0.001);
     const maxSparse = Math.max(...sparseResults.map(r => r.score), 0.001);
-    
+
     // Add dense results
     for (const result of denseResults) {
         const normalizedScore = result.score / maxDense;
@@ -61,12 +61,12 @@ function linearCombination(denseResults, sparseResults, alpha = 0.5) {
             combinedScore: alpha * normalizedScore
         });
     }
-    
+
     // Add sparse results
     for (const result of sparseResults) {
         const normalizedScore = result.score / maxSparse;
         const existing = scores.get(result.id);
-        
+
         if (existing) {
             existing.sparseScore = normalizedScore;
             existing.combinedScore += (1 - alpha) * normalizedScore;
@@ -78,7 +78,7 @@ function linearCombination(denseResults, sparseResults, alpha = 0.5) {
             });
         }
     }
-    
+
     return scores;
 }
 
@@ -101,19 +101,19 @@ export class HybridRetriever {
         if (!vectorStore) {
             throw new Error('Vector store is required');
         }
-        
+
         this.vectorStore = vectorStore;
         this.alpha = options.alpha ?? 0.5;
         this.fusionMethod = options.fusionMethod ?? 'rrf';
         this.rrfK = options.rrfK ?? 60;
         this.sparseTopK = options.sparseTopK ?? 50;
-        
+
         // Initialize BM25 index
         this.bm25 = new BM25({
             k1: options.bm25K1 ?? 1.2,
             b: options.bm25B ?? 0.75
         });
-        
+
         // Track if BM25 is synced with vector store
         this._bm25Synced = false;
     }
@@ -124,12 +124,12 @@ export class HybridRetriever {
      */
     async syncBM25() {
         this.bm25.clear();
-        
+
         // Get all documents from vector store
-        const allDocs = this.vectorStore.getAllDocuments 
+        const allDocs = this.vectorStore.getAllDocuments
             ? this.vectorStore.getAllDocuments()
             : this._getAllDocsFromStore();
-        
+
         this.bm25.addDocuments(allDocs);
         this._bm25Synced = true;
     }
@@ -140,14 +140,14 @@ export class HybridRetriever {
      */
     _getAllDocsFromStore() {
         const docs = [];
-        
+
         // InMemoryVectorStore has docs Map
         if (this.vectorStore.docs && this.vectorStore.docs instanceof Map) {
             for (const [id, doc] of this.vectorStore.docs) {
                 docs.push({ ...doc, id });
             }
         }
-        
+
         return docs;
     }
 
@@ -184,15 +184,15 @@ export class HybridRetriever {
         if (!this._bm25Synced) {
             await this.syncBM25();
         }
-        
+
         // Get results from both methods
         const fetchK = Math.max(k * 3, this.sparseTopK); // Fetch more for better fusion
-        
+
         const [denseResults, sparseResults] = await Promise.all([
             this.vectorStore.similaritySearch(query, fetchK, { filter: options.filter }),
             Promise.resolve(this.bm25.search(query, fetchK, { filter: options.filter }))
         ]);
-        
+
         // Fuse results
         let fusedScores;
         if (this.fusionMethod === 'rrf') {
@@ -200,7 +200,7 @@ export class HybridRetriever {
         } else {
             fusedScores = linearCombination(denseResults, sparseResults, this.alpha);
         }
-        
+
         // Build result map for document lookup
         const docMap = new Map();
         for (const result of [...denseResults, ...sparseResults]) {
@@ -208,27 +208,48 @@ export class HybridRetriever {
                 docMap.set(result.id, result);
             }
         }
-        
+
         // Create final ranked results
         const results = [];
         for (const [id, scoreData] of fusedScores) {
             const doc = docMap.get(id);
             if (!doc) continue;
-            
+
             const result = {
                 id,
                 text: doc.text,
                 meta: doc.meta,
-                score: this.fusionMethod === 'rrf' 
-                    ? scoreData 
+                score: this.fusionMethod === 'rrf'
+                    ? scoreData
                     : scoreData.combinedScore
             };
-            
+
             // Add explanation if requested
             if (options.explain) {
                 const denseDoc = denseResults.find(d => d.id === id);
                 const sparseDoc = sparseResults.find(d => d.id === id);
-                
+
+                // Extract query terms for matching
+                const queryTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
+                const docText = doc.text.toLowerCase();
+                const matchedTerms = queryTerms.filter(term => docText.includes(term));
+
+                // Calculate density (matched terms per 100 chars)
+                const density = matchedTerms.length / Math.max(doc.text.length / 100, 1);
+
+                // Create snippet (context around first match)
+                let snippet = doc.text.slice(0, 150);
+                if (matchedTerms.length > 0) {
+                    const firstMatch = docText.indexOf(matchedTerms[0]);
+                    if (firstMatch > 0) {
+                        const start = Math.max(0, firstMatch - 50);
+                        const end = Math.min(doc.text.length, firstMatch + 100);
+                        snippet = (start > 0 ? '...' : '') +
+                            doc.text.slice(start, end) +
+                            (end < doc.text.length ? '...' : '');
+                    }
+                }
+
                 result.explanation = {
                     fusionMethod: this.fusionMethod,
                     denseScore: denseDoc?.score ?? 0,
@@ -237,13 +258,22 @@ export class HybridRetriever {
                     sparseRank: sparseResults.findIndex(d => d.id === id) + 1 || null,
                     combinedScore: result.score,
                     foundInDense: !!denseDoc,
-                    foundInSparse: !!sparseDoc
+                    foundInSparse: !!sparseDoc,
+                    // v2.4.0 Rich Explainability
+                    snippet,
+                    matchedTerms,
+                    relevanceFactors: {
+                        density,
+                        termMatch: matchedTerms.length / Math.max(queryTerms.length, 1),
+                        semanticScore: denseDoc?.score ?? 0,
+                        keywordScore: sparseDoc?.score ?? 0
+                    }
                 };
             }
-            
+
             results.push(result);
         }
-        
+
         // Sort by combined score and return top k
         return results
             .sort((a, b) => b.score - a.score)

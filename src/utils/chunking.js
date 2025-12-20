@@ -53,9 +53,19 @@ export function chunkText(text, options = {}) {
             end = lastSpace;
           }
         }
-        chunks.push(segment.slice(start, end).trim());
-        start = end - overlap;
-        if (start < 0) start = 0;
+
+        const chunk = segment.slice(start, end).trim();
+        if (chunk) chunks.push(chunk);
+
+        // Safety: ensure we always make progress
+        const nextStart = end - overlap;
+        if (nextStart <= start) {
+          // If we're not making progress, force advance by at least 1
+          start = start + Math.max(1, chunkSize);
+        } else {
+          start = nextStart;
+        }
+
         if (end >= segment.length) break;
       }
       continue;
@@ -106,7 +116,7 @@ export function chunkBySentences(text, options = {}) {
   }
 
   // Common abbreviations to avoid splitting on
-  const abbreviations = ['mr', 'mrs', 'ms', 'dr', 'prof', 'inc', 'ltd', 'dept', 'vs', 'etc', 'vol', 'fig', 'approx'];
+  const abbreviations = ['mr', 'mrs', 'ms', 'dr', 'prof', 'inc', 'ltd', 'corp', 'jr', 'sr', 'st', 'dept', 'vs', 'etc', 'vol', 'fig', 'approx'];
   const abbrRegex = new RegExp(`\\b(${abbreviations.join('|')})\\.`, 'gi');
 
   // Split into sentences (handles common abbreviations)

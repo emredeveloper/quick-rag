@@ -83,7 +83,8 @@
   },
   "dependencies": {
     "@lmstudio/sdk": "^1.5.0",
-    "ollama": "^0.6.2"
+    "ollama": "^0.6.2",
+    "quick-rag": "^2.4.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
@@ -91,9 +92,9 @@
     "typescript": "^5.3.3"
   },
   "optionalDependencies": {
+    "@qdrant/js-client-rest": "^1.12.0",
     "better-sqlite3": "^11.10.0",
     "chromadb": "^1.9.0",
-    "@qdrant/js-client-rest": "^1.12.0",
     "exceljs": "^4.4.0",
     "mammoth": "^1.11.0",
     "node-fetch": "^3.3.2",

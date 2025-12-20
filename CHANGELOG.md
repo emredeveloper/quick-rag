@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.1] - 2025-12-20
+
+### Fixed
+- **Rich Explainability**: `HybridRetriever` now correctly populates `snippet`, `matchedTerms`, and `relevanceFactors` in the explanation object.
+- **Robust Chunking**: Improved abbreviation handling (`Corp.`, `Jr.`, `Sr.`, `St.`) to prevent incorrect sentence splitting.
+- **Memory Optimization**: Fixed potential memory issues in chunking logic for large datasets.
+- **NPM Compatibility**: Resolved export issues ensuring all components are accessible in the published package.
+
+### Added
+- Comprehensive test suite for v2.4.0 features covering edge cases and stress tests.
+- Dual-provider testing support (Ollama + LM Studio) in verify scripts.
+
 ## [2.4.0] - 2025-12-20 🚀 Robustness, Performance & Explainability
 
 ### 🚀 Major Improvements
