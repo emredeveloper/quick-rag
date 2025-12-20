@@ -2,7 +2,6 @@
  * Vector Store Interface and In-Memory Implementation
  */
 
-import { randomUUID } from 'crypto';
 import { AbstractVectorStore } from './stores/abstractStore.js';
 import { VectorStoreError } from './errors/index.js';
 
@@ -47,7 +46,9 @@ export class InMemoryVectorStore extends AbstractVectorStore {
 
     // Generate ID if missing
     if (!doc.id) {
-      doc.id = randomUUID();
+      doc.id = typeof globalThis.crypto?.randomUUID === 'function'
+        ? globalThis.crypto.randomUUID()
+        : Math.random().toString(36).substring(2, 15);
     }
 
     // Generate embedding if not present
@@ -228,18 +229,11 @@ export class InMemoryVectorStore extends AbstractVectorStore {
   }
 
   /**
-   * Calculate cosine similarity
+   * Calculate cosine similarity (uses base class implementation)
    * @private
+   * @deprecated Use base class _cosineSimilarity
    */
   _cosineSimilarity(a, b) {
-    let dot = 0;
-    let normA = 0;
-    let normB = 0;
-    for (let i = 0; i < a.length; i++) {
-      dot += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
-    }
-    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    return super._cosineSimilarity(a, b);
   }
 }

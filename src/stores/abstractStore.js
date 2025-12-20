@@ -109,6 +109,31 @@ export class AbstractVectorStore {
     clear() {
         throw new Error('clear must be implemented by subclass');
     }
+
+    /**
+     * Calculate cosine similarity between two vectors
+     * @protected
+     */
+    _cosineSimilarity(a, b) {
+        if (!a || !b || a.length !== b.length) return 0;
+        let dot = 0;
+        let normA = 0;
+        let normB = 0;
+        for (let i = 0; i < a.length; i++) {
+            dot += a[i] * b[i];
+            normA += a[i] * a[i];
+            normB += b[i] * b[i];
+        }
+        return dot / (Math.sqrt(normA) * Math.sqrt(normB) || 1);
+    }
+
+    /**
+     * Calculate cosine distance between two vectors
+     * @protected
+     */
+    _cosineDistance(a, b) {
+        return 1 - this._cosineSimilarity(a, b);
+    }
 }
 
 /**

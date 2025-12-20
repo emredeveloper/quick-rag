@@ -22,7 +22,7 @@
  */
 function tokenize(text) {
     if (!text || typeof text !== 'string') return [];
-    
+
     return text
         .toLowerCase()
         // Remove special characters but keep alphanumeric and spaces
@@ -77,16 +77,16 @@ export class BM25 {
     constructor(options = {}) {
         this.k1 = options.k1 ?? 1.2;
         this.b = options.b ?? 0.75;
-        
+
         /** @type {Array<{id: string, tokens: string[], tf: Map<string, number>, length: number, doc: Object}>} */
         this.documents = [];
-        
+
         /** @type {Map<string, number>} Document frequency for each term */
         this.df = new Map();
-        
+
         /** @type {number} Average document length */
         this.avgdl = 0;
-        
+
         /** @type {number} Total documents */
         this.N = 0;
     }
@@ -100,13 +100,13 @@ export class BM25 {
         const text = doc.text || '';
         const tokens = tokenize(text);
         const tf = calculateTF(tokens);
-        
+
         // Update document frequency
         const uniqueTokens = new Set(tokens);
         for (const token of uniqueTokens) {
             this.df.set(token, (this.df.get(token) || 0) + 1);
         }
-        
+
         this.documents.push({
             id,
             tokens,
@@ -114,7 +114,7 @@ export class BM25 {
             length: tokens.length,
             doc
         });
-        
+
         // Update statistics
         this.N = this.documents.length;
         this._updateAvgdl();
@@ -151,7 +151,7 @@ export class BM25 {
     idf(term) {
         const df = this.df.get(term) || 0;
         if (df === 0) return 0;
-        
+
         // Standard BM25 IDF formula
         // log((N - df + 0.5) / (df + 0.5) + 1)
         return Math.log((this.N - df + 0.5) / (df + 0.5) + 1);
@@ -166,20 +166,20 @@ export class BM25 {
     _score(docEntry, queryTokens) {
         let score = 0;
         const { tf, length } = docEntry;
-        
+
         for (const token of queryTokens) {
             const termFreq = tf.get(token) || 0;
             if (termFreq === 0) continue;
-            
+
             const idfScore = this.idf(token);
-            
+
             // BM25 scoring formula
             const numerator = termFreq * (this.k1 + 1);
             const denominator = termFreq + this.k1 * (1 - this.b + this.b * (length / this.avgdl));
-            
+
             score += idfScore * (numerator / denominator);
         }
-        
+
         return score;
     }
 
@@ -193,22 +193,52 @@ export class BM25 {
      */
     search(query, k = 10, options = {}) {
         const queryTokens = tokenize(query);
-        
+
         if (queryTokens.length === 0 || this.documents.length === 0) {
             return [];
         }
-        
+
+        // Use a simple Min-Heap for top-K if N is large, 
+        // to avoid sorting the entire result set.
+        if (this.documents.length > 1000 && k < 100) {
+            const heap = [];
+            for (const docEntry of this.documents) {
+                if (options.filter) {
+                    const meta = docEntry.doc.meta || {};
+                    if (!options.filter(meta)) continue;
+                }
+
+                const score = this._score(docEntry, queryTokens);
+                if (score <= 0) continue;
+
+                const result = {
+                    id: docEntry.id,
+                    score,
+                    text: docEntry.doc.text,
+                    meta: docEntry.doc.meta,
+                    doc: docEntry.doc
+                };
+
+                if (heap.length < k) {
+                    heap.push(result);
+                    if (heap.length === k) heap.sort((a, b) => a.score - b.score);
+                } else if (score > heap[0].score) {
+                    heap[0] = result;
+                    heap.sort((a, b) => a.score - b.score);
+                }
+            }
+            return heap.sort((a, b) => b.score - a.score);
+        }
+
         const results = [];
-        
         for (const docEntry of this.documents) {
-            // Apply metadata filter if provided
             if (options.filter) {
                 const meta = docEntry.doc.meta || {};
                 if (!options.filter(meta)) continue;
             }
-            
+
             const score = this._score(docEntry, queryTokens);
-            
+
             if (score > 0) {
                 results.push({
                     id: docEntry.id,
@@ -219,8 +249,7 @@ export class BM25 {
                 });
             }
         }
-        
-        // Sort by score descending and return top k
+
         return results
             .sort((a, b) => b.score - a.score)
             .slice(0, k);
@@ -244,9 +273,9 @@ export class BM25 {
     removeDocument(id) {
         const index = this.documents.findIndex(d => d.id === id);
         if (index === -1) return false;
-        
+
         const docEntry = this.documents[index];
-        
+
         // Update document frequency
         const uniqueTokens = new Set(docEntry.tokens);
         for (const token of uniqueTokens) {
@@ -257,11 +286,11 @@ export class BM25 {
                 this.df.set(token, count - 1);
             }
         }
-        
+
         this.documents.splice(index, 1);
         this.N = this.documents.length;
         this._updateAvgdl();
-        
+
         return true;
     }
 
@@ -315,7 +344,7 @@ export class BM25 {
         this.k1 = data.k1 ?? 1.2;
         this.b = data.b ?? 0.75;
         this.clear();
-        
+
         // Restore documents
         if (data.documents) {
             this.addDocuments(data.documents);

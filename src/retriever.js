@@ -59,7 +59,20 @@ export class Retriever {
         results.forEach(doc => {
           const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
           const text = (doc.text || '').toLowerCase();
+
+          // Improved keyword matching
           const matchedTerms = terms.filter(term => text.includes(term));
+
+          // Basic snippet generation
+          let snippet = doc.text.slice(0, 200);
+          if (matchedTerms.length > 0) {
+            const firstMatch = text.indexOf(matchedTerms[0]);
+            if (firstMatch > 100) {
+              const start = Math.max(0, firstMatch - 50);
+              const end = Math.min(doc.text.length, firstMatch + 150);
+              snippet = (start > 0 ? '...' : '') + doc.text.slice(start, end) + (end < doc.text.length ? '...' : '');
+            }
+          }
 
           doc.explanation = {
             score: doc.score,
@@ -70,9 +83,11 @@ export class Retriever {
             matchCount: matchedTerms.length,
             matchRatio: terms.length > 0 ? matchedTerms.length / terms.length : 0,
             cosineSimilarity: doc.score,
+            snippet: snippet,
             relevanceFactors: {
               semanticScore: doc.score,
-              termMatch: matchedTerms.length / (terms.length || 1)
+              termMatch: terms.length > 0 ? matchedTerms.length / terms.length : 0,
+              density: matchedTerms.length / (doc.text.split(/\s+/).length || 1)
             }
           };
         });
@@ -86,6 +101,7 @@ export class Retriever {
       });
     }
   }
+
 
   /**
    * Update retrieval configuration

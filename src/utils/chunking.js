@@ -40,10 +40,23 @@ export function chunkText(text, options = {}) {
         chunks.push(currentChunk.trim());
         currentChunk = '';
       }
-      
+
       // Split large segment by character limit with overlap
-      for (let i = 0; i < segment.length; i += chunkSize - overlap) {
-        chunks.push(segment.slice(i, i + chunkSize).trim());
+      // IMPROVEMENT: Avoid splitting words in the middle
+      let start = 0;
+      while (start < segment.length) {
+        let end = start + chunkSize;
+        if (end < segment.length) {
+          // Look for last space within the chunk to avoid splitting words
+          const lastSpace = segment.lastIndexOf(' ', end);
+          if (lastSpace > start + (chunkSize * 0.8)) {
+            end = lastSpace;
+          }
+        }
+        chunks.push(segment.slice(start, end).trim());
+        start = end - overlap;
+        if (start < 0) start = 0;
+        if (end >= segment.length) break;
       }
       continue;
     }
@@ -77,20 +90,31 @@ export function chunkText(text, options = {}) {
  * @returns {string[]} Array of text chunks
  */
 export function chunkBySentences(text, options = {}) {
-  const {
+  let {
     sentencesPerChunk = 5,
     overlapSentences = 1
   } = options;
+
+  // Ensure overlap is valid
+  if (overlapSentences >= sentencesPerChunk) {
+    overlapSentences = Math.max(0, sentencesPerChunk - 1);
+  }
+  const step = Math.max(1, sentencesPerChunk - overlapSentences);
 
   if (!text || typeof text !== 'string') {
     return [];
   }
 
+  // Common abbreviations to avoid splitting on
+  const abbreviations = ['mr', 'mrs', 'ms', 'dr', 'prof', 'inc', 'ltd', 'dept', 'vs', 'etc', 'vol', 'fig', 'approx'];
+  const abbrRegex = new RegExp(`\\b(${abbreviations.join('|')})\\.`, 'gi');
+
   // Split into sentences (handles common abbreviations)
   const sentences = text
+    .replace(abbrRegex, '$1《DOT》') // Temporarily replace dots in abbreviations
     .replace(/([.!?])\s+/g, '$1|')
     .split('|')
-    .map(s => s.trim())
+    .map(s => s.trim().replace(/《DOT》/g, '.'))
     .filter(s => s.length > 0);
 
   if (sentences.length <= sentencesPerChunk) {
@@ -98,10 +122,10 @@ export function chunkBySentences(text, options = {}) {
   }
 
   const chunks = [];
-  for (let i = 0; i < sentences.length; i += sentencesPerChunk - overlapSentences) {
+  for (let i = 0; i < sentences.length; i += step) {
     const chunk = sentences.slice(i, i + sentencesPerChunk).join(' ');
     chunks.push(chunk);
-    
+
     // Break if we've reached the end
     if (i + sentencesPerChunk >= sentences.length) {
       break;
@@ -119,10 +143,10 @@ export function chunkBySentences(text, options = {}) {
  */
 export function chunkDocuments(docs, options = {}) {
   const chunks = [];
-  
+
   docs.forEach((doc, docIndex) => {
     const textChunks = chunkText(doc.text, options);
-    
+
     textChunks.forEach((chunk, chunkIndex) => {
       chunks.push({
         text: chunk,
@@ -162,7 +186,7 @@ export function chunkMarkdown(markdown, options = {}) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
+
     // Track code blocks
     if (line.trim().startsWith('```')) {
       inCodeBlock = !inCodeBlock;
@@ -171,7 +195,7 @@ export function chunkMarkdown(markdown, options = {}) {
     // Check if adding this line would exceed chunk size
     if (!inCodeBlock && currentChunk.length + line.length + 1 > chunkSize && currentChunk) {
       chunks.push(currentChunk.trim());
-      
+
       // Add overlap (last few lines)
       const overlapLines = currentChunk.split('\n').slice(-Math.floor(overlap / 50));
       currentChunk = overlapLines.join('\n') + '\n';

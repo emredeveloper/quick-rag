@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.4.0] - 2025-12-20 🚀 Robustness, Performance & Explainability
+
+### 🚀 Major Improvements
+
+**Robust Chunking Utilities**
+- ✅ **Abbreviation Awareness** - `chunkBySentences` now correctly handles common abbreviations (Dr., Prof., LTD., etc.) without breaking sentences.
+- ✅ **Word-Aware Splitting** - `chunkText` now avoids splitting words in the middle when segments exceed chunk size.
+- ✅ **Markdown Stability** - Improved header preservation in `chunkMarkdown`.
+
+**Rich Query Explainability**
+- ✅ **Enhanced Metadata** - Explanations now include `snippet` (with context around match), `density` metrics, and `termMatch` ratios.
+- ✅ **Highlighting Ready** - Explanations provide better data for frontend highlighting of retrieved segments.
+
+**Performance Optimization**
+- ✅ **BM25 Min-Heap** - Replaced full sorting with a Min-Heap for top-K selection in BM25 search. Significant performance boost for large document sets (>1000 docs).
+
+**Environment Stability**
+- ✅ **Cross-Environment UUID** - Switched to `globalThis.crypto.randomUUID()` for seamless compatibility between Node.js and modern browsers.
+
+**Developer Experience**
+- ✅ **Comprehensive Demo** - Added `example/21-full-featured-rag.js` showcasing the synergy between Caching, Conversation Management, and Evaluation.
+
+### 🔧 API Changes
+
+**New Protected Methods (Extending Vector Stores):**
+- `AbstractVectorStore._cosineSimilarity(a, b)`
+- `AbstractVectorStore._cosineDistance(a, b)`
+
+### ✅ Testing
+- All existing 15+ test suites passed.
+- Verified abbreviation handling with new edge cases.
+- Verified Min-Heap optimization for BM25.
+
+---
+
 ## [2.3.0] - 2025-12-13 🚀 Caching, Conversation Management & Evaluation
 
 ### 🚀 Major Features
