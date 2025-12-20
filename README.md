@@ -6,11 +6,17 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.3.0 Released!** Caching, Conversation Management, RAG Evaluation & Vector DB Connectors! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.4.0 Released!** Robust Chunking, Rich Query Explainability & BM25 Optimization! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
 
-### 🆕 v2.3.0 - Performance & Evaluation
+### 🆕 v2.4.0 - Robustness & Explainability
+- 🔪 **Robust Chunking** - Abbreviation-aware sentence splitting & word-safe text chunking
+- 🔍 **Rich Explainability** - Detailed retrieval snippets, keyword density & term match metrics
+- 🚀 **BM25 Optimization** - Min-Heap based top-K selection for fast retrieval in large datasets
+- 🌐 **Environment Stability** - Universal UUID support for Node.js and Browser (globalThis.crypto)
+
+### v2.3.0 - Performance & Evaluation
 - 🚀 **Caching Layer** - LRU cache, embedding cache, query cache for 10x speedup
 - 💬 **Conversation Manager** - Context window management & auto-summarization
 - 📊 **RAG Evaluation** - Precision@K, Recall, MRR, NDCG metrics
@@ -30,9 +36,9 @@ Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](ht
 - 📝 **Structured Logging** - JSON logging with Pino integration
 - ⚡ **5x Faster** - Parallel batch embedding
 - 📄 **Document Loaders** - PDF, Word, Excel, Text, Markdown, URLs
-- 🔪 **Smart Chunking** - Intelligent text splitting with overlap
+- 🔪 **Robust Chunking** - Intelligent splitting that respects abbreviations (Dr., Prof.) and avoids word cutting
 - 🏷️ **Metadata Filtering** - Filter by document properties
-- 🔍 **Query Explainability** - See WHY documents were retrieved (unique!)
+- 🔍 **Rich Query Explainability** - See WHY docs were retrieved with snippets and density metrics (unique!)
 - 🎨 **Dynamic Prompts** - 10 built-in templates + full customization
 - 🧠 **Weighted Decision Making** - Multi-criteria document scoring
 - 🎯 **Heuristic Reasoning** - Pattern learning and query optimization
@@ -138,6 +144,48 @@ const qdrant = new QdrantVectorStore(embedFn, {
   url: 'http://localhost:6333',
   collectionName: 'documents'
 });
+```
+
+## 🆕 What's New in v2.4.0
+
+### 🔪 Robust Chunking
+Intelligent text splitting that handles abbreviations and prevents word splitting:
+
+```javascript
+import { chunkBySentences, chunkText } from 'quick-rag';
+
+// Handles Dr., Prof., LTD., approx., etc.
+const chunks = chunkBySentences(text, { 
+  sentencesPerChunk: 3,
+  overlapSentences: 1 
+});
+
+// Avoids cutting words in half
+const textChunks = chunkText(text, { 
+  chunkSize: 500,
+  overlap: 50,
+  separator: ' ' // Word-safe splitting
+});
+```
+
+### 🔍 Rich Query Explainability
+Get deep insights into why a document was retrieved:
+
+```javascript
+const results = await retriever.getRelevant(query, 3, { explain: true });
+
+console.log(results[0].explanation);
+/*
+{
+  score: 0.88,
+  snippet: "...context surrounding the match...",
+  relevanceFactors: {
+    semanticScore: 0.88,
+    termMatch: 0.75,   // 3/4 terms matched
+    density: 0.15      // concentration of keywords
+  }
+}
+*/
 ```
 
 ## 🔍 What's in v2.2.0

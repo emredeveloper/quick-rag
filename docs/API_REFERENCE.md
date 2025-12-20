@@ -137,9 +137,15 @@ const results = await retriever.getRelevant('search query', 5, {
   // OR
   filter: (meta) => meta.year > 2020,  // Function filter
   minScore: 0.5,
-  explain: true  // Include explanations
+  explain: true  // Include rich explanations (snippet, density, etc.)
 });
 ```
+
+#### Explanation Object (v2.4.0+)
+When `explain: true` is used, each result includes:
+- `snippet`: String showing context around the match.
+- `relevanceFactors.density`: Keyword concentration in chunk.
+- `relevanceFactors.termMatch`: Ratio of query terms matched.
 
 ### SmartRetriever
 
@@ -305,7 +311,8 @@ const chunks = chunkText(text, {
   overlap: 100 
 });
 
-// Chunk by sentences
+// Chunk by sentences (Abbreviation aware in v2.4.0+)
+// Correcty handles Dr., Prof., LTD., etc.
 const sentenceChunks = chunkBySentences(text, { 
   sentencesPerChunk: 5, 
   overlapSentences: 1 

@@ -2,7 +2,7 @@
 
 Clear examples showing how to use quick-rag with both **Ollama** and **LM Studio**.
 
-**Using quick-rag v2.0.3+** with batch processing and rate limiting for optimal performance.
+**Using quick-rag v2.4.0+** with robust chunking, rich explanations, and BM25 optimization.
 
 ## 📚 Examples
 
@@ -86,19 +86,20 @@ Automatically detect and test both providers.
    - Multiple source types
    - Scenario customization
 
-### 1️⃣1️⃣ Conversation History & Export (NEW!)
+### 1️⃣2️⃣ Full-Featured RAG Demo (NEW! v2.4.0)
 
-- **`12-conversation-history-and-export.js`** - Conversation management
+- **`21-full-featured-rag.js`** - Comprehensive integration demo
 
-   - 💬 Track multiple query-response pairs
-   - 💾 Export conversations to JSON
-   - 📚 Document CRUD operations
-   - ⚙️ Settings management
-   - 🔄 Multi-query sessions
-   - 📊 Conversation statistics
-   - 🎨 Multi-Provider Support (Ollama 🦙 & LM Studio 🎨)
-   - 🔍 Auto-detection (automatically detects available provider)
-   - 🔧 Manual provider selection via USE_LMSTUDIO flag or environment variable
+   - 🔪 **Robust Chunking** (Abbreviation awareness)
+   - 💬 **Conversation Management** (History & Context)
+   - 🚀 **Caching Layer** (Embedding & Query)
+   - 🔍 **Rich Explanations** (Density & Snippets)
+   - 📄 **Real Document Loading** (PDF & Directory)
+   - 🎨 **Multi-model Support** (Ollama 🦙)
+
+   **Models Used:**
+   - LLM: `granite4:3b`
+   - Embedding: `nomic-embed-text-v2-moe:latest`
    
    **Provider Configuration:**
    - Auto-detect (default): Tries LM Studio first, falls back to Ollama
@@ -223,52 +224,32 @@ See main [README.md](../README.md) for complete API reference.
 
 ## 🎯 What's New in Examples?
 
-### Example 12: Conversation History & Export
+### Example 21: Full-Featured RAG Demo (v2.4.0)
 
 **New Features Demonstrated:**
 
-1. **Conversation History Manager**
-   - Track multiple query-response pairs
-   - Store metadata (timestamp, topK, retrieved docs)
-   - Manage conversation sessions
+1. **Robust Chunking**
+   - Handles abbreviations (Dr., Prof., LTD.) during sentence splitting.
+   - Prevents word cutting in the middle of chunks.
 
-2. **Export Functionality**
-   - Export conversations to JSON
-   - Include all metadata and context
-   - Save conversation history to file
+2. **Rich Explainability**
+   - See detailed reasons for retrieval.
+   - Access context-aware snippets and keyword density metrics.
 
-3. **Document Management**
-   - Add, update, delete documents
-   - Track document changes
-   - Manage document metadata
-
-4. **Settings Management**
-   - Change model on the fly
-   - Adjust topK dynamically
-   - Test different configurations
-
-5. **Multi-Query Session**
-   - Ask multiple questions in sequence
-   - Build conversation context
-   - Export complete session
+3. **Integrated Pipeline**
+   - Combines `ConversationManager`, `CacheManager`, and `Retriever`.
+   - Loads real PDF documents from a directory.
 
 **Usage:**
 
 ```bash
+# Ensure you have the models
+ollama pull granite4:3b
+ollama pull nomic-embed-text-v2-moe
+
 # Run the example
-node example/12-conversation-history-and-export.js
-
-# Check the exports folder for JSON file
-cat exports/conversation-*.json
+node example/21-full-featured-rag.js
 ```
-
-**Output:**
-
-- Conversation session with multiple queries
-- Exported JSON file with full conversation history
-- Document CRUD operations demonstration
-- Settings management examples
-- Statistics and summaries
 
 ## 🤝 Contributing
 

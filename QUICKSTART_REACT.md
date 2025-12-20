@@ -25,7 +25,7 @@ npm install quick-rag express concurrently multer
 npm install --save-dev concurrently
 ```
 
-**Note:** The `quick-rag` package (v2.0.3+) automatically installs `ollama` and `@lmstudio/sdk` packages.
+**Note:** The `quick-rag` package (v2.4.0+) automatically installs `ollama` and `@lmstudio/sdk` packages.
 
 ### Step 3: Install Ollama and Pull Models
 
@@ -414,6 +414,7 @@ You can now use the Quick RAG library in your React project!
 - Use metadata filtering
 - Perform smart search with Decision Engine
 - Use batch processing for large PDFs (v2.0.3+)
+- Use and customize robust chunking for better results (v2.4.0+)
 
 ## ⚡ Performance Tips (v2.0.3+)
 
