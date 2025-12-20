@@ -62,6 +62,7 @@ export class SQLiteVectorStore {
         this.defaultDim = options.defaultDim || 768;
 
         // Initialize database
+        /** @type {import('better-sqlite3').Database} */
         this.db = new Database(dbPath);
         this._initializeDatabase();
     }
