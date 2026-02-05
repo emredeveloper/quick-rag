@@ -1,9 +1,22 @@
 # Changelog
 
+## [2.5.2] - 2026-02-05
+
+### Fixed
+- React subpath export corrected: `quick-rag/react` now maps to `src/react/useRag.js`
+- `useRAG` non-stream path aligned with modern `generateWithRAG(client, model, query, docs, options)` signature
+- Type definitions updated so `generateWithRAG` return type matches runtime shape (`{ docs, response, prompt }`)
+
+### Changed
+- Ollama base chat model standardized to `granite4:3b` across examples and integration-oriented tests
+- `initRAG` now accepts `baseEmbeddingOptions.createEmbedding` for deterministic/local embedding injection
+- `initRAG` test flow made deterministic for default test runs; external-provider smoke check remains opt-in via `RUN_INTEGRATION_TESTS=true`
+- README files refreshed to reflect current release and model defaults
+
 ## [2.5.1] - 2025-02-05
 
 ### Changed
-- README documentation now reflects v2.5.0 release notes on npm registry
+- README documentation reflects release notes on npm registry
 - Minor package.json metadata improvements (repository URL normalization)
 
 ## [2.5.0] - 2025-02-05

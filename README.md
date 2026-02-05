@@ -6,11 +6,14 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.5.0 Released!** Critical bug fixes, improved browser compatibility & updated default models! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.5.2 Released!** React export fixes, deterministic init tests, and Ollama base model alignment (`granite4:3b`). See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
 
-### 🆕 v2.5.0 - Stability & Compatibility
+### 🆕 v2.5.2 - Stability & Compatibility
+- ✅ **React Export Fix** - `quick-rag/react` now resolves correctly to `useRAG`
+- ✅ **Deterministic initRAG Tests** - core test suite no longer depends on external Ollama availability
+- ✅ **Ollama Base Model Alignment** - examples and tests standardized to `granite4:3b`
 - 🐛 **Critical Bug Fix** - `ConversationManager.addAssistantMessage()` now correctly passes content
 - 🌐 **Browser Compatibility** - Cross-platform UUID generation (Node.js + Browser)
 - 📦 **Cleaner Dependencies** - Removed invalid self-referencing dependency
