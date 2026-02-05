@@ -44,11 +44,11 @@ async function testWithProvider(providerName) {
     try {
         if (providerName === 'lmstudio') {
             client = new LMStudioRAGClient();
-            embedModel = 'text-embedding-nomic-embed-text-v1.5';
+            embedModel = 'text-embedding-qwen3-embedding-0.6b';
             chatModel = 'google/gemma-3-4b';
         } else {
             client = new OllamaRAGClient();
-            embedModel = 'nomic-embed-text-v2-moe:latest';
+            embedModel = 'qwen3-embedding:0.6b';
             chatModel = 'granite4:3b';
         }
 

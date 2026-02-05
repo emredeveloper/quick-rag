@@ -51,7 +51,7 @@ async function testLMStudioRAGClientBasics() {
 
   // Test 4: Embeddings
   try {
-    const embedResult = await client.embed('text-embedding-embeddinggemma-300m', 'test');
+    const embedResult = await client.embed('text-embedding-qwen3-embedding-0.6b', 'test');
     assert(Array.isArray(embedResult), 'embed() should return array');
     assert(embedResult.length > 0, 'embed() should return non-empty array');
     console.log('✅ LMStudioRAGClient.embed() works');
@@ -69,4 +69,3 @@ export async function runLMStudioRAGClientTests() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runLMStudioRAGClientTests().catch(console.error);
 }
-

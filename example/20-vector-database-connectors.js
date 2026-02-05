@@ -31,7 +31,7 @@ async function main() {
 
     // Ollama client ve embedding fonksiyonu oluştur
     const client = new OllamaRAGClient();
-    const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+    const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
     // Test dökümanları
     const documents = [

@@ -5,7 +5,7 @@
  * metrikleri kullanarak nasıl değerlendireceğinizi gösterir.
  * 
  * Modeller:
- * - Embedding: embeddinggemma
+ * - Embedding: qwen3-embedding:0.6b
  */
 
 import {
@@ -40,7 +40,7 @@ async function main() {
     console.log(`${colors.blue}⚙️ Sistem Kurulumu${colors.reset}\n`);
 
     const client = new OllamaRAGClient();
-    const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+    const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
     // Örnek bilgi tabanı
     const documents = [

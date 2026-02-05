@@ -6,7 +6,7 @@
  * 
  * Modeller:
  * - Ollama: ministral-3:3b (chat)
- * - Embedding: embeddinggemma (embedding)
+ * - Embedding: qwen3-embedding:0.6b (embedding)
  */
 
 import { 
@@ -34,7 +34,7 @@ async function main() {
     const client = new OllamaRAGClient();
 
     // Embedding fonksiyonu oluştur (client gerekli)
-    const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+    const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
     // ========== Yöntem 1: CacheManager Kullanımı (Önerilen) ==========
     console.log(`${colors.blue}📦 Yöntem 1: CacheManager Kullanımı${colors.reset}\n`);

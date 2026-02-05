@@ -56,7 +56,7 @@ const CONFIG = {
     },
     lmstudio: {
         model: 'google/gemma-3-4b',
-        embeddingModel: 'text-embedding-embeddinggemma-300m',
+        embeddingModel: 'text-embedding-qwen3-embedding-0.6b',
         // LM Studio SDK uses WebSocket, no baseUrl needed (auto-discovery)
         baseUrl: null
     }

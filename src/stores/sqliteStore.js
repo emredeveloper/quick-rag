@@ -32,7 +32,7 @@ function cosine(a, b) {
  * ```javascript
  * import { SQLiteVectorStore, createOllamaRAGEmbedding } from 'quick-rag';
  * 
- * const embed = createOllamaRAGEmbedding(ollamaClient, 'embeddinggemma');
+ * const embed = createOllamaRAGEmbedding(ollamaClient, 'qwen3-embedding:0.6b');
  * const store = new SQLiteVectorStore('./my-vectors.db', embed);
  * 
  * await store.addDocuments([

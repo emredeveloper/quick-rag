@@ -300,7 +300,7 @@ import {
 
 // Setup
 const client = new OllamaRAGClient();
-const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 const store = new InMemoryVectorStore(embed);
 await store.addDocuments(documents);
 
@@ -893,7 +893,7 @@ import {
 const client = new LMStudioRAGClient();
 
 // 2. Setup embedding (use your embedding model from LM Studio)
-const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
 
 // 3. Create vector store and retriever
 const vectorStore = new InMemoryVectorStore(embed);
@@ -922,7 +922,7 @@ console.log('Answer:', answer);
 
 1. Download and install [LM Studio](https://lmstudio.ai)
 2. Download a language model (e.g., Llama 3.2, Mistral)
-3. Download an embedding model (e.g., nomic-embed-text)
+3. Download an embedding model (e.g., text-embedding-qwen3-embedding-0.6b)
 4. Start the local server: `Developer > Local Server` (default: `http://localhost:1234`)
 
 **For React projects:** Import from `'quick-rag/react'` to use hooks:
@@ -1117,7 +1117,7 @@ const rag = await initRAG(docs, {
   baseEmbeddingOptions: {
     useBrowser: true,
     baseUrl: '/api/embed',
-    model: 'nomic-embed-text'  // or 'mxbai-embed-large', etc.
+    model: 'qwen3-embedding:0.6b'  // or another compatible embedding model
   }
 });
 ```

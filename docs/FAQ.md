@@ -20,11 +20,11 @@
 
 | Model | Dimensions | Speed | Quality |
 |-------|------------|-------|---------|
-| `nomic-embed-text` | 768 | Fast | Good |
+| `qwen3-embedding:0.6b` | Varies | Fast | Good |
 | `mxbai-embed-large` | 1024 | Medium | Better |
 | `all-minilm` | 384 | Very Fast | Basic |
 
-**Recommendation**: `nomic-embed-text` for most use cases.
+**Recommendation**: `qwen3-embedding:0.6b` for most Ollama-based use cases.
 
 ---
 

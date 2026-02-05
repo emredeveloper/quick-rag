@@ -526,7 +526,7 @@ import {
 ```javascript
 import { SQLiteVectorStore, createOllamaRAGEmbedding } from 'quick-rag';
 
-const embed = createOllamaRAGEmbedding(ollamaClient, 'embeddinggemma');
+const embed = createOllamaRAGEmbedding(ollamaClient, 'qwen3-embedding:0.6b');
 const store = new SQLiteVectorStore('./my-vectors.db', embed);
 
 // Add documents with progress
@@ -1292,7 +1292,7 @@ import {
 } from 'quick-rag';
 
 const client = new OllamaRAGClient();
-const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 const store = new InMemoryVectorStore(embed);
 
 await store.addDocuments([
@@ -1309,7 +1309,7 @@ import {
 } from 'quick-rag';
 
 const client = new LMStudioRAGClient();
-const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
 const store = new InMemoryVectorStore(embed);
 
 await store.addDocuments([
@@ -1320,8 +1320,8 @@ await store.addDocuments([
 ### 📊 Testing
 
 All features thoroughly tested:
-- ✅ Ollama integration (embeddinggemma + granite4:3b)
-- ✅ LM Studio integration (nomic-embed-text-v1.5 + qwen3-vl-4b)
+- ✅ Ollama integration (qwen3-embedding:0.6b + granite4:3b)
+- ✅ LM Studio integration (text-embedding-qwen3-embedding-0.6b + qwen3-vl-4b)
 - ✅ Document loading (PDF, Word, Excel)
 - ✅ Web loading (URLs, sitemaps)
 - ✅ Chunking strategies (text, sentences, documents, markdown)

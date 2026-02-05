@@ -138,7 +138,7 @@ export default class OllamaClient {
   }
 
   // Generate embeddings via Ollama's /api/embed endpoint. Returns whatever the API returns.
-  // Default model for embeddings will be provided by callers (we'll default to 'embeddinggemma' elsewhere).
+  // Default model for embeddings will be provided by callers (recommended: 'qwen3-embedding:0.6b').
   async embed(model, input, opts = {}) {
     const path = opts.path || 'embed';
     const body = Object.assign({ model, input }, opts.body || {});
