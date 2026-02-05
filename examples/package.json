@@ -1,0 +1,24 @@
+{
+  "name": "quick-rag-examples",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "core": "node 01-core.js",
+    "init": "node 02-initrag.js",
+    "ollama": "node 03-ollama.js",
+    "lmstudio": "node 04-lmstudio.js",
+    "prompt": "node 05-prompt-manager.js",
+    "search": "node 06-advanced-search.js",
+    "cache": "node 07-cache.js",
+    "conversation": "node 08-conversation.js",
+    "evaluation": "node 09-evaluation.js",
+    "decision": "node 10-decision-engine.js",
+    "loaders": "node 11-loaders.js",
+    "stores": "node 12-stores.js",
+    "query": "node 13-query-transformers.js"
+  },
+  "dependencies": {
+    "quick-rag": "^2.5.2"
+  }
+}

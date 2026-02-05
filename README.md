@@ -367,6 +367,7 @@ const pptDoc = await loadDocument('./presentation.pptx');
 - Prompt Management
 - Decision Engine (Simple & Real-World)
 - Conversation History & Export
+- New `examples/` folder for direct `npm i quick-rag` usage
 
 ---
 
@@ -374,8 +375,8 @@ const pptDoc = await loadDocument('./presentation.pptx');
 
 ### 📝 Internationalization Update
 - Translated all example files to English for better international accessibility
-- `example/10-decision-engine-simple.js` - Smart Document Selection example
-- `example/11-decision-engine-pdf-real-world.js` - Real-world PDF scenario example
+- `examples/10-decision-engine.js` - Smart Document Selection example
+- `examples/11-loaders.js` - Document loaders example
 
 ### 🧠 Decision Engine (v1.1.0)
 
@@ -519,7 +520,7 @@ const researchRetriever = new SmartRetriever(basicRetriever, {
 
 #### Real-World Example
 
-See `example/11-decision-engine-pdf-real-world.js` for a complete example with:
+See `examples/11-loaders.js` for a complete example with:
 - PDF document loading
 - Multiple source types (official, blog, research, forum)
 - 3 different scenarios (news, documentation, research)
@@ -893,7 +894,7 @@ import {
 const client = new LMStudioRAGClient();
 
 // 2. Setup embedding (use your embedding model from LM Studio)
-const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
+const embed = createLMStudioRAGEmbedding(client, 'text-embedding-embeddinggemma-300m');
 
 // 3. Create vector store and retriever
 const vectorStore = new InMemoryVectorStore(embed);
@@ -922,7 +923,7 @@ console.log('Answer:', answer);
 
 1. Download and install [LM Studio](https://lmstudio.ai)
 2. Download a language model (e.g., Llama 3.2, Mistral)
-3. Download an embedding model (e.g., text-embedding-qwen3-embedding-0.6b)
+3. Download an embedding model (e.g., text-embedding-embeddinggemma-300m)
 4. Start the local server: `Developer > Local Server` (default: `http://localhost:1234`)
 
 **For React projects:** Import from `'quick-rag/react'` to use hooks:
@@ -1122,7 +1123,7 @@ const rag = await initRAG(docs, {
 });
 ```
 
-**More examples:** Check the [`example/`](./example) folder for complete demos.
+**More examples:** Check the [`examples/`](./examples) folder for complete demos.
 
 ---
 
@@ -1257,7 +1258,7 @@ const answer = await generateWithRAG(client, 'granite4:3b',
 console.log(answer);
 ```
 
-**See full example:** [`example/advanced/document-loading-example.js`](./example/advanced/document-loading-example.js)
+**See full example:** [`examples/11-loaders.js`](./examples/11-loaders.js)
 
 ---
 
@@ -1284,7 +1285,7 @@ console.log(answer);
 - **📊 [Metrics & Telemetry](./docs/METRICS_TELEMETRY.md)** - Monitoring and logging
 - **🤝 [Contributing](./CONTRIBUTING.md)** - Contribution guidelines
 - **📝 [Changelog](./CHANGELOG.md)** - Version history
-- **💡 [Examples](./example)** - Working code examples
+- **💡 [Examples](./examples)** - Working code examples
 - **🚀 [Quickstart](./quickstart)** - Quick start guides
 
 ## 🔗 Resources
@@ -1316,3 +1317,6 @@ Special thanks to all contributors and the open-source community!
 ---
 
 **Made with ❤️ for the JavaScript & AI community**
+
+
+

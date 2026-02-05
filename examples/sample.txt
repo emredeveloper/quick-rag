@@ -1,0 +1,2 @@
+Quick RAG sample text file.
+This file is used by examples/11-loaders.js.
