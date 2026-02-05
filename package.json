@@ -1,6 +1,6 @@
 {
   "name": "quick-rag",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs with Hybrid Search, Reranking, Query Transformation, Caching, Conversation Management & Evaluation",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -13,8 +13,8 @@
       "default": "./src/index.js"
     },
     "./react": {
-      "types": "./src/react/index.d.ts",
-      "default": "./src/react/index.js"
+      "types": "./src/index.d.ts",
+      "default": "./src/react/useRag.js"
     }
   },
   "keywords": [

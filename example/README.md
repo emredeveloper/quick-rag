@@ -126,6 +126,9 @@ ollama serve
 ollama pull qwen3-embedding:0.6b
 ollama pull granite4:3b
 
+# Default Ollama chat model in examples
+# granite4:3b
+
 # Run examples
 node example/01-basic-usage.js
 node example/02-document-loading.js

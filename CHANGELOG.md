@@ -1307,7 +1307,7 @@ await store.addDocuments([
 ### 📊 Testing
 
 All features thoroughly tested:
-- ✅ Ollama integration (embeddinggemma + granite4:tiny-h)
+- ✅ Ollama integration (embeddinggemma + granite4:3b)
 - ✅ LM Studio integration (nomic-embed-text-v1.5 + qwen3-vl-4b)
 - ✅ Document loading (PDF, Word, Excel)
 - ✅ Web loading (URLs, sitemaps)

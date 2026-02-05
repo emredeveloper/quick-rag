@@ -30,7 +30,7 @@ async function testOllamaRAGClientBasics() {
   // Test 2: Generate text
   try {
     const response = await client.generate({
-      model: 'granite4:tiny-h',
+      model: 'granite4:3b',
       prompt: 'Say hi in one word',
       stream: false
     });
@@ -57,7 +57,7 @@ async function testOllamaRAGClientStreaming() {
   
   try {
     const response = await client.chat({
-      model: 'granite4:tiny-h',
+      model: 'granite4:3b',
       messages: [{ role: 'user', content: 'Count to 3' }],
       stream: true
     });

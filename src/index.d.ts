@@ -227,7 +227,7 @@ export interface GenerateWithRAGOptionsV2 {
 
 export function generateWithRAG(
   options: GenerateWithRAGOptions
-): Promise<{ response: string; docs: Document[] }>;
+): Promise<{ response: string; docs: Document[]; prompt: string }>;
 
 export function generateWithRAG(
   client: OllamaRAGClient | LMStudioRAGClient,
@@ -235,7 +235,7 @@ export function generateWithRAG(
   query: string,
   results: Document[],
   options?: GenerateWithRAGOptionsV2
-): Promise<string>;
+): Promise<{ response: string; docs: Document[]; prompt: string }>;
 
 // ==================== Init RAG ====================
 
@@ -247,6 +247,7 @@ export interface InitRAGOptions {
     baseUrl?: string;
     model?: string;
     headers?: Record<string, string>;
+    createEmbedding?: EmbeddingFunction;
   };
   mrlBaseDim?: number;
 }

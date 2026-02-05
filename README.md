@@ -59,6 +59,12 @@ Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](ht
 npm install quick-rag
 ```
 
+**Default Ollama models (examples/docs):**
+```bash
+ollama pull granite4:3b
+ollama pull qwen3-embedding:0.6b
+```
+
 **Optional Dependencies:**
 ```bash
 # For embedded persistence

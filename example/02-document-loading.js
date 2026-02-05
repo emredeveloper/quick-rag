@@ -71,7 +71,7 @@ async function main() {
 
     // 6. Generate answer
     console.log('💭 Generating answer...\n');
-    const answer = await generateWithRAG(client, 'granite4:tiny-h', query, results);
+    const answer = await generateWithRAG(client, 'granite4:3b', query, results);
     const answerText = typeof answer === 'string' ? answer : answer.response || JSON.stringify(answer);
     console.log(`💡 ${answerText}\n`);
 

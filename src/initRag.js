@@ -15,7 +15,9 @@ export async function initRAG(docs, options = {}) {
 
   // Lazy-load embedding providers to avoid bundling server-only code in the browser
   let baseEmbedding;
-  if (baseEmbeddingOptions.useBrowser) {
+  if (typeof baseEmbeddingOptions.createEmbedding === 'function') {
+    baseEmbedding = baseEmbeddingOptions.createEmbedding;
+  } else if (baseEmbeddingOptions.useBrowser) {
     const { createBrowserEmbedding } = await import('./embeddings/browserEmbedding.js');
     baseEmbedding = createBrowserEmbedding({
       endpoint: baseEmbeddingOptions.baseUrl || '/api/embed',
@@ -39,5 +41,4 @@ export async function initRAG(docs, options = {}) {
 }
 
 export default initRAG;
-
 

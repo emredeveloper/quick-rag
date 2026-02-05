@@ -63,7 +63,7 @@ async function testOllama() {
   console.log(`\n🔍 Query: "${query}"`);
   console.log(`📋 Found ${results.length} results\n`);
 
-  const answer = await generateWithRAG(client, 'granite4:tiny-h', query, results);
+  const answer = await generateWithRAG(client, 'granite4:3b', query, results);
   const answerText = typeof answer === 'string' ? answer : answer.response || JSON.stringify(answer);
   console.log(`💡 Answer: ${answerText}\n`);
 

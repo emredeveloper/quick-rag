@@ -42,7 +42,7 @@ async function main() {
   console.log('─'.repeat(60));
   
   const stream = await client.ollama.generate({
-    model: 'granite4:tiny-h',
+    model: 'granite4:3b',
     prompt: prompt,
     stream: true
   });

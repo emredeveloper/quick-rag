@@ -41,7 +41,7 @@ async function testGenerateWithRAGOptions() {
     // Test with template option
     const answer1 = await generateWithRAG(
       client,
-      'granite4:tiny-h',
+      'granite4:3b',
       'What is JavaScript?',
       results,
       { template: 'conversational' }
@@ -52,7 +52,7 @@ async function testGenerateWithRAGOptions() {
     // Test with systemPrompt option
     const answer2 = await generateWithRAG(
       client,
-      'granite4:tiny-h',
+      'granite4:3b',
       'What is JavaScript?',
       results,
       { 
@@ -69,7 +69,7 @@ async function testGenerateWithRAGOptions() {
     });
     const answer3 = await generateWithRAG(
       client,
-      'granite4:tiny-h',
+      'granite4:3b',
       'What is JavaScript?',
       results,
       { promptManager }
@@ -79,7 +79,7 @@ async function testGenerateWithRAGOptions() {
     // Test with context options
     const answer4 = await generateWithRAG(
       client,
-      'granite4:tiny-h',
+      'granite4:3b',
       'What is JavaScript?',
       results,
       {
@@ -106,4 +106,3 @@ export async function runGenerateWithRAGOptionsTests() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runGenerateWithRAGOptionsTests().catch(console.error);
 }
-

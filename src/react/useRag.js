@@ -21,8 +21,7 @@ export function useRAG({ retriever, modelClient, model, promptTemplate }) {
 			setDocs(relevantDocs);
 			
 			// Build prompt
-			const context = relevantDocs.map(d => d.text).join('\n\n');
-			const defaultTemplate = (docs, q) => 
+			const defaultTemplate = (docs, q) =>
 				`Context:\n${docs.map(d => d.text).join('\n\n')}\n\nQuestion: ${q}\n\nAnswer based on the context:`;
 			const template = promptTemplate || defaultTemplate;
 			const prompt = template(relevantDocs, query);
@@ -80,14 +79,25 @@ export function useRAG({ retriever, modelClient, model, promptTemplate }) {
 				setStreaming(false);
 				setLoading(false);
 				return { docs: relevantDocs, response: acc };
-			} else {
-				// Non-streaming mode
-				const out = await generateWithRAG({ retriever, modelClient, model, query, promptTemplate, ...options });
-				setDocs(out.docs || []);
-				setResponse(out.response || null);
-				setLoading(false);
-				return out;
-			}
+				} else {
+					// Non-streaming mode
+					const { stream, topK: _topK, onDelta: _onDelta, ...ragOptions } = options;
+					const generationOptions = { ...ragOptions };
+					if (!generationOptions.promptManager && !generationOptions.template) {
+						generationOptions.template = (q) => template(relevantDocs, q ?? query);
+					}
+					const out = await generateWithRAG(
+						modelClient,
+						model,
+						query,
+						relevantDocs,
+						generationOptions
+					);
+					setDocs(out.docs || relevantDocs);
+					setResponse(out.response || null);
+					setLoading(false);
+					return out;
+				}
 		} catch (err) {
 			// Normalize common errors into user-friendly messages
 			let friendly = err;

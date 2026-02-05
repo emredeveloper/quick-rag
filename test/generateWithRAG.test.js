@@ -44,7 +44,7 @@ async function testGenerateWithRAGNewAPI() {
     // Test new API: generateWithRAG(client, model, query, results)
     const response = await generateWithRAG(
       client,
-      'granite4:tiny-h',
+      'granite4:3b',
       'What is JavaScript?',
       results
     );
@@ -77,7 +77,7 @@ async function testGenerateWithRAGLegacyAPI() {
     const result = await generateWithRAG({
       retriever,
       modelClient: client,
-      model: 'granite4:tiny-h',
+      model: 'granite4:3b',
       query: 'What is Node.js?',
       topK: 1
     });
