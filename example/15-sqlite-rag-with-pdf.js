@@ -16,14 +16,14 @@ import {
 const CONFIG = {
     ollama: {
         host: 'http://127.0.0.1:11434',
-        embeddingModel: 'embeddinggemma',
+        embeddingModel: 'qwen3-embedding:0.6b',
         chatModel: 'granite4:3b',
         db: './rag-ollama.db'
     },
     lmstudio: {
         baseUrl: 'ws://127.0.0.1:1234',
         embeddingModel: 'text-embedding-qwen3-embedding-0.6b',
-        chatModel: 'qwen/qwen3-vl-4b',
+        chatModel: 'google/gemma-3-4b',
         db: './rag-lmstudio.db'
     },
     pdf: './example/PDF/2509.17874v1.pdf',

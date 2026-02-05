@@ -39,7 +39,7 @@ async function testLMStudioRAGClientBasics() {
   try {
     const models = await client.listLoaded();
     if (models && models.length > 0) {
-      const modelPath = models[0].path || 'qwen/qwen3-4b-2507';
+      const modelPath = models[0].path || 'google/gemma-3-4b';
       const response = await client.chat(modelPath, 'Say hi in one word');
       assert(typeof response === 'string', 'chat() should return string');
       assert(response.length > 0, 'chat() should return non-empty string');

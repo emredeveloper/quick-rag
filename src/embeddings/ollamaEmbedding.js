@@ -1,8 +1,8 @@
 import OllamaClient from '../ollamaClient.js';
 
 // Embedding adapter that uses a local Ollama server.
-// Defaults to model 'embeddinggemma' (per your instruction).
-export default function createOllamaEmbedding({ baseUrl, model = 'embeddinggemma', headers } = {}) {
+// Defaults to model 'qwen3-embedding:0.6b' (per your instruction).
+export default function createOllamaEmbedding({ baseUrl, model = 'qwen3-embedding:0.6b', headers } = {}) {
   // Use 127.0.0.1 instead of localhost for better Windows compatibility
   const url = baseUrl || 'http://127.0.0.1:11434/api';
   const client = new OllamaClient({ baseUrl: url, headers });

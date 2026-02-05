@@ -62,7 +62,7 @@ async function main() {
 
       // 4. RAG Pipeline
       console.log('🤖 Setting up RAG pipeline...');
-      const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+      const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
       const store = new InMemoryVectorStore(embed);
       
       await store.addDocuments(chunks);

@@ -39,7 +39,7 @@ npm install --save-dev concurrently
 ollama pull granite4:3b
 
 # Embedding model (for document search)
-ollama pull embeddinggemma:latest
+ollama pull qwen3-embedding:0.6b
 ```
 
 **Verify Ollama is Running:**
@@ -120,7 +120,7 @@ app.post('/api/rag-generate', async (req, res) => {
 // Embedding endpoint
 app.post('/api/embed', async (req, res) => {
   try {
-    const { model = 'embeddinggemma', input } = req.body;
+    const { model = 'qwen3-embedding:0.6b', input } = req.body;
     const resp = await client.embed(model, input);
     res.json(resp);
   } catch (e) {
@@ -235,7 +235,7 @@ export default function App() {
       baseEmbeddingOptions: {
         useBrowser: true,
         baseUrl: '/api/embed',
-        model: 'embeddinggemma'
+        model: 'qwen3-embedding:0.6b'
       }
     }).then(core => {
       setRAG(core);
@@ -397,7 +397,7 @@ When setup is complete, check the following:
 - [ ] Node.js 18+ installed
 - [ ] Ollama installed and running
 - [ ] `granite4:3b` model pulled
-- [ ] `embeddinggemma:latest` model pulled
+- [ ] `qwen3-embedding:0.6b` model pulled
 - [ ] `quick-rag` package installed
 - [ ] Backend server running (port 3001)
 - [ ] Frontend dev server running (port 5173)

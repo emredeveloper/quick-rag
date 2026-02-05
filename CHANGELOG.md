@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.5.0] - 2025-02-05
+
+### Fixed
+- **Critical Bug**: `ConversationManager.addAssistantMessage()` now correctly passes content to `addMessage()` (was only passing metadata)
+- **Browser Compatibility**: Replaced Node.js `crypto.randomUUID` import with cross-platform UUID generation in ConversationManager and Telemetry modules
+- **Package.json**: Removed invalid self-referencing dependency (`quick-rag`)
+
+### Changed
+- Improved UUID generation to work in both Node.js and browser environments with fallback for older browsers
+- Default embedding model updated to `qwen3-embedding:0.6b` across all examples and configurations
+
 ## [2.4.4] - 2025-12-20
 
 ### Fixed

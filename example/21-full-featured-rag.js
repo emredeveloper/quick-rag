@@ -83,7 +83,7 @@ async function main() {
 
     // 3. Setup Vector Store with Caching
     const embedFn = cache.wrapEmbedding(async (text) => {
-        const response = await client.embed('nomic-embed-text-v2-moe:latest', text);
+        const response = await client.embed('qwen3-embedding:0.6b', text);
         return response.embeddings[0];
     });
 

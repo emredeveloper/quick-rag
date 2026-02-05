@@ -54,11 +54,11 @@ async function main() {
     console.log('   ✓ Using LM Studio');
     client = new LMStudioRAGClient({ baseUrl: 'ws://127.0.0.1:1234' });
     // Use one of the available embedding models in LM Studio
-    embed = createLMStudioRAGEmbedding(client, 'text-embedding-embeddinggemma-300m');
+    embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
   } else {
     console.log('   ✓ Using Ollama');
     client = new OllamaRAGClient();
-    embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+    embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
   }
 
   const store = new InMemoryVectorStore(embed);

@@ -17,7 +17,7 @@ import { SQLiteVectorStore, createOllamaRAGEmbedding, OllamaRAGClient } from 'qu
 
 // 1. Setup Embedding Function
 const client = new OllamaRAGClient({ host: 'http://127.0.0.1:11434' });
-const embedFn = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const embedFn = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
 // 2. Initialize Store
 // Data will be saved to 'knowledge.db'

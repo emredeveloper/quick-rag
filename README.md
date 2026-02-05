@@ -595,7 +595,7 @@ const client = new OllamaRAGClient({
 });
 
 // 2. Setup embedding
-const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
 // 3. Create vector store
 const vectorStore = new InMemoryVectorStore(embed);
@@ -611,7 +611,7 @@ const results = await retriever.getRelevant('What is Ollama?', 2);
 const context = results.map(d => d.text).join('\n');
 
 const response = await client.chat({
-  model: 'granite4:tiny-h',
+  model: 'granite4:3b',
   messages: [{ 
     role: 'user', 
     content: `Context: ${context}\n\nQuestion: What is Ollama?` 
@@ -651,13 +651,13 @@ app.use(express.json());
 const client = new OllamaRAGClient({ host: 'http://127.0.0.1:11434' });
 
 app.post('/api/generate', async (req, res) => {
-  const { model = 'granite4:tiny-h', messages } = req.body;
+  const { model = 'granite4:3b', messages } = req.body;
   const response = await client.chat({ model, messages, stream: false });
   res.json({ response: response.message.content });
 });
 
 app.post('/api/embed', async (req, res) => {
-  const { model = 'embeddinggemma', input } = req.body;
+  const { model = 'qwen3-embedding:0.6b', input } = req.body;
   const response = await client.embed(model, input);
   res.json(response);
 });
@@ -715,7 +715,7 @@ export default function App() {
   const { run, loading, response, docs: results } = useRAG({
     retriever: rag?.retriever,
     modelClient: createBrowserModelClient(),
-    model: 'granite4:tiny-h'
+    model: 'granite4:3b'
   });
 
   useEffect(() => {
@@ -723,7 +723,7 @@ export default function App() {
       baseEmbeddingOptions: {
         useBrowser: true,
         baseUrl: '/api/embed',
-        model: 'embeddinggemma'
+        model: 'qwen3-embedding:0.6b'
       }
     }).then(core => setRAG(core));
   }, []);
@@ -779,7 +779,7 @@ import { OllamaClient } from 'quick-rag';
 
 export default async function handler(req, res) {
   const client = new OllamaClient();
-  const { model = 'granite4:tiny-h', prompt } = req.body;
+  const { model = 'granite4:3b', prompt } = req.body;
   const response = await client.generate(model, prompt);
   res.json({ response });
 }
@@ -791,7 +791,7 @@ import { OllamaClient } from 'quick-rag';
 
 export default async function handler(req, res) {
   const client = new OllamaClient();
-  const { model = 'embeddinggemma', input } = req.body;
+  const { model = 'qwen3-embedding:0.6b', input } = req.body;
   const response = await client.embed(model, input);
   res.json(response);
 }
@@ -817,7 +817,7 @@ import {
 const client = new OllamaRAGClient();
 
 // 2. Setup embedding
-const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
 // 3. Create vector store and retriever
 const vectorStore = new InMemoryVectorStore(embed);
@@ -837,7 +837,7 @@ const results = await retriever.getRelevant(query, 2);
 // 6. Generate answer
 const context = results.map(d => d.text).join('\n');
 const response = await client.chat({
-  model: 'granite4:tiny-h',
+  model: 'granite4:3b',
   messages: [{ 
     role: 'user', 
     content: `Context:\n${context}\n\nQuestion: ${query}\n\nAnswer:` 
@@ -895,7 +895,7 @@ await vectorStore.addDocuments([
 const results = await retriever.getRelevant('What is LM Studio?', 2);
 const answer = await generateWithRAG(
   client,
-  'qwen/qwen3-4b-2507', // or your model name
+  'google/gemma-3-4b', // or your model name
   'What is LM Studio?',
   results
 );
@@ -928,7 +928,7 @@ import { useRAG } from 'quick-rag'; // Also works in React projects
 const { run, loading, response, docs, streaming, error } = useRAG({
   retriever,        // Retriever instance
   modelClient,      // Model client (OllamaClient or BrowserModelClient)
-  model            // Model name (e.g., 'granite4:tiny-h')
+  model            // Model name (e.g., 'granite4:3b')
 });
 
 // Ask a question
@@ -954,7 +954,7 @@ const { retriever, store, mrl } = await initRAG(documents, {
   baseEmbeddingOptions: {
     useBrowser: true,           // Use browser-safe fetch
     baseUrl: '/api/embed',      // Embedding endpoint
-    model: 'embeddinggemma'    // Embedding model
+    model: 'qwen3-embedding:0.6b'    // Embedding model
   }
 });
 ```
@@ -1227,7 +1227,7 @@ const chunks = chunkDocuments(allDocs, {
 
 // Setup RAG
 const client = new OllamaRAGClient();
-const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 const store = new InMemoryVectorStore(embed);
 const retriever = new Retriever(store);
 
@@ -1236,7 +1236,7 @@ await store.addDocuments(chunks);
 
 // Query
 const results = await retriever.getRelevant('What is the main topic?', 3);
-const answer = await generateWithRAG(client, 'granite4:tiny-h', 
+const answer = await generateWithRAG(client, 'granite4:3b', 
   'What is the main topic?', results);
 
 console.log(answer);
@@ -1252,7 +1252,7 @@ console.log(answer);
 |---------|----------|
 | 🚫 **CORS errors** | Use a proxy server (Express/Next.js API routes) |
 | 🔌 **Connection refused** | Ensure Ollama is running: `ollama serve` |
-| 📦 **Models not found** | Pull models: `ollama pull granite4:tiny-h && ollama pull embeddinggemma` |
+| 📦 **Models not found** | Pull models: `ollama pull granite4:3b && ollama pull qwen3-embedding:0.6b` |
 | 🌐 **404 on `/api/embed`** | Check your proxy configuration in `vite.config.js` or API routes |
 | 💻 **Windows IPv6 issues** | Use `127.0.0.1` instead of `localhost` |
 | 📦 **Module not found** | Check imports: use `'quick-rag'` not `'quick-rag/...'` |

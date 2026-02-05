@@ -29,7 +29,7 @@ async function main() {
     console.log(`✅ Using model: ${modelPath}\n`);
 
     // 2. Setup embedding
-    const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+    const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
 
     // 3. Create vector store
     const store = new InMemoryVectorStore(embed);

@@ -47,8 +47,8 @@ Thrown when embedding operations fail.
 import { EmbeddingError } from 'quick-rag';
 
 // Model not found
-throw EmbeddingError.modelNotFound('embeddinggemma');
-// Error: Embedding model "embeddinggemma" not found
+throw EmbeddingError.modelNotFound('qwen3-embedding:0.6b');
+// Error: Embedding model "qwen3-embedding:0.6b" not found
 // Suggestion: Check if the model is pulled/loaded
 
 // Dimension mismatch

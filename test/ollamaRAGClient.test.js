@@ -42,7 +42,7 @@ async function testOllamaRAGClientBasics() {
 
   // Test 3: Embeddings
   try {
-    const embedResult = await client.embed('embeddinggemma', 'test');
+    const embedResult = await client.embed('qwen3-embedding:0.6b', 'test');
     assert(embedResult && Array.isArray(embedResult.embeddings), 'embed() should return embeddings array');
     console.log('✅ OllamaRAGClient.embed() works');
   } catch (err) {

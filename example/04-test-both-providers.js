@@ -43,7 +43,7 @@ async function testOllama() {
   console.log('═'.repeat(60) + '\n');
 
   const client = new OllamaRAGClient();
-  const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+  const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
   const store = new InMemoryVectorStore(embed);
 
   // Simple test data
@@ -85,7 +85,7 @@ async function testLMStudio() {
   const modelPath = models[0].path || models[0].id;
   console.log(`✅ Using: ${modelPath}\n`);
 
-  const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+  const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
   const store = new InMemoryVectorStore(embed);
 
   // Simple test data

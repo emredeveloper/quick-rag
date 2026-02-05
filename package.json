@@ -1,6 +1,6 @@
 {
   "name": "quick-rag",
-  "version": "2.4.4",
+  "version": "2.5.0",
   "description": "Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React - Built on official Ollama & LM Studio SDKs with Hybrid Search, Reranking, Query Transformation, Caching, Conversation Management & Evaluation",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -83,8 +83,7 @@
   },
   "dependencies": {
     "@lmstudio/sdk": "^1.5.0",
-    "ollama": "^0.6.2",
-    "quick-rag": "^2.4.0"
+    "ollama": "^0.6.2"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",

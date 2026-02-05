@@ -171,8 +171,8 @@ class SettingsManager {
     this.useLMStudio = useLMStudio;
     if (useLMStudio) {
       this.settings = {
-        model: 'qwen/qwen3-4b-2507', // LM Studio model
-        embeddingModel: 'text-embedding-embeddinggemma-300m', // LM Studio embedding
+        model: 'google/gemma-3-4b', // LM Studio model
+        embeddingModel: 'text-embedding-qwen3-embedding-0.6b', // LM Studio embedding
         topK: 2,
         enableStreaming: false,
         enableExplainability: false
@@ -180,7 +180,7 @@ class SettingsManager {
     } else {
       this.settings = {
         model: 'granite4:3b',
-        embeddingModel: 'embeddinggemma:latest',
+        embeddingModel: 'qwen3-embedding:0.6b',
         topK: 2,
         enableStreaming: false,
         enableExplainability: false
@@ -209,8 +209,8 @@ class SettingsManager {
   reset() {
     if (this.useLMStudio) {
       this.settings = {
-        model: 'qwen/qwen3-4b-2507',
-        embeddingModel: 'text-embedding-embeddinggemma-300m',
+        model: 'google/gemma-3-4b',
+        embeddingModel: 'text-embedding-qwen3-embedding-0.6b',
         topK: 2,
         enableStreaming: false,
         enableExplainability: false
@@ -218,7 +218,7 @@ class SettingsManager {
     } else {
       this.settings = {
         model: 'granite4:3b',
-        embeddingModel: 'embeddinggemma:latest',
+        embeddingModel: 'qwen3-embedding:0.6b',
         topK: 2,
         enableStreaming: false,
         enableExplainability: false
@@ -280,14 +280,14 @@ async function main() {
           console.error('\n💡 SOLUTIONS:');
           console.error('\n   For LM Studio:');
           console.error('   1. Open LM Studio application');
-          console.error('   2. Load a model (e.g., qwen/qwen3-4b-2507)');
-          console.error('   3. Load an embedding model (e.g., text-embedding-embeddinggemma-300m)');
+          console.error('   2. Load a model (e.g., google/gemma-3-4b)');
+          console.error('   3. Load an embedding model (e.g., text-embedding-qwen3-embedding-0.6b)');
           console.error('   4. Enable local server: Settings → Local Server → Start Server');
           console.error('   5. Make sure server is running on http://localhost:1234\n');
           console.error('   For Ollama:');
           console.error('   1. Install Ollama: https://ollama.ai');
           console.error('   2. Run: ollama serve');
-          console.error('   3. Install models: ollama pull granite4:3b && ollama pull embeddinggemma:latest\n');
+          console.error('   3. Install models: ollama pull granite4:3b && ollama pull qwen3-embedding:0.6b\n');
           console.error('   Or force a provider:');
           console.error('   • USE_LMSTUDIO=true node example/12-conversation-history-and-export.js');
           console.error('   • USE_LMSTUDIO=false node example/12-conversation-history-and-export.js\n');

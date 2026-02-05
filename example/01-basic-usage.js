@@ -16,7 +16,7 @@ async function main() {
 
   // 1. Setup client and embedding
   const client = new OllamaRAGClient();
-  const embed = createOllamaRAGEmbedding(client, 'embeddinggemma');
+  const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
 
   // 2. Create vector store
   const store = new InMemoryVectorStore(embed);

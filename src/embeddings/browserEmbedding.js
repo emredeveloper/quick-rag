@@ -1,6 +1,6 @@
 // Browser embedding adapter that calls a server proxy endpoint (e.g., /api/embed)
 // options: { endpoint?: string, model?: string, headers?: object }
-export default function createBrowserEmbedding({ endpoint = '/api/embed', model = 'embeddinggemma', headers } = {}) {
+export default function createBrowserEmbedding({ endpoint = '/api/embed', model = 'qwen3-embedding:0.6b', headers } = {}) {
   return async function browserEmbedding(text) {
     try {
       // Support both single text and batch (array of texts)

@@ -50,12 +50,12 @@ async function main() {
   if (USE_LMSTUDIO) {
     console.log('   ✓ Using LM Studio');
     client = new LMStudioRAGClient({ baseUrl: 'ws://127.0.0.1:1234' });
-    embed = createLMStudioRAGEmbedding(client, 'text-embedding-embeddinggemma-300m');
+    embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
     modelName = 'lmstudio-model';
   } else {
     console.log('   ✓ Using Ollama');
     client = new OllamaRAGClient();
-    embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+    embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
     modelName = 'granite4:3b';
   }
 

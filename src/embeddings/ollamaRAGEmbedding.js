@@ -4,7 +4,7 @@
  * @param {string} model - Embedding model name
  * @returns {Function} Embedding function
  */
-export function createOllamaEmbedding(client, model = 'embeddinggemma') {
+export function createOllamaEmbedding(client, model = 'qwen3-embedding:0.6b') {
   return async (text) => {
     try {
       // OllamaRAGClient.embed(model, input) signature

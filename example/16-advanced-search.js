@@ -51,11 +51,11 @@ import {
 const CONFIG = {
     ollama: {
         model: 'granite4:3b',
-        embeddingModel: 'nomic-embed-text',
+        embeddingModel: 'qwen3-embedding:0.6b',
         baseUrl: 'http://127.0.0.1:11434'
     },
     lmstudio: {
-        model: 'qwen/qwen3-4b-2507',
+        model: 'google/gemma-3-4b',
         embeddingModel: 'text-embedding-embeddinggemma-300m',
         // LM Studio SDK uses WebSocket, no baseUrl needed (auto-discovery)
         baseUrl: null

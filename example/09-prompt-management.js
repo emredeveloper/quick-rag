@@ -26,7 +26,7 @@ async function main() {
   // Setup RAG system
   console.log('⚙️  Setting up RAG system...');
   const client = new OllamaRAGClient();
-  const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+  const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
   const store = new InMemoryVectorStore(embed);
   const retriever = new Retriever(store, { k: 2 });
 

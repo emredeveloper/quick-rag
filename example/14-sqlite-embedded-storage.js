@@ -5,7 +5,7 @@
  * 
  * Prerequisites:
  * 1. Install better-sqlite3: npm install better-sqlite3
- * 2. Make sure Ollama is running with embeddinggemma model
+ * 2. Make sure Ollama is running with qwen3-embedding:0.6b model
  * 
  * No ChromaDB server needed! 🎉
  */
@@ -29,12 +29,12 @@ async function main() {
 
     // 2. Create embedding function
     console.log('2️⃣ Creating embedding function...');
-    const embed = createOllamaRAGEmbedding(ollamaClient, 'embeddinggemma');
+    const embed = createOllamaRAGEmbedding(ollamaClient, 'qwen3-embedding:0.6b');
 
     // 3. Create SQLite vector store (creates ./my-vectors.db file)
     console.log('3️⃣ Creating SQLite vector store...');
     const vectorStore = new SQLiteVectorStore('./my-vectors.db', embed, {
-        defaultDim: 768 // embeddinggemma dimension
+        defaultDim: 512 // qwen3-embedding:0.6b dimension
     });
 
     console.log('   ✅ Database created: ./my-vectors.db\n');

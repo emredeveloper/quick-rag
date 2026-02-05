@@ -4,7 +4,21 @@
  * Tracks events and usage patterns across the library
  */
 
-import { randomUUID } from 'crypto';
+/**
+ * Generate UUID - works in both Node.js and browser
+ * @returns {string}
+ */
+function generateUUID() {
+    if (typeof globalThis.crypto?.randomUUID === 'function') {
+        return globalThis.crypto.randomUUID();
+    }
+    // Fallback for older environments
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 /**
  * Event types
@@ -139,7 +153,7 @@ class TelemetryCollector {
 
     // Private helpers
     _generateSessionId() {
-        return randomUUID();
+        return generateUUID();
     }
 
     _hashString(str) {

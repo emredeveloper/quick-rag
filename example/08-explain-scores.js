@@ -31,7 +31,7 @@ async function testOllama() {
   // Initialize RAG with Ollama
   console.log('⚙️  Setting up Ollama RAG system...');
   const client = new OllamaRAGClient();
-  const embed = createOllamaRAGEmbedding(client, 'nomic-embed-text');
+  const embed = createOllamaRAGEmbedding(client, 'qwen3-embedding:0.6b');
   const store = new InMemoryVectorStore(embed);
   const retriever = new Retriever(store, { k: 3 });
 
@@ -112,7 +112,7 @@ async function testLMStudio() {
   // Initialize RAG with LM Studio
   console.log('⚙️  Setting up LM Studio RAG system...');
   const client = new LMStudioRAGClient();
-  const embed = createLMStudioRAGEmbedding(client, 'nomic-embed-text-v1.5');
+  const embed = createLMStudioRAGEmbedding(client, 'text-embedding-qwen3-embedding-0.6b');
   const store = new InMemoryVectorStore(embed);
   const retriever = new Retriever(store, { k: 3 });
 
@@ -189,8 +189,8 @@ async function main() {
   console.log('🔍 Query Explainability - Dual Provider Test\n');
 
   console.log('Prerequisites:');
-  console.log('1. Ollama: ollama serve & ollama pull nomic-embed-text & ollama pull granite4:3b');
-  console.log('2. LM Studio: Start server & load a model & load nomic-embed-text-v1.5\n');
+  console.log('1. Ollama: ollama serve & ollama pull qwen3-embedding:0.6b & ollama pull granite4:3b');
+  console.log('2. LM Studio: Start server & load a model & load text-embedding-qwen3-embedding-0.6b\n');
   console.log('═══════════════════════════════════════════════\n');
 
   // Test Ollama

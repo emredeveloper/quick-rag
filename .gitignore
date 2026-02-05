@@ -93,3 +93,7 @@ test-store.db
 
 # Test outputs
 test-output.txt
+
+# npm-test folder
+npm-test/node_modules/
+npm-test/package-lock.json

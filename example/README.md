@@ -99,7 +99,7 @@ Automatically detect and test both providers.
 
    **Models Used:**
    - LLM: `granite4:3b`
-   - Embedding: `nomic-embed-text-v2-moe:latest`
+   - Embedding: `qwen3-embedding:0.6b`
    
    **Provider Configuration:**
    - Auto-detect (default): Tries LM Studio first, falls back to Ollama
@@ -107,12 +107,12 @@ Automatically detect and test both providers.
    - Force Ollama: Set `USE_LMSTUDIO=false` or edit file: `const USE_LMSTUDIO = false`
    
    **LM Studio Models:**
-   - LLM Model: `qwen/qwen3-4b-2507`
-   - Embedding Model: `text-embedding-embeddinggemma-300m`
+   - LLM Model: `google/gemma-3-4b`
+   - Embedding Model: `text-embedding-qwen3-embedding-0.6b`
    
    **Ollama Models:**
    - LLM Model: `granite4:3b`
-   - Embedding Model: `embeddinggemma:latest`
+   - Embedding Model: `qwen3-embedding:0.6b`
 
 ## 🚀 Quick Start
 
@@ -123,8 +123,8 @@ Automatically detect and test both providers.
 ollama serve
 
 # Install models
-ollama pull embeddinggemma
-ollama pull granite4:tiny-h
+ollama pull qwen3-embedding:0.6b
+ollama pull granite4:3b
 
 # Run examples
 node example/01-basic-usage.js
@@ -153,7 +153,7 @@ node example/05-streaming-lmstudio.js
 ```bash
 # 1. Open LM Studio
 # 2. Load a model (e.g., qwen3-4b, gemma-3-4b)
-# 3. Make sure nomic-embed-text-v1.5 is available
+# 3. Make sure text-embedding-qwen3-embedding-0.6b is available
 # 4. Enable local server: Settings → Local Server → Start
 
 # Run examples
@@ -202,13 +202,13 @@ All examples work with a running Ollama server. Make sure you have:
 ### Ollama
 
 - Ollama running: `ollama serve`
-- Models: `embeddinggemma`, `granite4:tiny-h`
+- Models: `qwen3-embedding:0.6b`, `granite4:3b`
 
 ### LM Studio
 
 - LM Studio app running
 - Local server enabled
-- Models loaded: any LLM + `nomic-embed-text-v1.5` embedding
+- Models loaded: any LLM + `text-embedding-qwen3-embedding-0.6b` embedding
 
 ## 📖 Full Documentation
 
@@ -245,7 +245,7 @@ See main [README.md](../README.md) for complete API reference.
 ```bash
 # Ensure you have the models
 ollama pull granite4:3b
-ollama pull nomic-embed-text-v2-moe
+ollama pull qwen3-embedding:0.6b
 
 # Run the example
 node example/21-full-featured-rag.js
