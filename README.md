@@ -6,11 +6,17 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.4.0 Released!** Robust Chunking, Rich Query Explainability & BM25 Optimization! See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.5.0 Released!** Critical bug fixes, improved browser compatibility & updated default models! See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
 
-### 🆕 v2.4.0 - Robustness & Explainability
+### 🆕 v2.5.0 - Stability & Compatibility
+- 🐛 **Critical Bug Fix** - `ConversationManager.addAssistantMessage()` now correctly passes content
+- 🌐 **Browser Compatibility** - Cross-platform UUID generation (Node.js + Browser)
+- 📦 **Cleaner Dependencies** - Removed invalid self-referencing dependency
+- 🤖 **Updated Default Models** - `qwen3-embedding:0.6b` (Ollama) & `google/gemma-3-4b` (LM Studio)
+
+### v2.4.0 - Robustness & Explainability
 - 🔪 **Robust Chunking** - Abbreviation-aware sentence splitting & word-safe text chunking
 - 🔍 **Rich Explainability** - Detailed retrieval snippets, keyword density & term match metrics
 - 🚀 **BM25 Optimization** - Min-Heap based top-K selection for fast retrieval in large datasets
