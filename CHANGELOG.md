@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.1] - 2025-02-05
+
+### Changed
+- README documentation now reflects v2.5.0 release notes on npm registry
+- Minor package.json metadata improvements (repository URL normalization)
+
 ## [2.5.0] - 2025-02-05
 
 ### Fixed
