@@ -19,6 +19,6 @@
     "query": "node 13-query-transformers.js"
   },
   "dependencies": {
-    "quick-rag": "^2.5.2"
+    "quick-rag": "^2.5.3"
   }
 }

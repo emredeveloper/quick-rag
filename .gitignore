@@ -8,6 +8,7 @@ dist/
 build/
 coverage/
 *.tgz
+*.tsbuildinfo
 
 # Environment files
 .env
@@ -63,6 +64,8 @@ coverage/
 *.key
 *.cert
 .cache/
+.npm/
+.eslintcache
 .temp/
 .tmp/
 
@@ -85,6 +88,7 @@ $RECYCLE.BIN/
 
 # SQLite Databases
 *.db
+*.sqlite
 *.db-journal
 *.db-shm
 *.db-wal
@@ -93,6 +97,7 @@ test-store.db
 
 # Test outputs
 test-output.txt
+.test-output/
 
 # npm-test folder
 npm-test/node_modules/

@@ -6,9 +6,16 @@
 🚀 **Production-ready RAG (Retrieval-Augmented Generation) for JavaScript & React**  
 Built on official [Ollama](https://github.com/ollama/ollama-js) & [LM Studio](https://github.com/lmstudio-ai/lmstudio-js) SDKs.
 
-> **🎉 v2.5.2 Released!** React export fixes, deterministic init tests, and Ollama base model alignment (`granite4:3b`). See [CHANGELOG.md](CHANGELOG.md) for details.
+> **🎉 v2.5.3 Released!** React subpath exports, hybrid search sync fixes, live Ollama integration tests, and npm script stability improvements. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## ✨ Features
+
+### 🆕 v2.5.3 - Stability & Release Hardening
+- ✅ **React Subpath Exports** - `quick-rag/react` now exports `useRAG`, `initRAG`, and `createBrowserModelClient`
+- ✅ **Hybrid Search Sync Fix** - BM25 sync now indexes the full document set instead of truncating at 100 docs
+- ✅ **SmartRetriever Compatibility** - Result shape is retriever-compatible while still exposing decision metadata
+- ✅ **Live Ollama Integration Test** - validated against `qwen3.5:9b` + `qwen3-embedding:0.6b`
+- ✅ **Stable npm Scripts on Windows** - npm script shell pinned to `cmd.exe` for reliable test execution
 
 ### 🆕 v2.5.2 - Stability & Compatibility
 - ✅ **React Export Fix** - `quick-rag/react` now resolves correctly to `useRAG`
@@ -416,10 +423,10 @@ const smartRetriever = new SmartRetriever(basicRetriever, {
 });
 
 // Get results with decision transparency
-const response = await smartRetriever.getRelevant('latest AI news', 3);
+const results = await smartRetriever.getRelevant('latest AI news', 3);
 
 // See scoring breakdown for each document
-console.log(response.results[0]);
+console.log(results[0]);
 // {
 //   text: "...",
 //   weightedScore: 0.742,
@@ -433,7 +440,7 @@ console.log(response.results[0]);
 // }
 
 // Decision context shows WHY these results
-console.log(response.decisions);
+console.log(results.decisions);
 // {
 //   weights: { ... },
 //   appliedRules: ["boost-recent-for-news"],
@@ -926,12 +933,10 @@ console.log('Answer:', answer);
 3. Download an embedding model (e.g., text-embedding-embeddinggemma-300m)
 4. Start the local server: `Developer > Local Server` (default: `http://localhost:1234`)
 
-**For React projects:** Import from `'quick-rag/react'` to use hooks:
+**For React projects:** Import hooks from `'quick-rag/react'`:
 
 ```javascript
-import { useRAG } from 'quick-rag/react';
-// or
-import { useRAG } from 'quick-rag'; // Also works in React projects
+import { useRAG, initRAG, createBrowserModelClient } from 'quick-rag/react';
 ```
 
 ---

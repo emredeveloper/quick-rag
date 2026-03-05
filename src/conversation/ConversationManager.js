@@ -77,6 +77,7 @@ export class ConversationManager {
         // Custom functions
         this.tokenCounter = options.tokenCounter || this._defaultTokenCounter;
         this.summarizerFn = options.summarizer || null;
+        this._summaryPromise = Promise.resolve();
 
         // Metadata
         this.metadata = {
@@ -113,7 +114,7 @@ export class ConversationManager {
 
         // Auto-summarize if enabled and over limit
         if (this.autoSummarize && this._isOverLimit()) {
-            this._autoSummarize();
+            this._queueAutoSummarize();
         }
 
         return message;
@@ -476,6 +477,7 @@ export class ConversationManager {
 
         const toSummarize = this.messages.slice(0, -keepCount);
         const toKeep = this.messages.slice(-keepCount);
+        const summarizedIds = new Set(toSummarize.map(m => m.id));
 
         // Create summary of old messages
         const oldHistory = toSummarize
@@ -487,15 +489,24 @@ export class ConversationManager {
             : '';
 
         try {
-            this.summary = await this.summarizerFn(existingSummary + oldHistory);
-            
-            // Update messages and metadata
-            this.messages = toKeep;
-            this.metadata.totalTokens = toKeep.reduce((sum, m) => sum + m.tokenCount, 0);
+            const nextSummary = await this.summarizerFn(existingSummary + oldHistory);
+
+            // Remove only the messages that were actually summarized, preserving newer arrivals.
+            this.summary = nextSummary;
+            this.messages = this.messages.filter(m => !summarizedIds.has(m.id));
+            this.metadata.messageCount = this.messages.length;
+            this.metadata.totalTokens = this.messages.reduce((sum, m) => sum + m.tokenCount, 0);
             this.metadata.updatedAt = Date.now();
         } catch (error) {
             console.error('Auto-summarization failed:', error);
         }
+    }
+
+    _queueAutoSummarize() {
+        this._summaryPromise = this._summaryPromise
+            .catch(() => {})
+            .then(() => this._autoSummarize());
+        return this._summaryPromise;
     }
 }
 

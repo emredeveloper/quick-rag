@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.5.3] - 2026-03-05
+
+### Fixed
+- React subpath export now resolves through `src/react/index.js` and exposes `useRAG`, `initRAG`, and `createBrowserModelClient`
+- `HybridRetriever.syncBM25()` now indexes the full vector store instead of truncating to the first 100 in-memory documents
+- `SmartRetriever.getRelevant()` now preserves retriever-compatible array semantics while attaching decision metadata
+- `ConversationManager` auto-summarization is serialized to reduce race conditions during rapid message appends
+- npm script execution stabilized on Windows by pinning `script-shell` to `cmd.exe`
+
+### Added
+- Core smoke test coverage for React exports, smart retrieval compatibility, BM25 full sync, and conversation summarization flow
+- Live Ollama integration test validated with `qwen3.5:9b` and `qwen3-embedding:0.6b`
+- Project-level ignore rules for examples, SQLite artifacts, npm config, and local test outputs
+
 ## [2.5.2] - 2026-02-05
 
 ### Fixed

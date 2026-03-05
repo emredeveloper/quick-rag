@@ -517,20 +517,18 @@ export class SmartRetriever {
     // 7. Take top K
     results = results.slice(0, topK);
 
-    // 8. Add metadata about decision process
-    const response = {
-      query: effectiveQuery,
-      originalQuery: query,
-      results,
-      decisions: {
-        appliedRules: queryMods.appliedRules,
-        suggestions: queryMods.suggestions,
-        weights: this.decisionEngine.getWeights(),
-        resultsModified: results.some(r => r.boosted)
-      }
+    // 8. Preserve Retriever-compatible return type while exposing decisions
+    results.query = effectiveQuery;
+    results.originalQuery = query;
+    results.results = results;
+    results.decisions = {
+      appliedRules: queryMods.appliedRules,
+      suggestions: queryMods.suggestions,
+      weights: this.decisionEngine.getWeights(),
+      resultsModified: results.some(r => r.boosted)
     };
 
-    return response;
+    return results;
   }
 
   /**

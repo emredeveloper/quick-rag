@@ -469,10 +469,13 @@ export interface DecisionContext {
   weights: DecisionWeights;
   appliedRules: string[];
   suggestions: string[];
+  resultsModified?: boolean;
 }
 
-export interface SmartRetrievalResult {
-  results: ScoredDocument[];
+export interface SmartRetrievalResult extends Array<ScoredDocument> {
+  results: SmartRetrievalResult;
+  query: string;
+  originalQuery: string;
   decisions: DecisionContext;
 }
 

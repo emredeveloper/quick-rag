@@ -165,6 +165,10 @@ const smart = new SmartRetriever(basicRetriever, {
   enableHeuristics: true,
   enableLearning: true
 });
+
+const results = await smart.getRelevant('latest docs', 3);
+console.log(results[0]);
+console.log(results.decisions);
 ```
 
 ---

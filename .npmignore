@@ -4,6 +4,7 @@ test/
 *.test.ts
 
 # Examples and documentation source
+examples/
 example/
 quickstart/
 my-rag-app/
@@ -26,6 +27,7 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+.npmrc
 
 # Source maps
 *.map
@@ -46,3 +48,11 @@ Thumbs.db
 # Git files
 .gitignore
 .gitattributes
+
+# Local data and temp artifacts
+*.db
+*.sqlite
+*.db-journal
+*.db-shm
+*.db-wal
+test-output.txt

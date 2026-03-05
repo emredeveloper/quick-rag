@@ -127,7 +127,7 @@ export class HybridRetriever {
 
         // Get all documents from vector store
         const allDocs = this.vectorStore.getAllDocuments
-            ? this.vectorStore.getAllDocuments()
+            ? this.vectorStore.getAllDocuments({ limit: Number.MAX_SAFE_INTEGER, offset: 0 })
             : this._getAllDocsFromStore();
 
         this.bm25.addDocuments(allDocs);
@@ -158,6 +158,7 @@ export class HybridRetriever {
     async addDocument(doc) {
         await this.vectorStore.addDocument(doc);
         this.bm25.addDocument(doc);
+        this._bm25Synced = true;
     }
 
     /**
@@ -168,6 +169,7 @@ export class HybridRetriever {
     async addDocuments(docs, options = {}) {
         await this.vectorStore.addDocuments(docs, options);
         this.bm25.addDocuments(docs);
+        this._bm25Synced = true;
     }
 
     /**
